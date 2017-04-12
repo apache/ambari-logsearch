@@ -18,6 +18,6 @@
  */
 package org.apache.ambari.logsearch.configurer;
 
-interface SolrConfigurer {
+interface Configurer {
   void start();
 }
