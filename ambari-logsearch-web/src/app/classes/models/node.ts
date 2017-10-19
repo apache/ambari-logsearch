@@ -16,31 +16,15 @@
  * limitations under the License.
  */
 
-import {QueryParams} from '@app/classes/queries/query-params.class';
+import {CommonEntry} from '@app/classes/models/common-entry';
 
-export const defaultParams = {
-  page: '0',
-  pageSize: '10'
-};
-
-export class AuditLogsQueryParams extends QueryParams {
-  constructor(options: AuditLogsQueryParams) {
-    let finalParams = Object.assign({}, defaultParams, options);
-    const page = parseInt(finalParams.page),
-      pageSize = parseInt(finalParams.pageSize);
-    finalParams.startIndex = isNaN(page) || isNaN(pageSize) ? '' : (page * pageSize).toString();
-    super(finalParams);
-  }
-  page: string;
-  pageSize: string;
-  startIndex: string;
-  sortBy?: string;
-  sortType?: string;
-  clusters?: string;
-  mustBe?: string;
-  mustNot?: string;
-  includeQuery?: string;
-  excludeQuery?: string;
-  from?: string;
-  to?: string;
+export interface Node {
+  name: string;
+  type?: string;
+  value: string;
+  isParent: boolean;
+  isRoot: boolean;
+  childs?: Node[];
+  logLevelCount?: CommonEntry[];
+  vNodeList?: CommonEntry[];
 }

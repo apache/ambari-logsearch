@@ -16,15 +16,31 @@
  * limitations under the License.
  */
 
-import {AuditLogsQueryParams} from '@app/classes/queries/audit-logs-query-params.class';
+import {QueryParams} from '@app/classes/queries/query-params';
 
-export class ServiceLogsQueryParams extends AuditLogsQueryParams {
-  level?: string;
-  file_name?: string;
-  bundle_id?: string;
-  hostList?: string;
-  find?: string;
-  sourceLogId?: string;
-  keywordType?: string;
-  token?: string;
+export const defaultParams = {
+  page: '0',
+  pageSize: '10'
+};
+
+export class AuditLogsQueryParams extends QueryParams {
+  constructor(options: AuditLogsQueryParams) {
+    let finalParams = Object.assign({}, defaultParams, options);
+    const page = parseInt(finalParams.page),
+      pageSize = parseInt(finalParams.pageSize);
+    finalParams.startIndex = isNaN(page) || isNaN(pageSize) ? '' : (page * pageSize).toString();
+    super(finalParams);
+  }
+  page: string;
+  pageSize: string;
+  startIndex: string;
+  sortBy?: string;
+  sortType?: 'asc' | 'desc';
+  clusters?: string;
+  mustBe?: string;
+  mustNot?: string;
+  includeQuery?: string;
+  excludeQuery?: string;
+  from?: string;
+  to?: string;
 }

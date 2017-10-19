@@ -16,12 +16,8 @@
  * limitations under the License.
  */
 
-import {Log} from '@app/models/log.model';
-
-export interface ServiceLog extends Log {
-  path: string;
-  host: string;
-  level: string;
-  logtime: number;
-  ip: string;
+export interface Graph {
+  name: string;
+  count: string;
+  dataList?: Graph[];
 }

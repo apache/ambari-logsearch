@@ -16,8 +16,15 @@
  * limitations under the License.
  */
 
-export interface Graph {
-  name: string;
-  count: string;
-  dataList?: Graph[]
+import {AuditLogsQueryParams} from '@app/classes/queries/audit-logs-query-params';
+
+export class ServiceLogsQueryParams extends AuditLogsQueryParams {
+  level?: string;
+  file_name?: string;
+  bundle_id?: string;
+  hostList?: string;
+  find?: string;
+  sourceLogId?: string;
+  keywordType?: string;
+  token?: string;
 }

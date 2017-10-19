@@ -16,9 +16,17 @@
  * limitations under the License.
  */
 
-import {CommonEntry} from '@app/models/common-entry.model';
+import {Injectable} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {AppStore, CollectionModelService, getCollectionReducer} from '@app/classes/models/store';
 
-export interface BarGraph {
-  dataCount: CommonEntry[],
-  name: string;
+export const modelName = 'serviceLogsTruncated';
+
+@Injectable()
+export class ServiceLogsTruncatedService extends CollectionModelService {
+  constructor(store: Store<AppStore>) {
+    super(modelName, store);
+  }
 }
+
+export const serviceLogsTruncated = getCollectionReducer(modelName);

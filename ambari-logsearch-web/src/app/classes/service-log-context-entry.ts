@@ -16,22 +16,11 @@
  * limitations under the License.
  */
 
-export interface Log {
-  type: string;
-  _version_: number;
+export interface ServiceLogContextEntry {
   id: string;
-  file?: string;
-  seq_num: number;
-  bundle_id?: string;
-  case_id?: string;
-  log_message: string;
-  logfile_line_number: number;
-  message_md5: string;
-  cluster: string;
-  event_count: number;
-  event_md5: string;
-  event_dur_ms: number;
-  _ttl_: string;
-  _expire_at_: number;
-  _router_field_?: number;
+  time: number;
+  level: string;
+  message: string;
+  fileName: string | null;
+  lineNumber: number | null;
 }

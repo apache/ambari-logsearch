@@ -16,14 +16,11 @@
  * limitations under the License.
  */
 
-import {CommonEntry} from '@app/models/common-entry.model';
-
-export interface Node {
-  name: string;
-  type?: string;
-  value: string;
-  isParent: boolean;
-  isRoot: boolean;
-  childs?: Node[];
-  logLevelCount: CommonEntry[];
+export interface ListItem {
+  id?: string;
+  label?: string;
+  value: any;
+  iconClass?: string;
+  isChecked?: boolean;
+  action?: string;
 }

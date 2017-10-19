@@ -18,20 +18,21 @@
 
 import {Observable} from 'rxjs/Observable';
 import {Store, Action} from '@ngrx/store';
-import {AppSettings} from '@app/models/app-settings.model';
-import {AppState} from '@app/models/app-state.model';
-import {AuditLog} from '@app/models/audit-log.model';
-import {ServiceLog} from '@app/models/service-log.model';
-import {BarGraph} from '@app/models/bar-graph.model';
-import {Graph} from '@app/models/graph.model';
-import {Node} from '@app/models/node.model';
-import {UserConfig} from '@app/models/user-config.model';
-import {Filter} from '@app/models/filter.model';
-import {AuditLogField} from '@app/models/audit-log-field.model';
-import {ServiceLogField} from '@app/models/service-log-field.model';
+import {AppSettings} from '@app/classes/models/app-settings';
+import {AppState} from '@app/classes/models/app-state';
+import {AuditLog} from '@app/classes/models/audit-log';
+import {ServiceLog} from '@app/classes/models/service-log';
+import {BarGraph} from '@app/classes/models/bar-graph';
+import {Graph} from '@app/classes/models/graph';
+import {Node} from '@app/classes/models/node';
+import {UserConfig} from '@app/classes/models/user-config';
+import {Filter} from '@app/classes/models/filter';
+import {AuditLogField} from '@app/classes/models/audit-log-field';
+import {ServiceLogField} from '@app/classes/models/service-log-field';
 
 export const storeActions = {
   'ARRAY.ADD': 'ADD',
+  'ARRAY.ADD.START': 'ADD_TO_START',
   'ARRAY.DELETE.PRIMITIVE': 'DELETE_PRIMITIVE',
   'ARRAY.DELETE.OBJECT': 'DELETE_OBJECT',
   'ARRAY.CLEAR': 'CLEAR',
@@ -46,12 +47,13 @@ export interface AppStore {
   auditLogs: AuditLog[];
   serviceLogs: ServiceLog[];
   serviceLogsHistogramData: BarGraph[];
+  serviceLogsTruncated: ServiceLog[];
   graphs: Graph[];
   hosts: Node[];
   userConfigs: UserConfig[];
   filters: Filter[];
   clusters: string[];
-  components: string[];
+  components: Node[];
   serviceLogsFields: ServiceLogField[];
   auditLogsFields: AuditLogField[];
 }
@@ -82,6 +84,13 @@ export class CollectionModelService extends ModelService {
   addInstances(instances: any[]): void {
     this.store.dispatch({
       type: `${storeActions['ARRAY.ADD']}_${this.modelName}`,
+      payload: instances
+    });
+  }
+
+  addInstancesToStart(instances: any[]): void {
+    this.store.dispatch({
+      type: `${storeActions['ARRAY.ADD.START']}_${this.modelName}`,
       payload: instances
     });
   }
@@ -143,6 +152,8 @@ export function getCollectionReducer(modelName: string, defaultState: any = []):
     switch (action.type) {
       case `${storeActions['ARRAY.ADD']}_${modelName}`:
         return [...state, ...action.payload];
+      case `${storeActions['ARRAY.ADD.START']}_${modelName}`:
+        return [...action.payload, ...state];
       case `${storeActions['ARRAY.DELETE.OBJECT']}_${modelName}`:
         return state.filter(instance => instance.id !== action.payload.id);
       case `${storeActions['ARRAY.DELETE.PRIMITIVE']}_${modelName}`:
