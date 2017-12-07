@@ -16,15 +16,34 @@
  * limitations under the License.
  */
 
-import {CommonEntry} from '@app/classes/models/common-entry';
-
-export interface Node {
-  name: string;
-  type?: string;
-  value: string;
-  isParent: boolean;
-  isRoot: boolean;
-  childs?: Node[];
-  logLevelCount?: CommonEntry[];
-  vNodeList?: CommonEntry[];
+export interface Tab {
+  id: string;
+  type: string;
+  isActive?: boolean;
+  isCloseable?: boolean;
+  label: string;
+  appState?: object;
 }
+
+export const initialTabs: Tab[] = [
+  {
+    id: 'serviceLogs',
+    type: 'serviceLogs',
+    isActive: true,
+    label: 'common.serviceLogs',
+    appState: {
+      activeLogsType: 'serviceLogs',
+      isServiceLogsFileView: false
+    }
+  },
+  {
+    id: 'auditLogs',
+    type: 'auditLogs',
+    isActive: false,
+    label: 'common.auditLogs',
+    appState: {
+      activeLogsType: 'auditLogs',
+      isServiceLogsFileView: false
+    }
+  }
+];
