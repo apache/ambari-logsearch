@@ -285,7 +285,7 @@
         <version>0.12</version>
         <configuration>
           <excludes>
-            <exclude>**/README.md</exclude>
+            <exclude>**/*.md</exclude>
             <exclude>**/*.json</exclude>
             <exclude>**/*.log</exclude>
             <exclude>**/*.txt</exclude>
