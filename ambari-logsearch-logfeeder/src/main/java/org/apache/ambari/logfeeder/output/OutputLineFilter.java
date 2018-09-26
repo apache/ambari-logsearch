@@ -21,18 +21,17 @@ package org.apache.ambari.logfeeder.output;
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.plugin.input.cache.LRUCache;
 import org.apache.ambari.logfeeder.plugin.input.Input;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
-
 
 /**
  * Filter for outputs based on input configs, which can drop lines if the filter applies.
  */
 public class OutputLineFilter {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OutputLineFilter.class);
+  private static final Logger logger = LogManager.getLogger(OutputLineFilter.class);
 
   /**
    * Applies filter based on input cache (on service log only).
@@ -52,7 +51,7 @@ public class OutputLineFilter {
         if (!isLogFilteredOut) {
           inputLruCache.put(logMessage, timestamp);
         } else {
-          LOG.debug("Log line filtered out: {} (file: {}, dedupInterval: {}, lastDedupEnabled: {})",
+          logger.debug("Log line filtered out: {} (file: {}, dedupInterval: {}, lastDedupEnabled: {})",
             logMessage, inputLruCache.getFileName(), inputLruCache.getDedupInterval(), inputLruCache.isLastDedupEnabled());
         }
       }

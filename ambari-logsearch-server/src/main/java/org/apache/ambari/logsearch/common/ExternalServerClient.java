@@ -27,7 +27,8 @@ import javax.ws.rs.core.Response;
 import org.apache.ambari.logsearch.conf.AuthPropsConfig;
 import org.apache.ambari.logsearch.configurer.SslConfigurer;
 import org.apache.http.auth.InvalidCredentialsException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -41,7 +42,7 @@ public class ExternalServerClient {
   @Inject
   private SslConfigurer sslConfigurer;
 
-  private static Logger LOG = Logger.getLogger(ExternalServerClient.class);
+  private static final Logger logger = LogManager.getLogger(ExternalServerClient.class);
   private ThreadLocal<JerseyClient> localJerseyClient;
 
   @Inject
@@ -69,7 +70,7 @@ public class ExternalServerClient {
     client.register(authFeature);
 
     WebTarget target = client.target(url);
-    LOG.debug("URL: " + url);
+    logger.debug("URL: " + url);
     
     Invocation.Builder invocationBuilder =  target.request();
     try {

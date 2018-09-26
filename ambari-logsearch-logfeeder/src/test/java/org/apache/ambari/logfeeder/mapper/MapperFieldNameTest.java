@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.MapFieldNameDescriptorImpl;
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -30,11 +29,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MapperFieldNameTest {
-  private static final Logger LOG = Logger.getLogger(MapperFieldNameTest.class);
 
   @Test
   public void testMapperFieldName_replaceField() {
-    LOG.info("testMapperFieldName_replaceField()");
 
     MapFieldNameDescriptorImpl mapFieldNameDescriptor = new MapFieldNameDescriptorImpl();
     mapFieldNameDescriptor.setNewFieldName("someOtherField");
@@ -54,7 +51,6 @@ public class MapperFieldNameTest {
 
   @Test
   public void testMapperFieldName_noNewFieldName() {
-    LOG.info("testMapperFieldName_noNewFieldName()");
 
     MapFieldNameDescriptorImpl mapFieldNameDescriptor = new MapFieldNameDescriptorImpl();
 

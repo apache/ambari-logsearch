@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logfeeder.docker;
+package org.apache.ambari.logfeeder.container.docker;
 
-import org.apache.ambari.logfeeder.ContainerRegistry;
-import org.apache.ambari.logfeeder.docker.command.DockerInspectContainerCommand;
-import org.apache.ambari.logfeeder.docker.command.DockerListContainerCommand;
+import org.apache.ambari.logfeeder.container.ContainerRegistry;
+import org.apache.ambari.logfeeder.container.docker.command.DockerInspectContainerCommand;
+import org.apache.ambari.logfeeder.container.docker.command.DockerListContainerCommand;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public final class DockerContainerRegistry implements ContainerRegistry<DockerMetadata> {
 
   private static final String LOGFEEDER_CONTAINER_REGISTRY_DOCKER_INTERVAL = "logfeeder.container.registry.docker.interval";
-  private static final Logger logger = LoggerFactory.getLogger(DockerContainerRegistry.class);
+  private static final Logger logger = LogManager.getLogger(DockerContainerRegistry.class);
 
   private static DockerContainerRegistry INSTANCE = null;
   private final Properties configs;

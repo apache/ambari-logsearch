@@ -20,7 +20,8 @@ package org.apache.ambari.logfeeder.output.spool;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.ambari.logfeeder.util.DateUtil;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LogSpooler {
   
-  private static final Logger LOG = Logger.getLogger(LogSpooler.class);
+  private static final Logger logger = LogManager.getLogger(LogSpooler.class);
   public static final long TIME_BASED_ROLLOVER_DISABLED_THRESHOLD = 0;
   static final String fileDateFormat = "yyyy-MM-dd-HH-mm-ss";
 
@@ -102,7 +103,7 @@ public class LogSpooler {
   private void initializeSpoolDirectory() {
     File spoolDir = new File(spoolDirectory);
     if (!spoolDir.exists()) {
-      LOG.info("Creating spool directory: " + spoolDir);
+      logger.info("Creating spool directory: " + spoolDir);
       boolean result = spoolDir.mkdirs();
       if (!result) {
         throw new LogSpoolerException("Could not create spool directory: " + spoolDirectory);
@@ -120,7 +121,7 @@ public class LogSpooler {
           + ", error message: " + e.getLocalizedMessage(), e);
     }
     currentSpoolerContext = new LogSpoolerContext(currentSpoolFile);
-    LOG.info("Initialized spool file at path: " + currentSpoolFile);
+    logger.info("Initialized spool file at path: " + currentSpoolFile);
   }
 
   @VisibleForTesting
@@ -145,7 +146,7 @@ public class LogSpooler {
     currentSpoolBufferedWriter.println(logEvent);
     currentSpoolerContext.logEventSpooled();
     if (rolloverCondition.shouldRollover(currentSpoolerContext)) {
-      LOG.info("Trying to rollover based on rollover condition");
+      logger.info("Trying to rollover based on rollover condition");
       tryRollover();
     }
   }
@@ -158,19 +159,19 @@ public class LogSpooler {
    * rolled over file.
    */
   public void rollover() {
-    LOG.info("Rollover condition detected, rolling over file: " + currentSpoolFile);
+    logger.info("Rollover condition detected, rolling over file: " + currentSpoolFile);
     currentSpoolBufferedWriter.flush();
     if (currentSpoolFile.length()==0) {
-      LOG.info("No data in file " + currentSpoolFile + ", not doing rollover");
+      logger.info("No data in file " + currentSpoolFile + ", not doing rollover");
     } else {
       currentSpoolBufferedWriter.close();
       rolloverHandler.handleRollover(currentSpoolFile);
-      LOG.info("Invoked rollover handler with file: " + currentSpoolFile);
+      logger.info("Invoked rollover handler with file: " + currentSpoolFile);
       initializeSpoolState();
     }
     boolean status = rolloverInProgress.compareAndSet(true, false);
     if (!status) {
-      LOG.error("Should have reset rollover flag!!");
+      logger.error("Should have reset rollover flag!!");
     }
   }
 
@@ -178,7 +179,7 @@ public class LogSpooler {
     if (rolloverInProgress.compareAndSet(false, true)) {
       rollover();
     } else {
-      LOG.warn("Ignoring rollover call as rollover already in progress for file " +
+      logger.warn("Ignoring rollover call as rollover already in progress for file " +
           currentSpoolFile);
     }
   }
@@ -201,7 +202,7 @@ public class LogSpooler {
   private class LogSpoolerRolloverTimerTask extends TimerTask {
     @Override
     public void run() {
-      LOG.info("Trying rollover based on time");
+      logger.info("Trying rollover based on time");
       tryRollover();
     }
   }

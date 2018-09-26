@@ -20,8 +20,8 @@ package org.apache.ambari.logfeeder.input.file.checkpoint.util;
 
 import org.apache.ambari.logfeeder.input.InputFile;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.EOFException;
 import java.io.File;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class ResumeLineNumberHelper {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ResumeLineNumberHelper.class);
+  private static final Logger logger = LogManager.getLogger(ResumeLineNumberHelper.class);
 
   private ResumeLineNumberHelper() {
   }
@@ -41,21 +41,21 @@ public class ResumeLineNumberHelper {
 
     File checkPointFile = null;
     try {
-      LOG.info("Checking existing checkpoint file. " + inputFile.getShortDescription());
+      logger.info("Checking existing checkpoint file. " + inputFile.getShortDescription());
 
       String checkPointFileName = getCheckpointFileName(inputFile);
       checkPointFile = new File(checkPointFolder, checkPointFileName);
       inputFile.getCheckPointFiles().put(inputFile.getBase64FileKey(), checkPointFile);
       Map<String, Object> jsonCheckPoint = null;
       if (!checkPointFile.exists()) {
-        LOG.info("Checkpoint file for log file " + inputFile.getFilePath() + " doesn't exist, starting to read it from the beginning");
+        logger.info("Checkpoint file for log file " + inputFile.getFilePath() + " doesn't exist, starting to read it from the beginning");
       } else {
         try (RandomAccessFile checkPointWriter = new RandomAccessFile(checkPointFile, "rw")) {
           int contentSize = checkPointWriter.readInt();
           byte b[] = new byte[contentSize];
           int readSize = checkPointWriter.read(b, 0, contentSize);
           if (readSize != contentSize) {
-            LOG.error("Couldn't read expected number of bytes from checkpoint file. expected=" + contentSize + ", read=" +
+            logger.error("Couldn't read expected number of bytes from checkpoint file. expected=" + contentSize + ", read=" +
               readSize + ", checkPointFile=" + checkPointFile + ", input=" + inputFile.getShortDescription());
           } else {
             String jsonCheckPointStr = new String(b, 0, readSize);
@@ -63,11 +63,11 @@ public class ResumeLineNumberHelper {
 
             resumeFromLineNumber = LogFeederUtil.objectToInt(jsonCheckPoint.get("line_number"), 0, "line_number");
 
-            LOG.info("CheckPoint. checkPointFile=" + checkPointFile + ", json=" + jsonCheckPointStr +
+            logger.info("CheckPoint. checkPointFile=" + checkPointFile + ", json=" + jsonCheckPointStr +
               ", resumeFromLineNumber=" + resumeFromLineNumber);
           }
         } catch (EOFException eofEx) {
-          LOG.info("EOFException. Will reset checkpoint file " + checkPointFile.getAbsolutePath() + " for " +
+          logger.info("EOFException. Will reset checkpoint file " + checkPointFile.getAbsolutePath() + " for " +
             inputFile.getShortDescription(), eofEx);
         }
       }
@@ -81,7 +81,7 @@ public class ResumeLineNumberHelper {
       inputFile.getJsonCheckPoints().put(inputFile.getBase64FileKey(), jsonCheckPoint);
 
     } catch (Throwable t) {
-      LOG.error("Error while configuring checkpoint file. Will reset file. checkPointFile=" + checkPointFile, t);
+      logger.error("Error while configuring checkpoint file. Will reset file. checkPointFile=" + checkPointFile, t);
     }
 
     return resumeFromLineNumber;

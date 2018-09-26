@@ -26,8 +26,8 @@ import org.apache.ambari.logsearch.config.zookeeper.LogLevelFilterManagerZK;
 import org.apache.ambari.logsearch.config.zookeeper.LogSearchConfigZKHelper;
 import org.apache.ambari.logsearch.dao.EventHistorySolrDao;
 import org.apache.curator.framework.CuratorFramework;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ import javax.inject.Named;
 
 @Named
 public class LogLevelManagerFilterConfigurer implements Configurer {
-  private static final Logger logger = LoggerFactory.getLogger(LogLevelManagerFilterConfigurer.class);
+  private static final Logger logger = LogManager.getLogger(LogLevelManagerFilterConfigurer.class);
 
   private static final int RETRY_INTERVAL_SECONDS = 10;
 

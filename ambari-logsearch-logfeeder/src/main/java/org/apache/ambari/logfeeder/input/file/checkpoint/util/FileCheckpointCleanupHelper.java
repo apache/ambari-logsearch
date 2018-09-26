@@ -20,9 +20,9 @@ package org.apache.ambari.logfeeder.input.file.checkpoint.util;
 
 import org.apache.ambari.logfeeder.util.FileUtil;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.util.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.EOFException;
 import java.io.File;
@@ -31,17 +31,17 @@ import java.util.Map;
 
 public class FileCheckpointCleanupHelper {
 
-  private static final Logger LOG = LoggerFactory.getLogger(FileCheckpointCleanupHelper.class);
+  private static final Logger logger = LogManager.getLogger(FileCheckpointCleanupHelper.class);
 
   private FileCheckpointCleanupHelper() {
   }
 
   public static void cleanCheckPointFiles(File checkPointFolderFile, String checkPointExtension) {
     if (checkPointFolderFile == null) {
-      LOG.info("Will not clean checkPoint files. checkPointFolderFile=null");
+      logger.info("Will not clean checkPoint files. checkPointFolderFile=null");
       return;
     }
-    LOG.info("Cleaning checkPoint files. checkPointFolderFile=" + checkPointFolderFile.getAbsolutePath());
+    logger.info("Cleaning checkPoint files. checkPointFolderFile=" + checkPointFolderFile.getAbsolutePath());
     try {
       // Loop over the check point files and if filePath is not present, then move to closed
       File[] checkPointFiles = CheckpointFileReader.getFiles(checkPointFolderFile, checkPointExtension);
@@ -52,11 +52,11 @@ public class FileCheckpointCleanupHelper {
             totalCheckFilesDeleted++;
           }
         }
-        LOG.info("Deleted " + totalCheckFilesDeleted + " checkPoint file(s). checkPointFolderFile=" +
+        logger.info("Deleted " + totalCheckFilesDeleted + " checkPoint file(s). checkPointFolderFile=" +
           checkPointFolderFile.getAbsolutePath());
       }
     } catch (Throwable t) {
-      LOG.error("Error while cleaning checkPointFiles", t);
+      logger.error("Error while cleaning checkPointFiles", t);
     }
   }
 
@@ -67,7 +67,7 @@ public class FileCheckpointCleanupHelper {
       byte b[] = new byte[contentSize];
       int readSize = checkPointReader.read(b, 0, contentSize);
       if (readSize != contentSize) {
-        LOG.error("Couldn't read expected number of bytes from checkpoint file. expected=" + contentSize + ", read="
+        logger.error("Couldn't read expected number of bytes from checkpoint file. expected=" + contentSize + ", read="
           + readSize + ", checkPointFile=" + checkPointFile);
       } else {
         String jsonCheckPointStr = new String(b, 0, readSize);
@@ -86,29 +86,29 @@ public class FileCheckpointCleanupHelper {
             Object fileKeyObj = FileUtil.getFileKey(logFile);
             String fileBase64 = Base64.byteArrayToBase64(fileKeyObj.toString().getBytes());
             if (!logFileKey.equals(fileBase64)) {
-              LOG.info("CheckPoint clean: File key has changed. old=" + logFileKey + ", new=" + fileBase64 + ", filePath=" +
+              logger.info("CheckPoint clean: File key has changed. old=" + logFileKey + ", new=" + fileBase64 + ", filePath=" +
                 logFilePath + ", checkPointFile=" + checkPointFile.getAbsolutePath());
               deleteCheckPointFile = !wasFileRenamed(logFile.getParentFile(), logFileKey);
             } else if (maxAgeMin != null && maxAgeMin != 0 && FileUtil.isFileTooOld(logFile, maxAgeMin)) {
               deleteCheckPointFile = true;
-              LOG.info("Checkpoint clean: File reached max age minutes (" + maxAgeMin + "):" + logFilePath);
+              logger.info("Checkpoint clean: File reached max age minutes (" + maxAgeMin + "):" + logFilePath);
             }
           } else {
-            LOG.info("CheckPoint clean: Log file doesn't exist. filePath=" + logFilePath + ", checkPointFile=" +
+            logger.info("CheckPoint clean: Log file doesn't exist. filePath=" + logFilePath + ", checkPointFile=" +
               checkPointFile.getAbsolutePath());
             deleteCheckPointFile = !wasFileRenamed(logFile.getParentFile(), logFileKey);
           }
           if (deleteCheckPointFile) {
-            LOG.info("Deleting CheckPoint file=" + checkPointFile.getAbsolutePath() + ", logFile=" + logFilePath);
+            logger.info("Deleting CheckPoint file=" + checkPointFile.getAbsolutePath() + ", logFile=" + logFilePath);
             checkPointFile.delete();
             deleted = true;
           }
         }
       }
     } catch (EOFException eof) {
-      LOG.warn("Caught EOFException. Ignoring reading existing checkPoint file. " + checkPointFile);
+      logger.warn("Caught EOFException. Ignoring reading existing checkPoint file. " + checkPointFile);
     } catch (Throwable t) {
-      LOG.error("Error while checking checkPoint file. " + checkPointFile, t);
+      logger.error("Error while checking checkPoint file. " + checkPointFile, t);
     }
 
     return deleted;
@@ -121,7 +121,7 @@ public class FileCheckpointCleanupHelper {
       if (searchFileBase64.equals(fileBase64)) {
         // even though the file name in the checkpoint file is different from the one it was renamed to, checkpoint files are
         // identified by their name, which is generated from the file key, which would be the same for the renamed file
-        LOG.info("CheckPoint clean: File key matches file " + file.getAbsolutePath() + ", it must have been renamed");
+        logger.info("CheckPoint clean: File key matches file " + file.getAbsolutePath() + ", it must have been renamed");
         return true;
       }
     }

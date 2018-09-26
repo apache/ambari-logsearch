@@ -19,13 +19,11 @@
 
 package org.apache.ambari.logsearch.manager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.ambari.logsearch.common.LogSearchContext;
-import org.apache.ambari.logsearch.common.MessageEnums;
 import org.apache.ambari.logsearch.dao.EventHistorySolrDao;
 import org.apache.ambari.logsearch.model.request.impl.EventHistoryRequest;
 import org.apache.ambari.logsearch.model.response.EventHistoryData;
@@ -33,9 +31,9 @@ import org.apache.ambari.logsearch.model.response.EventHistoryDataListResponse;
 import org.apache.ambari.logsearch.util.SolrUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -57,7 +55,7 @@ import static org.apache.ambari.logsearch.solr.SolrConstants.EventHistoryConstan
 @Named
 public class EventHistoryManager extends JsonManagerBase {
 
-  private static final Logger logger = Logger.getLogger(EventHistoryManager.class);
+  private static final Logger logger = LogManager.getLogger(EventHistoryManager.class);
 
   @Inject
   private EventHistorySolrDao eventHistorySolrDao;

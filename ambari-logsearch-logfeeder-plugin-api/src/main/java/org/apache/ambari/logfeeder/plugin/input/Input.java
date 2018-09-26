@@ -31,8 +31,8 @@ import org.apache.ambari.logsearch.config.api.model.inputconfig.Conditions;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.Fields;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.FilterDescriptor;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.InputDescriptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.Map;
 
 public abstract class Input<PROP_TYPE extends LogFeederProperties, INPUT_MARKER extends InputMarker, INPUT_DESC_TYPE extends InputDescriptor> extends ConfigItem<PROP_TYPE> implements Runnable {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Input.class);
+  private static final Logger logger = LogManager.getLogger(Input.class);
 
   private INPUT_DESC_TYPE inputDescriptor;
   private PROP_TYPE logFeederProperties;
@@ -167,12 +167,12 @@ public abstract class Input<PROP_TYPE extends LogFeederProperties, INPUT_MARKER 
   @Override
   public void run() {
     try {
-      LOG.info("Started to monitor. " + getShortDescription());
+      logger.info("Started to monitor. " + getShortDescription());
       start();
     } catch (Exception e) {
-      LOG.error("Error writing to output.", e);
+      logger.error("Error writing to output.", e);
     }
-    LOG.info("Exiting thread. " + getShortDescription());
+    logger.info("Exiting thread. " + getShortDescription());
   }
 
   /**
@@ -190,7 +190,7 @@ public abstract class Input<PROP_TYPE extends LogFeederProperties, INPUT_MARKER 
       try {
         firstFilter.apply(line, marker);
       } catch (Exception e) {
-        LOG.error("Error during filter apply: {}", e);
+        logger.error("Error during filter apply: {}", e);
       }
     } else {
       // TODO: For now, let's make filter mandatory, so that no one accidently forgets to write filter
@@ -199,7 +199,7 @@ public abstract class Input<PROP_TYPE extends LogFeederProperties, INPUT_MARKER 
   }
 
   public void close() {
-    LOG.info("Close called. " + getShortDescription());
+    logger.info("Close called. " + getShortDescription());
     try {
       if (firstFilter != null) {
         firstFilter.close();

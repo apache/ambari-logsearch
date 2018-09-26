@@ -36,7 +36,8 @@ import org.apache.ambari.logsearch.conf.global.SolrCollectionState;
 import org.apache.ambari.logsearch.config.api.LogSearchConfigServer;
 import org.apache.ambari.logsearch.configurer.LogSearchConfigConfigurer;
 import org.apache.ambari.logsearch.util.SolrUtil;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest.METHOD;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -51,8 +52,8 @@ import org.springframework.data.solr.core.query.SolrDataQuery;
 
 public abstract class SolrDaoBase {
 
-  private static final Logger LOG = Logger.getLogger(SolrDaoBase.class);
-  private static final Logger LOG_PERFORMANCE = Logger.getLogger("org.apache.ambari.logsearch.performance");
+  private static final Logger logger = LogManager.getLogger(SolrDaoBase.class);
+  private static final Logger performanceLogger = LogManager.getLogger("org.apache.ambari.logsearch.performance");
 
   private LogType logType;
 
@@ -75,11 +76,11 @@ public abstract class SolrDaoBase {
   public void waitForLogSearchConfig() {
     if (logSearchConfigApiConfig.isConfigApiEnabled()) {
       while (!logSearchConfigState.isLogSearchConfigAvailable()) {
-        LOG.info("Log Search config not available yet, waiting...");
+        logger.info("Log Search config not available yet, waiting...");
         try {
           Thread.sleep(1000);
         } catch (Exception e) {
-          LOG.warn("Exception during waiting for Log Search Config", e);
+          logger.warn("Exception during waiting for Log Search Config", e);
         }
       }
     }
@@ -87,7 +88,7 @@ public abstract class SolrDaoBase {
 
   public QueryResponse process(SolrQuery solrQuery, String event) {
     SolrUtil.removeDoubleOrTripleEscapeFromFilters(solrQuery);
-    LOG.info("Solr query will be processed: " + solrQuery);
+    logger.info("Solr query will be processed: " + solrQuery);
     if (getSolrClient() != null) {
       event = event == null ? solrQuery.get("event") : event;
       solrQuery.remove("event");
@@ -105,7 +106,7 @@ public abstract class SolrDaoBase {
 
   private UpdateResponse deleteByQuery(SolrQuery solrQuery, String event) {
     SolrUtil.removeDoubleOrTripleEscapeFromFilters(solrQuery);
-    LOG.info("Solr delete query will be processed: " + solrQuery);
+    logger.info("Solr delete query will be processed: " + solrQuery);
     if (getSolrClient() != null) {
       try {
         UpdateResponse updateResponse = getSolrClient().deleteByQuery(solrQuery.getQuery());
@@ -138,7 +139,7 @@ public abstract class SolrDaoBase {
       solrQuery.setRows(0);
       QueryResponse queryResponse = solrClient.query(solrQuery);
       long count = solrClient.query(solrQuery).getResults().getNumFound();
-      LOG_PERFORMANCE.info("\n Username :- " + LogSearchContext.getCurrentUsername() + " Count SolrQuery :- " +
+      performanceLogger.info("\n Username :- " + LogSearchContext.getCurrentUsername() + " Count SolrQuery :- " +
         solrQuery + "\nQuery Time Execution :- " + queryResponse.getQTime() + " Total Time Elapsed is :- " +
         queryResponse.getElapsedTime() + " Count result :- " + count);
       return count;
@@ -151,7 +152,7 @@ public abstract class SolrDaoBase {
 
   private void logSolrEvent(String event, SolrQuery solrQuery, SolrResponseBase solrResponseBase) {
     if (event != null) {
-      LOG_PERFORMANCE.info("\n Username :- " + LogSearchContext.getCurrentUsername() + " Event :- " + event + " SolrQuery :- " +
+      performanceLogger.info("\n Username :- " + LogSearchContext.getCurrentUsername() + " Event :- " + event + " SolrQuery :- " +
         solrQuery + "\nQuery Time Execution :- " + solrResponseBase.getQTime() + " Total Time Elapsed is :- " +
         solrResponseBase.getElapsedTime());
     }

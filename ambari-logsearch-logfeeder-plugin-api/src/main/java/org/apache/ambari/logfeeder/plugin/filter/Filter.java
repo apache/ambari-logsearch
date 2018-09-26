@@ -29,8 +29,8 @@ import org.apache.ambari.logfeeder.plugin.manager.OutputManager;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.FilterDescriptor;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.MapFieldDescriptor;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.PostMapValues;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ import java.util.Map;
 
 public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends ConfigItem<PROP_TYPE> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Filter.class);
+  private static final Logger logger = LogManager.getLogger(Filter.class);
 
   private final Map<String, List<Mapper>> postFieldValueMappers = new HashMap<>();
   private FilterDescriptor filterDescriptor;
@@ -82,7 +82,7 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
           String mapClassCode = mapFieldDescriptor.getJsonName();
           Mapper mapper = (Mapper) AliasUtil.getClassInstance(mapClassCode, AliasUtil.AliasType.MAPPER);
           if (mapper == null) {
-            LOG.warn("Unknown mapper type: " + mapClassCode);
+            logger.warn("Unknown mapper type: " + mapClassCode);
             continue;
           }
           if (mapper.init(getInput().getShortDescription(), fieldName, mapClassCode, mapFieldDescriptor)) {
@@ -175,7 +175,7 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
 
   @Override
   public boolean logConfigs() {
-    LOG.info("filter=" + getShortDescription());
+    logger.info("filter=" + getShortDescription());
     return true;
   }
 

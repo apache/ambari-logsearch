@@ -21,8 +21,8 @@ package org.apache.ambari.logsearch.web.security;
 import org.apache.ambari.logsearch.conf.AuthPropsConfig;
 import org.apache.ambari.logsearch.dao.RoleDao;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -36,7 +36,7 @@ import java.util.Collection;
 
 public class LogsearchLdapAuthenticationProvider extends LdapAuthenticationProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LogsearchLdapAuthenticationProvider.class);
+  private static final Logger logger = LogManager.getLogger(LogsearchLdapAuthenticationProvider.class);
 
   @Inject
   private AuthPropsConfig authPropsConfig;
@@ -48,7 +48,7 @@ public class LogsearchLdapAuthenticationProvider extends LdapAuthenticationProvi
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     if (!authPropsConfig.isAuthLdapEnabled()) {
-      LOG.debug("LDAP auth is disabled.");
+      logger.debug("LDAP auth is disabled.");
       return authentication;
     }
     authentication = super.authenticate(authentication);

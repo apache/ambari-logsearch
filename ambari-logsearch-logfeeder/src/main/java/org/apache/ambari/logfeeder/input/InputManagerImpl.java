@@ -20,16 +20,16 @@ package org.apache.ambari.logfeeder.input;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
-import org.apache.ambari.logfeeder.docker.DockerContainerRegistry;
-import org.apache.ambari.logfeeder.docker.DockerContainerRegistryMonitor;
+import org.apache.ambari.logfeeder.container.docker.DockerContainerRegistry;
+import org.apache.ambari.logfeeder.container.docker.DockerContainerRegistryMonitor;
 import org.apache.ambari.logfeeder.plugin.manager.CheckpointManager;
 import org.apache.ambari.logfeeder.plugin.common.MetricData;
 import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.plugin.manager.InputManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +40,7 @@ import java.util.Set;
 
 public class InputManagerImpl extends InputManager {
 
-  private static final Logger LOG = Logger.getLogger(InputManagerImpl.class);
+  private static final Logger logger = LogManager.getLogger(InputManagerImpl.class);
 
   private Map<String, List<Input>> inputs = new HashMap<>();
   private Set<Input> notReadyList = new HashSet<>();
@@ -91,13 +91,13 @@ public class InputManagerImpl extends InputManager {
 
   @Override
   public void removeInput(Input input) {
-    LOG.info("Trying to remove from inputList. " + input.getShortDescription());
+    logger.info("Trying to remove from inputList. " + input.getShortDescription());
     for (List<Input> inputList : inputs.values()) {
       Iterator<Input> iter = inputList.iterator();
       while (iter.hasNext()) {
         Input iterInput = iter.next();
         if (iterInput.equals(input)) {
-          LOG.info("Removing Input from inputList. " + input.getShortDescription());
+          logger.info("Removing Input from inputList. " + input.getShortDescription());
           iter.remove();
         }
       }
@@ -135,10 +135,10 @@ public class InputManagerImpl extends InputManager {
     inputIsReadyMonitor = new Thread("InputIsReadyMonitor") {
       @Override
       public void run() {
-        LOG.info("Going to monitor for these missing files: " + notReadyList.toString());
+        logger.info("Going to monitor for these missing files: " + notReadyList.toString());
         while (true) {
           if (isDrain) {
-            LOG.info("Exiting missing file monitor.");
+            logger.info("Exiting missing file monitor.");
             break;
           }
           try {
@@ -151,7 +151,7 @@ public class InputManagerImpl extends InputManager {
                   iter.remove();
                 }
               } catch (Throwable t) {
-                LOG.error("Error while enabling monitoring for input. " + input.getShortDescription());
+                logger.error("Error while enabling monitoring for input. " + input.getShortDescription());
               }
             }
             Thread.sleep(30 * 1000);
@@ -176,12 +176,12 @@ public class InputManagerImpl extends InputManager {
         if (input.isReady()) {
           input.monitor();
         } else {
-          LOG.info("Adding input to not ready list. Note, it is possible this component is not run on this host. " +
+          logger.info("Adding input to not ready list. Note, it is possible this component is not run on this host. " +
             "So it might not be an issue. " + input.getShortDescription());
           notReadyList.add(input);
         }
       } catch (Exception e) {
-        LOG.error("Error initializing input. " + input.getShortDescription(), e);
+        logger.error("Error initializing input. " + input.getShortDescription(), e);
       }
     }
   }
@@ -254,7 +254,7 @@ public class InputManagerImpl extends InputManager {
         try {
           input.setDrain(true);
         } catch (Throwable t) {
-          LOG.error("Error while draining. input=" + input.getShortDescription(), t);
+          logger.error("Error while draining. input=" + input.getShortDescription(), t);
         }
       }
     }
@@ -270,7 +270,7 @@ public class InputManagerImpl extends InputManager {
           if (!input.isClosed()) {
             try {
               allClosed = false;
-              LOG.warn("Waiting for input to close. " + input.getShortDescription() + ", " + (iterations - i) + " more seconds");
+              logger.warn("Waiting for input to close. " + input.getShortDescription() + ", " + (iterations - i) + " more seconds");
               Thread.sleep(waitTimeMS);
             } catch (Throwable t) {
               // Ignore
@@ -279,16 +279,16 @@ public class InputManagerImpl extends InputManager {
         }
       }
       if (allClosed) {
-        LOG.info("All inputs are closed. Iterations=" + i);
+        logger.info("All inputs are closed. Iterations=" + i);
         return;
       }
     }
 
-    LOG.warn("Some inputs were not closed after " + iterations + " iterations");
+    logger.warn("Some inputs were not closed after " + iterations + " iterations");
     for (List<Input> inputList : inputs.values()) {
       for (Input input : inputList) {
         if (!input.isClosed()) {
-          LOG.warn("Input not closed. Will ignore it." + input.getShortDescription());
+          logger.warn("Input not closed. Will ignore it." + input.getShortDescription());
         }
       }
     }

@@ -34,14 +34,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tools.ant.DirectoryScanner;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FileUtil {
-  private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
+  private static final Logger logger = LogManager.getLogger(FileUtil.class);
   private static final String FOLDER_SEPARATOR = "/";
 
   private FileUtil() {
@@ -50,9 +50,9 @@ public class FileUtil {
 
   public static List<File> getAllFileFromDir(File directory, String extension, boolean checkInSubDir) {
     if (!directory.exists()) {
-      LOG.error(directory.getAbsolutePath() + " is not exists ");
+      logger.error(directory.getAbsolutePath() + " is not exists ");
     } else if (!directory.isDirectory()) {
-      LOG.error(directory.getAbsolutePath() + " is not Directory ");
+      logger.error(directory.getAbsolutePath() + " is not Directory ");
     } else {
       return (List<File>) FileUtils.listFiles(directory, new String[]{extension}, checkInSubDir);
     }
@@ -68,19 +68,19 @@ public class FileUtil {
         return basicAttr.fileKey();
       }
     } catch (Throwable ex) {
-      LOG.error("Error getting file attributes for file=" + file, ex);
+      logger.error("Error getting file attributes for file=" + file, ex);
     }
     return file.toString();
   }
 
   public static File getFileFromClasspath(String filename) {
     URL fileCompleteUrl = Thread.currentThread().getContextClassLoader().getResource(filename);
-    LOG.debug("File Complete URI :" + fileCompleteUrl);
+    logger.debug("File Complete URI :" + fileCompleteUrl);
     File file = null;
     try {
       file = new File(fileCompleteUrl.toURI());
     } catch (Exception exception) {
-      LOG.debug(exception.getMessage(), exception.getCause());
+      logger.debug(exception.getMessage(), exception.getCause());
     }
     return file;
   }
@@ -91,7 +91,7 @@ public class FileUtil {
       HashMap<String, Object> jsonmap = mapper.readValue(jsonFile, new TypeReference<HashMap<String, Object>>() {});
       return jsonmap;
     } catch (IOException e) {
-      LOG.error("{}", e);
+      logger.error("{}", e);
     }
     return new HashMap<String, Object>();
   }
@@ -121,11 +121,11 @@ public class FileUtil {
             return files;
           }
         } catch (Exception e) {
-          LOG.info("Input file was not found by pattern (exception thrown); {}, message: {}", searchPath, e.getMessage());
+          logger.info("Input file was not found by pattern (exception thrown); {}, message: {}", searchPath, e.getMessage());
         }
 
       } else {
-        LOG.info("Input file config was not found by pattern; {}", searchPath);
+        logger.debug("Input file config was not found by pattern; {}", searchPath);
       }
       return new File[]{};
     }

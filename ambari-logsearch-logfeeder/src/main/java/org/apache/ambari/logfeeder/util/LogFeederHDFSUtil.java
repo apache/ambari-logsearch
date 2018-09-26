@@ -23,10 +23,11 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LogFeederHDFSUtil {
-  private static final Logger LOG = Logger.getLogger(LogFeederHDFSUtil.class);
+  private static final Logger logger = LogManager.getLogger(LogFeederHDFSUtil.class);
 
   private LogFeederHDFSUtil() {
     throw new UnsupportedOperationException();
@@ -38,11 +39,11 @@ public class LogFeederHDFSUtil {
     Path dst = new Path(destFilePath);
     boolean isCopied = false;
     try {
-      LOG.info("copying localfile := " + sourceFilepath + " to hdfsPath := " + destFilePath);
+      logger.info("copying localfile := " + sourceFilepath + " to hdfsPath := " + destFilePath);
       fileSystem.copyFromLocalFile(delSrc, overwrite, src, dst);
       isCopied = true;
     } catch (Exception e) {
-      LOG.error("Error copying local file :" + sourceFilepath + " to hdfs location : " + destFilePath, e);
+      logger.error("Error copying local file :" + sourceFilepath + " to hdfs location : " + destFilePath, e);
     }
     return isCopied;
   }
@@ -53,7 +54,7 @@ public class LogFeederHDFSUtil {
       FileSystem fs = FileSystem.get(configuration);
       return fs;
     } catch (Exception e) {
-      LOG.error("Exception is buildFileSystem :", e);
+      logger.error("Exception is buildFileSystem :", e);
     }
     return null;
   }
@@ -70,7 +71,7 @@ public class LogFeederHDFSUtil {
       try {
         fileSystem.close();
       } catch (IOException e) {
-        LOG.error(e.getLocalizedMessage(), e.getCause());
+        logger.error(e.getLocalizedMessage(), e.getCause());
       }
     }
   }

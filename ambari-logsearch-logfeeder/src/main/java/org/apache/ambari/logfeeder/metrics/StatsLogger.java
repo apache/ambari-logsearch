@@ -20,8 +20,8 @@ package org.apache.ambari.logfeeder.metrics;
 
 import org.apache.ambari.logfeeder.common.ConfigHandler;
 import org.apache.ambari.logfeeder.plugin.common.MetricData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -30,7 +30,7 @@ import java.util.List;
 
 public class StatsLogger extends Thread {
 
-  private static final Logger LOG = LoggerFactory.getLogger(StatsLogger.class);
+  private static final Logger logger = LogManager.getLogger(StatsLogger.class);
 
   private static final int CHECKPOINT_CLEAN_INTERVAL_MS = 24 * 60 * 60 * 60 * 1000; // 24 hours
 
@@ -63,7 +63,7 @@ public class StatsLogger extends Thread {
       try {
         logStats();
       } catch (Throwable t) {
-        LOG.error("LogStats: Caught exception while logging stats.", t);
+        logger.error("LogStats: Caught exception while logging stats.", t);
       }
 
       if (System.currentTimeMillis() > (lastCheckPointCleanedMS + CHECKPOINT_CLEAN_INTERVAL_MS)) {

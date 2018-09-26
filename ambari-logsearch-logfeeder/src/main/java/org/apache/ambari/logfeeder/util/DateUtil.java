@@ -18,14 +18,15 @@
  */
 package org.apache.ambari.logfeeder.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.log4j.Logger;
-
 public class DateUtil {
-  private static final Logger LOG = Logger.getLogger(DateUtil.class);
+  private static final Logger logger = LogManager.getLogger(DateUtil.class);
   
   private DateUtil() {
     throw new UnsupportedOperationException();
@@ -39,7 +40,7 @@ public class DateUtil {
       SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
       return formatter.format(date).toString();
     } catch (Exception e) {
-      LOG.error("Error in coverting dateToString  format :" + dateFormat, e);
+      logger.error("Error in coverting dateToString  format :" + dateFormat, e);
     }
     return "";
   }
@@ -58,7 +59,7 @@ public class DateUtil {
     try {
       return dateFormatter.get().format(new Date(Long.parseLong(timeStampStr)));
     } catch (Exception ex) {
-      LOG.error(ex);
+      logger.error(ex);
       return null;
     }
   }
@@ -67,7 +68,7 @@ public class DateUtil {
     try {
       return dateFormatter.get().format(new Date());
     } catch (Exception ex) {
-      LOG.error(ex);
+      logger.error(ex);
       return null;
     }
   }

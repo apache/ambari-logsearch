@@ -42,7 +42,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.annotation.PostConstruct;
@@ -63,7 +64,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ConfigHandler implements InputConfigMonitor {
-  private static final Logger LOG = Logger.getLogger(org.apache.ambari.logfeeder.common.ConfigHandler.class);
+  private static final Logger logger = LogManager.getLogger(ConfigHandler.class);
 
   private final LogSearchConfigLogFeeder logSearchConfig;
 
@@ -101,16 +102,16 @@ public class ConfigHandler implements InputConfigMonitor {
   private void loadConfigFiles() throws Exception {
     List<String> configFiles = getConfigFiles();
     for (String configFileName : configFiles) {
-      LOG.info("Going to load config file:" + configFileName);
+      logger.info("Going to load config file:" + configFileName);
       configFileName = configFileName.replace("\\ ", "%20");
       File configFile = new File(configFileName);
       if (configFile.exists() && configFile.isFile()) {
-        LOG.info("Config file exists in path." + configFile.getAbsolutePath());
+        logger.info("Config file exists in path." + configFile.getAbsolutePath());
         loadConfigsUsingFile(configFile);
       } else {
-        LOG.info("Trying to load config file from classloader: " + configFileName);
+        logger.info("Trying to load config file from classloader: " + configFileName);
         loadConfigsUsingClassLoader(configFileName);
-        LOG.info("Loaded config file from classloader: " + configFileName);
+        logger.info("Loaded config file from classloader: " + configFileName);
       }
     }
   }
@@ -119,7 +120,7 @@ public class ConfigHandler implements InputConfigMonitor {
     List<String> configFiles = new ArrayList<>();
 
     String logFeederConfigFilesProperty = logFeederProps.getConfigFiles();
-    LOG.info("logfeeder.config.files=" + logFeederConfigFilesProperty);
+    logger.info("logfeeder.config.files=" + logFeederConfigFilesProperty);
     if (logFeederConfigFilesProperty != null) {
       configFiles.addAll(Arrays.asList(logFeederConfigFilesProperty.split(",")));
     }
@@ -132,7 +133,7 @@ public class ConfigHandler implements InputConfigMonitor {
       String configData = FileUtils.readFileToString(configFile, Charset.defaultCharset());
       loadConfigs(configData);
     } catch (Exception t) {
-      LOG.error("Error opening config file. configFilePath=" + configFile.getAbsolutePath());
+      logger.error("Error opening config file. configFilePath=" + configFile.getAbsolutePath());
       throw t;
     }
   }
@@ -214,7 +215,7 @@ public class ConfigHandler implements InputConfigMonitor {
           outputConfigList.addAll(outputConfig);
           break;
         default :
-          LOG.warn("Unknown config key: " + key);
+          logger.warn("Unknown config key: " + key);
       }
     }
   }
@@ -255,12 +256,12 @@ public class ConfigHandler implements InputConfigMonitor {
 
       String value = (String) map.get("destination");
       if (StringUtils.isEmpty(value)) {
-        LOG.error("Output block doesn't have destination element");
+        logger.error("Output block doesn't have destination element");
         continue;
       }
       Output output = (Output) AliasUtil.getClassInstance(value, AliasUtil.AliasType.OUTPUT);
       if (output == null) {
-        LOG.error("Output object could not be found");
+        logger.error("Output object could not be found");
         continue;
       }
       output.setDestination(value);
@@ -272,7 +273,7 @@ public class ConfigHandler implements InputConfigMonitor {
         output.logConfigs();
         outputManager.add(output);
       } else {
-        LOG.info("Output is disabled. So ignoring it. " + output.getShortDescription());
+        logger.info("Output is disabled. So ignoring it. " + output.getShortDescription());
       }
     }
   }
@@ -285,12 +286,12 @@ public class ConfigHandler implements InputConfigMonitor {
 
       String source = (String) inputDescriptor.getSource();
       if (StringUtils.isEmpty(source)) {
-        LOG.error("Input block doesn't have source element");
+        logger.error("Input block doesn't have source element");
         continue;
       }
       Input input = (Input) AliasUtil.getClassInstance(source, AliasUtil.AliasType.INPUT);
       if (input == null) {
-        LOG.error("Input object could not be found");
+        logger.error("Input object could not be found");
         continue;
       }
       input.setType(source);
@@ -303,7 +304,7 @@ public class ConfigHandler implements InputConfigMonitor {
         inputManager.add(serviceName, input);
         input.logConfigs();
       } else {
-        LOG.info("Input is disabled. So ignoring it. " + input.getShortDescription());
+        logger.info("Input is disabled. So ignoring it. " + input.getShortDescription());
       }
     }
   }
@@ -318,22 +319,22 @@ public class ConfigHandler implements InputConfigMonitor {
           continue;
         }
         if (BooleanUtils.isFalse(filterDescriptor.isEnabled())) {
-          LOG.debug("Ignoring filter " + filterDescriptor.getFilter() + " because it is disabled");
+          logger.debug("Ignoring filter " + filterDescriptor.getFilter() + " because it is disabled");
           continue;
         }
         if (!input.isFilterRequired(filterDescriptor)) {
-          LOG.debug("Ignoring filter " + filterDescriptor.getFilter() + " for input " + input.getShortDescription());
+          logger.debug("Ignoring filter " + filterDescriptor.getFilter() + " for input " + input.getShortDescription());
           continue;
         }
 
         String value = filterDescriptor.getFilter();
         if (StringUtils.isEmpty(value)) {
-          LOG.error("Filter block doesn't have filter element");
+          logger.error("Filter block doesn't have filter element");
           continue;
         }
         Filter filter = (Filter) AliasUtil.getClassInstance(value, AliasUtil.AliasType.FILTER);
         if (filter == null) {
-          LOG.error("Filter object could not be found");
+          logger.error("Filter object could not be found");
           continue;
         }
         filter.loadConfig(filterDescriptor);
@@ -350,7 +351,7 @@ public class ConfigHandler implements InputConfigMonitor {
     }
 
     for (Input toRemoveInput : toRemoveInputList) {
-      LOG.warn("There are no filters, we will ignore this input. " + toRemoveInput.getShortDescription());
+      logger.warn("There are no filters, we will ignore this input. " + toRemoveInput.getShortDescription());
       inputManager.removeInput(toRemoveInput);
     }
   }

@@ -19,12 +19,12 @@
 package org.apache.ambari.logfeeder.input.monitor;
 
 import org.apache.ambari.logfeeder.plugin.manager.CheckpointManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CheckpointCleanupMonitor implements Runnable {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CheckpointCleanupMonitor.class);
+  private static final Logger logger = LogManager.getLogger(CheckpointCleanupMonitor.class);
 
   private long waitIntervalMin;
   private CheckpointManager checkpointHandler;
@@ -41,7 +41,7 @@ public class CheckpointCleanupMonitor implements Runnable {
         Thread.sleep(1000 * 60 * waitIntervalMin);
         checkpointHandler.cleanupCheckpoints();
       } catch (Exception e) {
-        LOG.error("Cleanup checkpoint files thread interrupted.", e);
+        logger.error("Cleanup checkpoint files thread interrupted.", e);
       }
     }
   }

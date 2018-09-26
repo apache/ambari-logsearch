@@ -20,8 +20,8 @@ package org.apache.ambari.logfeeder.input;
 
 import org.apache.ambari.logfeeder.conf.LogEntryCacheConfig;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
-import org.apache.ambari.logfeeder.docker.DockerContainerRegistry;
-import org.apache.ambari.logfeeder.docker.DockerMetadata;
+import org.apache.ambari.logfeeder.container.docker.DockerContainerRegistry;
+import org.apache.ambari.logfeeder.container.docker.DockerMetadata;
 import org.apache.ambari.logfeeder.input.monitor.DockerLogFileUpdateMonitor;
 import org.apache.ambari.logfeeder.input.monitor.LogFileDetachMonitor;
 import org.apache.ambari.logfeeder.input.monitor.LogFilePathUpdateMonitor;
@@ -36,9 +36,9 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.util.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,7 +46,7 @@ import java.util.*;
 
 public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileBaseDescriptor> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(InputFile.class);
+  private static final Logger logger = LogManager.getLogger(InputFile.class);
 
   private static final boolean DEFAULT_TAIL = true;
   private static final boolean DEFAULT_USE_EVENT_MD5 = false;
@@ -102,7 +102,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
             isReady = true;
           }
         } else {
-          LOG.warn("Docker registry is not set, probably docker registry usage is not enabled.");
+          logger.warn("Docker registry is not set, probably docker registry usage is not enabled.");
         }
       } else {
         logFiles = getActualInputLogFiles();
@@ -110,13 +110,13 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
         setFolderMap(foldersMap);
         if (!ArrayUtils.isEmpty(logFiles) && logFiles[0].isFile()) {
           if (tail && logFiles.length > 1) {
-            LOG.warn("Found multiple files (" + logFiles.length + ") for the file filter " + filePath +
+            logger.warn("Found multiple files (" + logFiles.length + ") for the file filter " + filePath +
               ". Will follow only the first one. Using " + logFiles[0].getAbsolutePath());
           }
-          LOG.info("File filter " + filePath + " expanded to " + logFiles[0].getAbsolutePath());
+          logger.info("File filter " + filePath + " expanded to " + logFiles[0].getAbsolutePath());
           isReady = true;
         } else {
-          LOG.debug(logPath + " file doesn't exist. Ignoring for now");
+          logger.debug(logPath + " file doesn't exist. Ignoring for now");
         }
       }
     }
@@ -134,7 +134,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
       try {
         return (getType() + "=" + (new File(filePath)).getName());
       } catch (Throwable ex) {
-        LOG.warn("Couldn't get basename for filePath=" + filePath, ex);
+        logger.warn("Couldn't get basename for filePath=" + filePath, ex);
       }
     }
     return super.getNameForThread() + ":" + getType();
@@ -202,7 +202,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
           throw new RuntimeException(e);
         }
       } else {
-        LOG.info("Starting thread. " + getShortDescription());
+        logger.info("Starting thread. " + getShortDescription());
         thread = new Thread(this, getNameForThread());
         thread.start();
       }
@@ -221,7 +221,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
   @Override
   public void init(LogFeederProps logFeederProps) throws Exception {
     super.init(logFeederProps);
-    LOG.info("init() called");
+    logger.info("init() called");
 
     InputFileDescriptor inputFileDescriptor = (InputFileDescriptor) getInputDescriptor(); // cast as InputS3 uses InputFileBaseDescriptor
     checkPointExtension = logFeederProps.getCheckPointExtension();
@@ -239,14 +239,14 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
     if (dockerLog) {
       if (logFeederProps.isDockerContainerRegistryEnabled()) {
         boolean isFileReady = isReady();
-        LOG.info("Container type to monitor " + getType() + ", tail=" + tail + ", isReady=" + isFileReady);
+        logger.info("Container type to monitor " + getType() + ", tail=" + tail + ", isReady=" + isFileReady);
       } else {
-        LOG.warn("Using docker input, but docker registry usage is not enabled.");
+        logger.warn("Using docker input, but docker registry usage is not enabled.");
       }
     } else {
       logPath = getInputDescriptor().getPath();
       if (StringUtils.isEmpty(logPath)) {
-        LOG.error("path is empty for file input. " + getShortDescription());
+        logger.error("path is empty for file input. " + getShortDescription());
         return;
       }
 
@@ -256,12 +256,12 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
         int lastIndexOfSlash = getFilePath().lastIndexOf("/");
         String folderBeforeLogName = getFilePath().substring(0, lastIndexOfSlash);
         if (folderBeforeLogName.contains("*")) {
-          LOG.info("Found regex in folder path ('" + getFilePath() + "'), will check against multiple folders.");
+          logger.info("Found regex in folder path ('" + getFilePath() + "'), will check against multiple folders.");
           setMultiFolder(true);
         }
       }
       boolean isFileReady = isReady();
-      LOG.info("File to monitor " + logPath + ", tail=" + tail + ", isReady=" + isFileReady);
+      logger.info("File to monitor " + logPath + ", tail=" + tail + ", isReady=" + isFileReady);
     }
 
     LogEntryCacheConfig cacheConfig = logFeederProps.getLogEntryCacheConfig();
@@ -288,11 +288,11 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
           try {
             processFile(file, i == 0);
             if (isClosed() || isDrain()) {
-              LOG.info("isClosed or isDrain. Now breaking loop.");
+              logger.info("isClosed or isDrain. Now breaking loop.");
               break;
             }
           } catch (Throwable t) {
-            LOG.error("Error processing file=" + file.getAbsolutePath(), t);
+            logger.error("Error processing file=" + file.getAbsolutePath(), t);
           }
         }
       }
@@ -314,7 +314,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
     BufferedReader br = new BufferedReader(LogsearchReaderFactory.INSTANCE.getReader(logFile));
     fileKey = getFileKeyFromLogFile(logFile);
     base64FileKey = Base64.byteArrayToBase64(fileKey.toString().getBytes());
-    LOG.info("fileKey=" + fileKey + ", base64=" + base64FileKey + ". " + getShortDescription());
+    logger.info("fileKey=" + fileKey + ", base64=" + base64FileKey + ". " + getShortDescription());
     return br;
   }
 
@@ -330,18 +330,18 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
           InputFileMarker marker = new InputFileMarker(this, null, 0);
           getOutputManager().copyFile(file, marker);
           if (isClosed() || isDrain()) {
-            LOG.info("isClosed or isDrain. Now breaking loop.");
+            logger.info("isClosed or isDrain. Now breaking loop.");
             break;
           }
         } catch (Throwable t) {
-          LOG.error("Error processing file=" + file.getAbsolutePath(), t);
+          logger.error("Error processing file=" + file.getAbsolutePath(), t);
         }
       }
     }
   }
 
   public void startNewChildDockerInputFileThread(DockerMetadata dockerMetadata) throws CloneNotSupportedException {
-    LOG.info("Start docker child input thread - " + dockerMetadata.getLogPath());
+    logger.info("Start docker child input thread - " + dockerMetadata.getLogPath());
     InputFile clonedObject = (InputFile) this.clone();
     clonedObject.setDockerLogParent(false);
     clonedObject.logPath = dockerMetadata.getLogPath();
@@ -357,7 +357,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
   }
 
   public void stopChildDockerInputFileThread(String logPathKey) {
-    LOG.info("Stop child input thread - " + logPathKey);
+    logger.info("Stop child input thread - " + logPathKey);
     String filePath = new File(logPathKey).getName();
     if (inputChildMap.containsKey(logPathKey)) {
       InputFile inputFile = inputChildMap.get(logPathKey);
@@ -367,18 +367,18 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
       }
       inputChildMap.remove(logPathKey);
     } else {
-      LOG.warn(logPathKey + " not found as an input child.");
+      logger.warn(logPathKey + " not found as an input child.");
     }
   }
 
   public void startNewChildInputFileThread(Map.Entry<String, List<File>> folderFileEntry) throws CloneNotSupportedException {
-    LOG.info("Start child input thread - " + folderFileEntry.getKey());
+    logger.info("Start child input thread - " + folderFileEntry.getKey());
     InputFile clonedObject = (InputFile) this.clone();
     String folderPath = folderFileEntry.getKey();
     String filePath = new File(getFilePath()).getName();
     String fullPathWithWildCard = String.format("%s/%s", folderPath, filePath);
     if (clonedObject.getMaxAgeMin() != 0 && FileUtil.isFileTooOld(new File(fullPathWithWildCard), clonedObject.getMaxAgeMin().longValue())) {
-      LOG.info(String.format("File ('%s') is too old (max age min: %d), monitor thread not starting...", getFilePath(), clonedObject.getMaxAgeMin()));
+      logger.info(String.format("File ('%s') is too old (max age min: %d), monitor thread not starting...", getFilePath(), clonedObject.getMaxAgeMin()));
     } else {
       clonedObject.setMultiFolder(false);
       clonedObject.logFiles = folderFileEntry.getValue().toArray(new File[0]); // TODO: works only with tail
@@ -397,7 +397,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
   private void copyFilters(InputFile clonedInput, Filter firstFilter) {
     if (firstFilter != null) {
       try {
-        LOG.info("Cloning filters for input=" + clonedInput.logPath);
+        logger.info("Cloning filters for input=" + clonedInput.logPath);
         Filter newFilter = (Filter) firstFilter.clone();
         newFilter.setInput(clonedInput);
         clonedInput.setFirstFilter(newFilter);
@@ -415,15 +415,15 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
             actFilter = null;
           }
         }
-        LOG.info("Cloning filters has finished for input=" + clonedInput.logPath);
+        logger.info("Cloning filters has finished for input=" + clonedInput.logPath);
       } catch (Exception e) {
-        LOG.error("Could not clone filters for input=" + clonedInput.logPath);
+        logger.error("Could not clone filters for input=" + clonedInput.logPath);
       }
     }
   }
 
   public void stopChildInputFileThread(String folderPathKey) {
-    LOG.info("Stop child input thread - " + folderPathKey);
+    logger.info("Stop child input thread - " + folderPathKey);
     String filePath = new File(getFilePath()).getName();
     String fullPathWithWildCard = String.format("%s/%s", folderPathKey, filePath);
     if (inputChildMap.containsKey(fullPathWithWildCard)) {
@@ -434,7 +434,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
       }
       inputChildMap.remove(fullPathWithWildCard);
     } else {
-      LOG.warn(fullPathWithWildCard + " not found as an input child.");
+      logger.warn(fullPathWithWildCard + " not found as an input child.");
     }
   }
 
@@ -451,15 +451,15 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
 
   @Override
   public boolean logConfigs() {
-    LOG.info("Printing Input=" + getShortDescription());
-    LOG.info("description=" + getInputDescriptor().getPath());
+    logger.info("Printing Input=" + getShortDescription());
+    logger.info("description=" + getInputDescriptor().getPath());
     return true;
   }
 
   @Override
   public void close() {
     super.close();
-    LOG.info("close() calling checkPoint checkIn(). " + getShortDescription());
+    logger.info("close() calling checkPoint checkIn(). " + getShortDescription());
     lastCheckIn();
     setClosed(true);
   }

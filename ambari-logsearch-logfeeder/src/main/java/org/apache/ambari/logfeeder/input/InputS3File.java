@@ -18,19 +18,20 @@
  */
 package org.apache.ambari.logfeeder.input;
 
+import org.apache.ambari.logfeeder.output.S3OutputConfiguration;
 import org.apache.ambari.logfeeder.util.S3Util;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.InputS3FileDescriptor;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.util.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
 
 public class InputS3File extends InputFile {
 
-  private static final Logger LOG = LoggerFactory.getLogger(InputS3File.class);
+  private static final Logger logger = LogManager.getLogger(InputS3File.class);
 
   @Override
   public boolean isReady() {
@@ -39,13 +40,13 @@ public class InputS3File extends InputFile {
       setLogFiles(getActualFiles(getLogPath()));
       if (!ArrayUtils.isEmpty(getLogFiles())) {
         if (isTail() && getLogFiles().length > 1) {
-          LOG.warn("Found multiple files (" + getLogFiles().length + ") for the file filter " + getFilePath() +
+          logger.warn("Found multiple files (" + getLogFiles().length + ") for the file filter " + getFilePath() +
               ". Will use only the first one. Using " + getLogFiles()[0].getAbsolutePath());
         }
-        LOG.info("File filter " + getFilePath() + " expanded to " + getLogFiles()[0].getAbsolutePath());
+        logger.info("File filter " + getFilePath() + " expanded to " + getLogFiles()[0].getAbsolutePath());
         setReady(true);
       } else {
-        LOG.debug(getLogPath() + " file doesn't exist. Ignoring for now");
+        logger.debug(getLogPath() + " file doesn't exist. Ignoring for now");
       }
     }
     return isReady();
@@ -67,11 +68,11 @@ public class InputS3File extends InputFile {
         try {
           processFile(file, i == 0);
           if (isClosed() || isDrain()) {
-            LOG.info("isClosed or isDrain. Now breaking loop.");
+            logger.info("isClosed or isDrain. Now breaking loop.");
             break;
           }
         } catch (Throwable t) {
-          LOG.error("Error processing file=" + file.getAbsolutePath(), t);
+          logger.error("Error processing file=" + file.getAbsolutePath(), t);
         }
       }
     }
@@ -82,12 +83,16 @@ public class InputS3File extends InputFile {
   public BufferedReader openLogFile(File logPathFile) throws Exception {
     String s3AccessKey = ((InputS3FileDescriptor)getInputDescriptor()).getS3AccessKey();
     String s3SecretKey = ((InputS3FileDescriptor)getInputDescriptor()).getS3SecretKey();
-    BufferedReader br = S3Util.getReader(logPathFile.getPath(), s3AccessKey, s3SecretKey);
+    String s3Endpoint = ((InputS3FileDescriptor)getInputDescriptor()).getS3Endpoint();
+    if (s3Endpoint == null) {
+      s3Endpoint = S3OutputConfiguration.DEFAULT_S3_ENDPOINT;
+    }
+    BufferedReader br = S3Util.getReader(logPathFile.getPath(), s3Endpoint, s3AccessKey, s3SecretKey);
     Object fileKey = getFileKey(logPathFile);
     setFileKey(fileKey);
     String base64FileKey = Base64.byteArrayToBase64(getFileKey().toString().getBytes());
     setBase64FileKey(base64FileKey);
-    LOG.info("fileKey=" + fileKey + ", base64=" + base64FileKey + ". " + getShortDescription());
+    logger.info("fileKey=" + fileKey + ", base64=" + base64FileKey + ". " + getShortDescription());
     return br;
   }
 

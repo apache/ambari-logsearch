@@ -49,6 +49,15 @@ public class InputS3FileDescriptorImpl extends InputFileBaseDescriptorImpl imple
   @SerializedName("s3_secret_key")
   private String s3SecretKey;
 
+  @ShipperConfigElementDescription(
+    path = "/input/[]/s3_endpoint",
+    type = "string",
+    description = "Endpoint URL for S3."
+  )
+  @Expose
+  @SerializedName("s3_endpoint")
+  private String s3Endpoint;
+
   @Override
   public String getS3AccessKey() {
     return s3AccessKey;
@@ -65,5 +74,14 @@ public class InputS3FileDescriptorImpl extends InputFileBaseDescriptorImpl imple
 
   public void setS3SecretKey(String s3SecretKey) {
     this.s3SecretKey = s3SecretKey;
+  }
+
+  @Override
+  public String getS3Endpoint() {
+    return s3Endpoint;
+  }
+
+  public void setS3Endpoint(String s3Endpoint) {
+    this.s3Endpoint = s3Endpoint;
   }
 }

@@ -20,7 +20,7 @@ package org.apache.ambari.logfeeder.conf;
 
 import com.google.common.collect.Maps;
 import org.apache.ambari.logfeeder.common.LogFeederSolrClientFactory;
-import org.apache.ambari.logfeeder.docker.DockerContainerRegistry;
+import org.apache.ambari.logfeeder.container.docker.DockerContainerRegistry;
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.input.InputConfigUploader;
 import org.apache.ambari.logfeeder.input.InputManagerImpl;

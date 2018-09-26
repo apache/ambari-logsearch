@@ -18,14 +18,12 @@
 
 package org.apache.ambari.logfeeder.output;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.Upload;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.util.CompressionUtil;
 import org.apache.ambari.logfeeder.util.S3Util;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Date;
@@ -42,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * {@link org.apache.ambari.logfeeder.input.InputFile}.
  */
 public class S3Uploader implements Runnable {
-  private static final Logger LOG = Logger.getLogger(S3Uploader.class);
+  private static final Logger logger = LogManager.getLogger(S3Uploader.class);
   
   public static final String POISON_PILL = "POISON-PILL";
 
@@ -82,7 +80,7 @@ public class S3Uploader implements Runnable {
     stopRunningThread.set(true);
     boolean offerStatus = fileContextsToUpload.offer(POISON_PILL);
     if (!offerStatus) {
-      LOG.warn("Could not add poison pill to interrupt uploader thread.");
+      logger.warn("Could not add poison pill to interrupt uploader thread.");
     }
   }
 
@@ -93,7 +91,7 @@ public class S3Uploader implements Runnable {
   void addFileForUpload(String fileToUpload) {
     boolean offerStatus = fileContextsToUpload.offer(fileToUpload);
     if (!offerStatus) {
-      LOG.error("Could not add file " + fileToUpload + " for upload.");
+      logger.error("Could not add file " + fileToUpload + " for upload.");
     }
   }
 
@@ -103,12 +101,12 @@ public class S3Uploader implements Runnable {
       try {
         String fileNameToUpload = fileContextsToUpload.take();
         if (POISON_PILL.equals(fileNameToUpload)) {
-          LOG.warn("Found poison pill while waiting for files to upload, exiting");
+          logger.warn("Found poison pill while waiting for files to upload, exiting");
           return;
         }
         uploadFile(new File(fileNameToUpload), logType);
       } catch (InterruptedException e) {
-        LOG.error("Interrupted while waiting for elements from fileContextsToUpload", e);
+        logger.error("Interrupted while waiting for elements from fileContextsToUpload", e);
         return;
       }
     }
@@ -129,39 +127,33 @@ public class S3Uploader implements Runnable {
     String s3AccessKey = s3OutputConfiguration.getS3AccessKey();
     String s3SecretKey = s3OutputConfiguration.getS3SecretKey();
     String compressionAlgo = s3OutputConfiguration.getCompressionAlgo();
+    String s3Endpoint = s3OutputConfiguration.getS3Endpoint();
 
     String keySuffix = fileToUpload.getName() + "." + compressionAlgo;
     String s3Path = new S3LogPathResolver().getResolvedPath(
         s3OutputConfiguration.getS3Path() + LogFeederConstants.S3_PATH_SEPARATOR + logType, keySuffix,
         s3OutputConfiguration.getCluster());
-    LOG.info(String.format("keyPrefix=%s, keySuffix=%s, s3Path=%s", s3OutputConfiguration.getS3Path(), keySuffix, s3Path));
+    logger.info(String.format("keyPrefix=%s, keySuffix=%s, s3Path=%s", s3OutputConfiguration.getS3Path(), keySuffix, s3Path));
     File sourceFile = createCompressedFileForUpload(fileToUpload, compressionAlgo);
 
-    LOG.info("Starting S3 upload " + sourceFile + " -> " + bucketName + ", " + s3Path);
-    uploadFileToS3(bucketName, s3Path, sourceFile, s3AccessKey, s3SecretKey);
+    logger.info("Starting S3 upload " + sourceFile + " -> " + bucketName + ", " + s3Path);
+    writeFileIntoS3File(sourceFile, bucketName, s3Path, s3Endpoint, s3AccessKey, s3SecretKey);
 
     // delete local compressed file
     sourceFile.delete();
     if (deleteOnEnd) {
-      LOG.info("Deleting input file as required");
+      logger.info("Deleting input file as required");
       if (!fileToUpload.delete()) {
-        LOG.error("Could not delete file " + fileToUpload.getAbsolutePath() + " after upload to S3");
+        logger.error("Could not delete file " + fileToUpload.getAbsolutePath() + " after upload to S3");
       }
     }
     return s3Path;
   }
 
   @VisibleForTesting
-  protected void uploadFileToS3(String bucketName, String s3Key, File localFile, String accessKey, String secretKey) {
-    TransferManager transferManager = S3Util.getTransferManager(accessKey, secretKey);
-    try {
-      Upload upload = transferManager.upload(bucketName, s3Key, localFile);
-      upload.waitForUploadResult();
-    } catch (AmazonClientException | InterruptedException e) {
-      LOG.error("s3 uploading failed for file :" + localFile.getAbsolutePath(), e);
-    } finally {
-      S3Util.shutdownTransferManager(transferManager);
-    }
+  protected void writeFileIntoS3File(File sourceFile, String bucketName, String s3Path,
+                                     String s3Endpoint, String s3AccessKey, String s3SecretKey) {
+    S3Util.writeFileIntoS3File(sourceFile.getAbsolutePath(), bucketName, s3Path, s3Endpoint, s3AccessKey, s3SecretKey);
   }
 
   @VisibleForTesting

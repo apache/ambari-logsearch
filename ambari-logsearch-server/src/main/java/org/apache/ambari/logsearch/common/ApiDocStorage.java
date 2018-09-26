@@ -21,8 +21,8 @@ package org.apache.ambari.logsearch.common;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.models.Swagger;
 import io.swagger.util.Yaml;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Named
 public class ApiDocStorage {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ApiDocStorage.class);
+  private static final Logger logger = LogManager.getLogger(ApiDocStorage.class);
 
   private final Map<String, Object> swaggerMap = new ConcurrentHashMap<>();
 
@@ -45,7 +45,7 @@ public class ApiDocStorage {
     Thread loadApiDocThread = new Thread("load_swagger_api_doc") {
       @Override
       public void run() {
-        LOG.info("Start thread to scan REST API doc from endpoints.");
+        logger.info("Start thread to scan REST API doc from endpoints.");
         Swagger swagger = beanConfig.getSwagger();
         beanConfig.configure(swagger);
         beanConfig.scanAndRead();
@@ -64,7 +64,7 @@ public class ApiDocStorage {
         } catch (Exception e) {
           e.printStackTrace();
         }
-        LOG.info("Scanning REST API endpoints and generating docs has been successful.");
+        logger.info("Scanning REST API endpoints and generating docs has been successful.");
       }
     };
     loadApiDocThread.setDaemon(true);

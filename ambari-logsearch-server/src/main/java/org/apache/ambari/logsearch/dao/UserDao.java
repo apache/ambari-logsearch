@@ -18,31 +18,26 @@
  */
 package org.apache.ambari.logsearch.dao;
 
-import static java.util.Collections.singletonList;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.ambari.logsearch.conf.AuthPropsConfig;
-import org.apache.ambari.logsearch.util.CommonUtil;
 import org.apache.ambari.logsearch.util.FileUtil;
 import org.apache.ambari.logsearch.util.JSONUtil;
-import org.apache.ambari.logsearch.web.model.Privilege;
-import org.apache.ambari.logsearch.web.model.Role;
 import org.apache.ambari.logsearch.web.model.User;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.security.core.GrantedAuthority;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserDao {
-  private static final Logger logger = Logger.getLogger(UserDao.class);
+  private static final Logger logger = LogManager.getLogger(UserDao.class);
 
   private static final String USER_NAME = "username";
   private static final String PASSWORD = "password";
@@ -51,6 +46,9 @@ public class UserDao {
 
   @Inject
   private AuthPropsConfig authPropsConfig;
+
+  @Inject
+  private PasswordEncoder passwordEncoder;
 
   @Inject
   private RoleDao roleDao;
@@ -125,7 +123,7 @@ public class UserDao {
       String username = user.get(USER_NAME);
       String password = user.get(PASSWORD);
       if (StringUtils.isNotBlank(password)) {
-        encPassword = CommonUtil.encryptPassword(username, password);
+        encPassword = passwordEncoder.encode(password);
         user.put(PASSWORD, "");
         user.put(ENC_PASSWORD, encPassword);
         isUpdated = true;

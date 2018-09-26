@@ -33,7 +33,6 @@ import org.apache.ambari.logfeeder.plugin.manager.CheckpointManager;
 import org.apache.ambari.logfeeder.plugin.manager.InputManager;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputFileDescriptorImpl;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -46,7 +45,6 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
 
 public class InputFileTest {
-  private static final Logger LOG = Logger.getLogger(InputFileTest.class);
 
   private static final String TEST_DIR_NAME = "/logfeeder_test_dir/";
   private static final File TEST_DIR = new File(FileUtils.getTempDirectoryPath() + TEST_DIR_NAME);
@@ -133,8 +131,6 @@ public class InputFileTest {
 
   @Test
   public void testInputFile_process3Rows() throws Exception {
-    LOG.info("testInputFile_process3Rows()");
-
     File testFile = createFile("process3.log");
 
     init(testFile.getAbsolutePath());
@@ -157,8 +153,6 @@ public class InputFileTest {
 
   @Test
   public void testInputFile_noLogPath() throws Exception {
-    LOG.info("testInputFile_noLogPath()");
-
     expectedException.expect(NullPointerException.class);
 
     init(null);

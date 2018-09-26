@@ -33,20 +33,21 @@ import org.apache.ambari.logsearch.conf.SolrPropsConfig;
 import org.apache.ambari.logsearch.conf.SolrEventHistoryPropsConfig;
 import org.apache.ambari.logsearch.conf.global.SolrCollectionState;
 import org.apache.ambari.logsearch.configurer.SolrCollectionConfigurer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
 
-import org.apache.log4j.Logger;
 import org.springframework.data.solr.core.SolrTemplate;
 
 @Named
 public class EventHistorySolrDao extends SolrDaoBase {
 
-  private static final Logger LOG = Logger.getLogger(EventHistorySolrDao.class);
+  private static final Logger logger = LogManager.getLogger(EventHistorySolrDao.class);
 
-  private static final Logger LOG_PERFORMANCE = Logger.getLogger("org.apache.ambari.logsearch.performance");
+  private static final Logger LOG_PERFORMANCE = LogManager.getLogger("org.apache.ambari.logsearch.performance");
 
   @Inject
   private SolrEventHistoryPropsConfig solrEventHistoryPropsConfig;
@@ -83,7 +84,7 @@ public class EventHistorySolrDao extends SolrDaoBase {
     try {
       new SolrCollectionConfigurer(this, false, solrClientsHolder, SolrClientsHolder.CollectionType.HISTORY).start();
     } catch (Exception e) {
-      LOG.error("error while connecting to Solr for history logs : solrUrl=" + solrUrl + ", zkConnectString=" + zkConnectString +
+      logger.error("error while connecting to Solr for history logs : solrUrl=" + solrUrl + ", zkConnectString=" + zkConnectString +
           ", collection=" + collection, e);
     }
   }

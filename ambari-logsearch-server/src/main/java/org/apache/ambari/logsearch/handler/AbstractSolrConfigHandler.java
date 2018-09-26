@@ -25,16 +25,16 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 
 import org.apache.ambari.logsearch.conf.SolrPropsConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.common.cloud.SolrZkClient;
 import org.apache.solr.common.cloud.ZkConfigManager;
 import org.apache.zookeeper.KeeperException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractSolrConfigHandler implements SolrZkRequestHandler<Boolean> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractSolrConfigHandler.class);
+  private static final Logger logger = LogManager.getLogger(AbstractSolrConfigHandler.class);
 
   private File configSetFolder;
 
@@ -87,7 +87,7 @@ public abstract class AbstractSolrConfigHandler implements SolrZkRequestHandler<
   }
 
   public boolean doIfConfigExists(SolrPropsConfig solrPropsConfig, SolrZkClient zkClient, String separator) throws IOException {
-    LOG.info("Config set exists for '{}' collection. Refreshing it if needed...", solrPropsConfig.getCollection());
+    logger.info("Config set exists for '{}' collection. Refreshing it if needed...", solrPropsConfig.getCollection());
     try {
       File[] listOfFiles = getConfigSetFolder().listFiles();
       if (listOfFiles == null)

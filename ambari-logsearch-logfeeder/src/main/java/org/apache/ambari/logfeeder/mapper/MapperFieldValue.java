@@ -25,8 +25,9 @@ import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.MapFieldDescriptor;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.MapFieldValueDescriptor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import java.util.Map;
  * Overrides the value for the field
  */
 public class MapperFieldValue extends Mapper<LogFeederProps> {
-  private static final Logger LOG = Logger.getLogger(MapperFieldValue.class);
+  private static final Logger logger = LogManager.getLogger(MapperFieldValue.class);
   
   private String prevValue = null;
   private String newValue = null;
@@ -46,7 +47,7 @@ public class MapperFieldValue extends Mapper<LogFeederProps> {
     prevValue = ((MapFieldValueDescriptor)mapFieldDescriptor).getPreValue();
     newValue = ((MapFieldValueDescriptor)mapFieldDescriptor).getPostValue();;
     if (StringUtils.isEmpty(newValue)) {
-      LOG.fatal("Map field value is empty.");
+      logger.fatal("Map field value is empty.");
       return false;
     }
     return true;
@@ -61,7 +62,7 @@ public class MapperFieldValue extends Mapper<LogFeederProps> {
       }
     } else {
       LogFeederUtil.logErrorMessageByInterval(this.getClass().getSimpleName() + ":apply",
-          "New value is null, so transformation is not applied. " + this.toString(), null, LOG, Level.ERROR);
+          "New value is null, so transformation is not applied. " + this.toString(), null, logger, Level.ERROR);
     }
     return value;
   }

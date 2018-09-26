@@ -33,8 +33,9 @@ import org.apache.ambari.logsearch.config.api.model.inputconfig.FilterGrokDescri
 import org.apache.ambari.logsearch.config.api.model.inputconfig.InputFileDescriptor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,7 +50,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class FilterGrok extends Filter<LogFeederProps> {
-  private static final Logger LOG = Logger.getLogger(FilterGrok.class);
+  private static final Logger logger = LogManager.getLogger(FilterGrok.class);
 
   private static final String GROK_PATTERN_FILE = "grok-patterns";
 
@@ -95,10 +96,10 @@ public class FilterGrok extends Filter<LogFeederProps> {
         }
       }
 
-      LOG.info("init() done. grokPattern=" + messagePattern + ", multilinePattern=" + multilinePattern + ", " +
+      logger.info("init() done. grokPattern=" + messagePattern + ", multilinePattern=" + multilinePattern + ", " +
       getShortDescription());
       if (StringUtils.isEmpty(messagePattern)) {
-        LOG.error("message_pattern is not set for filter.");
+        logger.error("message_pattern is not set for filter.");
         return;
       }
       extractNamedParams(messagePattern, namedParamList);
@@ -119,7 +120,7 @@ public class FilterGrok extends Filter<LogFeederProps> {
         grokMultiline.compile(multilinePattern);
       }
     } catch (Throwable t) {
-      LOG.fatal("Caught exception while initializing Grok. multilinePattern=" + multilinePattern + ", messagePattern="
+      logger.fatal("Caught exception while initializing Grok. multilinePattern=" + multilinePattern + ", messagePattern="
           + messagePattern, t);
       grokMessage = null;
       grokMultiline = null;
@@ -165,22 +166,22 @@ public class FilterGrok extends Filter<LogFeederProps> {
 
   private boolean loadPatterns(Grok grok) {
     InputStreamReader grokPatternsReader = null;
-    LOG.info("Loading pattern file " + GROK_PATTERN_FILE);
+    logger.info("Loading pattern file " + GROK_PATTERN_FILE);
     try {
       InputStream fileInputStream = getClass().getClassLoader().getResourceAsStream(GROK_PATTERN_FILE);
       if (fileInputStream == null) {
-        LOG.fatal("Couldn't load grok-patterns file " + GROK_PATTERN_FILE + ". Things will not work");
+        logger.fatal("Couldn't load grok-patterns file " + GROK_PATTERN_FILE + ". Things will not work");
         return false;
       }
       grokPatternsReader = new InputStreamReader(fileInputStream);
     } catch (Throwable t) {
-      LOG.fatal("Error reading grok-patterns file " + GROK_PATTERN_FILE + " from classpath. Grok filtering will not work.", t);
+      logger.fatal("Error reading grok-patterns file " + GROK_PATTERN_FILE + " from classpath. Grok filtering will not work.", t);
       return false;
     }
     try {
       grok.addPatternFromReader(grokPatternsReader);
     } catch (GrokException e) {
-      LOG.fatal("Error loading patterns from grok-patterns reader for file " + GROK_PATTERN_FILE, e);
+      logger.fatal("Error loading patterns from grok-patterns reader for file " + GROK_PATTERN_FILE, e);
       return false;
     }
 
@@ -284,7 +285,7 @@ public class FilterGrok extends Filter<LogFeederProps> {
     String logMessageKey = this.getClass().getSimpleName() + "_PARSEERROR";
     int inputStrLength = inputStr != null ? inputStr.length() : 0;
     LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Error parsing string. length=" + inputStrLength + ", input=" +
-        getInput().getShortDescription() + ". First upto 100 characters=" + StringUtils.abbreviate(inputStr, 100), null, LOG,
+        getInput().getShortDescription() + ". First upto 100 characters=" + StringUtils.abbreviate(inputStr, 100), null, logger,
         Level.WARN);
   }
 
@@ -295,7 +296,7 @@ public class FilterGrok extends Filter<LogFeederProps> {
       try {
         applyMessage(strBuff.toString(), jsonObj, currMultilineJsonStr);
       } catch (Exception e) {
-        LOG.error(e.getLocalizedMessage(), e.getCause());
+        logger.error(e.getLocalizedMessage(), e.getCause());
       }
       strBuff = null;
       savedInputMarker = null;

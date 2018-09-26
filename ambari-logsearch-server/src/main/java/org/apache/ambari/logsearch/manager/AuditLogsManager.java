@@ -62,7 +62,8 @@ import org.apache.ambari.logsearch.solr.model.SolrComponentTypeLogData;
 import org.apache.ambari.logsearch.util.DownloadUtil;
 import org.apache.ambari.logsearch.util.SolrUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -77,7 +78,7 @@ import freemarker.template.TemplateException;
 
 @Named
 public class AuditLogsManager extends ManagerBase<AuditLogData, AuditLogResponse> {
-  private static final Logger logger = Logger.getLogger(AuditLogsManager.class);
+  private static final Logger logger = LogManager.getLogger(AuditLogsManager.class);
 
   private static final String AUDIT_LOG_TEMPLATE = "audit_log_txt.ftl";
 

@@ -16,18 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logfeeder.docker;
+package org.apache.ambari.logfeeder.container.docker;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Periodically re-register docker container metadata for {@link org.apache.ambari.logfeeder.docker.DockerContainerRegistry}
+ * Periodically re-register docker container metadata for {@link DockerContainerRegistry}
  * based on a time interval in seconds (property: logfeeder.container.registry.docker.interval, default: 5)
  */
 public class DockerContainerRegistryMonitor implements Runnable {
 
-  private static final Logger logger = LoggerFactory.getLogger(DockerContainerRegistryMonitor.class);
+  private static final Logger logger = LogManager.getLogger(DockerContainerRegistryMonitor.class);
 
   private final DockerContainerRegistry registry;
 

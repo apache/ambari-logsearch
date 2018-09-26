@@ -18,11 +18,11 @@
  */
 package org.apache.ambari.logfeeder.input.monitor;
 
-import org.apache.ambari.logfeeder.docker.DockerContainerRegistry;
-import org.apache.ambari.logfeeder.docker.DockerMetadata;
+import org.apache.ambari.logfeeder.container.docker.DockerContainerRegistry;
+import org.apache.ambari.logfeeder.container.docker.DockerMetadata;
 import org.apache.ambari.logfeeder.input.InputFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public class DockerLogFileUpdateMonitor extends AbstractLogFileMonitor {
 
-  private Logger LOG = LoggerFactory.getLogger(DockerLogFileUpdateMonitor.class);
+  private static final Logger logger = LogManager.getLogger(DockerLogFileUpdateMonitor.class);
 
   public DockerLogFileUpdateMonitor(InputFile inputFile, int waitInterval, int detachTime) {
     super(inputFile, waitInterval, detachTime);
@@ -67,26 +67,26 @@ public class DockerLogFileUpdateMonitor extends AbstractLogFileMonitor {
         String containerId = containerEntry.getValue().getId();
         long timestamp = containerEntry.getValue().getTimestamp();
         boolean running = containerEntry.getValue().isRunning();
-        LOG.debug("Found log path: {} (container id: {})", logPath, containerId);
+        logger.debug("Found log path: {} (container id: {})", logPath, containerId);
         if (!copiedChildMap.containsKey(logPath)) {
           if (!running && isItTooOld(timestamp, new Date().getTime(), getDetachTime())) {
-            LOG.debug("Container with id {} is stopped, won't monitor as it stopped for long time.", containerId);
+            logger.debug("Container with id {} is stopped, won't monitor as it stopped for long time.", containerId);
           } else {
-            LOG.info("Found new container (id: {}) with new log path: {}", logPath, containerId);
+            logger.info("Found new container (id: {}) with new log path: {}", logPath, containerId);
             getInputFile().startNewChildDockerInputFileThread(containerEntry.getValue());
           }
         } else {
           if (!running && isItTooOld(timestamp, new Date().getTime(), getDetachTime())) {
-            LOG.info("Removing: {}", logPath);
+            logger.info("Removing: {}", logPath);
             getInputFile().stopChildDockerInputFileThread(containerEntry.getKey());
           }
         }
       }
     } else {
       if (!copiedChildMap.isEmpty()) {
-        LOG.info("Removing all inputs with type: {}", logType);
+        logger.info("Removing all inputs with type: {}", logType);
         for (Map.Entry<String, InputFile> inputFileEntry : copiedChildMap.entrySet()) {
-          LOG.info("Removing: {}", inputFileEntry.getKey());
+          logger.info("Removing: {}", inputFileEntry.getKey());
           getInputFile().stopChildDockerInputFileThread(inputFileEntry.getKey());
         }
       }

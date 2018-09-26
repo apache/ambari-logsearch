@@ -37,6 +37,8 @@ public class S3OutputConfiguration {
   public static final String S3_LOG_DIR_KEY = "s3_log_dir";
   public static final String S3_ACCESS_KEY = "s3_access_key";
   public static final String S3_SECRET_KEY = "s3_secret_key";
+  public static final String S3_ENDPOINT = "s3_endpoint";
+  public static final String DEFAULT_S3_ENDPOINT = "https://s3.amazonaws.com";
   public static final String COMPRESSION_ALGO_KEY = "compression_algo";
   public static final String ADDITIONAL_FIELDS_KEY = "add_fields";
   public static final String CLUSTER_KEY = "cluster";
@@ -49,6 +51,10 @@ public class S3OutputConfiguration {
 
   public String getS3BucketName() {
     return (String) configs.get(S3_BUCKET_NAME_KEY);
+  }
+
+  public String getS3Endpoint() {
+    return (String) configs.getOrDefault(S3_ENDPOINT, DEFAULT_S3_ENDPOINT);
   }
 
   public String getS3Path() {
@@ -84,7 +90,7 @@ public class S3OutputConfiguration {
     Map<String, Object> configs = new HashMap<>();
     String[] stringValuedKeysToCopy = new String[] {
         SPOOL_DIR_KEY, S3_BUCKET_NAME_KEY, S3_LOG_DIR_KEY,
-        S3_ACCESS_KEY, S3_SECRET_KEY, COMPRESSION_ALGO_KEY
+        S3_ACCESS_KEY, S3_SECRET_KEY, COMPRESSION_ALGO_KEY, S3_ENDPOINT
     };
 
     for (String key : stringValuedKeysToCopy) {
@@ -107,6 +113,8 @@ public class S3OutputConfiguration {
     }
 
     configs.put(ADDITIONAL_FIELDS_KEY, configItem.getNVList(ADDITIONAL_FIELDS_KEY));
+
+    configs.putIfAbsent(S3_ENDPOINT, DEFAULT_S3_ENDPOINT);
 
     return new S3OutputConfiguration(configs);
   }

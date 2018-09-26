@@ -32,13 +32,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ambari.logsearch.common.StatusMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public class LogsearchFilter implements Filter {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LogsearchFilter.class);
+  private static final Logger logger = LogManager.getLogger(LogsearchFilter.class);
 
   private final RequestMatcher requestMatcher;
   private final StatusProvider statusProvider;
@@ -62,7 +62,7 @@ public class LogsearchFilter implements Filter {
     if (requestMatcher.matches(request)) {
       StatusMessage errorResponse = statusProvider.getStatusMessage(request.getRequestURI());
       if (errorResponse != null) {
-        LOG.info("{} request is filtered out: {}", request.getRequestURL(), errorResponse.getMessage());
+        logger.info("{} request is filtered out: {}", request.getRequestURL(), errorResponse.getMessage());
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         resp.setStatus(errorResponse.getStatusCode());
         resp.setContentType("application/json");

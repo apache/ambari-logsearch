@@ -52,5 +52,5 @@ public interface LogSearchConfigLogFeeder extends LogSearchConfig {
    * @throws Exception
    */
   void monitorInputConfigChanges(InputConfigMonitor inputConfigMonitor, LogLevelFilterMonitor logLevelFilterMonitor,
-      String clusterName) throws Exception;
+                                 String clusterName) throws Exception;
 }

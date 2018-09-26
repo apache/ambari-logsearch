@@ -26,8 +26,9 @@ import org.apache.ambari.logfeeder.plugin.input.InputMarker;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.FilterKeyValueDescriptor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 
 public class FilterKeyValue extends Filter<LogFeederProps> {
 
-  private static final Logger LOG = Logger.getLogger(FilterKeyValue.class);
+  private static final Logger logger = LogManager.getLogger(FilterKeyValue.class);
 
   private String sourceField = null;
   private String valueSplit = "=";
@@ -54,10 +55,10 @@ public class FilterKeyValue extends Filter<LogFeederProps> {
     fieldSplit = StringUtils.defaultString(((FilterKeyValueDescriptor)getFilterDescriptor()).getFieldSplit(), fieldSplit);
     valueBorders = ((FilterKeyValueDescriptor)getFilterDescriptor()).getValueBorders();
 
-    LOG.info("init() done. source_field=" + sourceField + ", value_split=" + valueSplit + ", " + ", field_split=" +
+    logger.info("init() done. source_field=" + sourceField + ", value_split=" + valueSplit + ", " + ", field_split=" +
         fieldSplit + ", " + getShortDescription());
     if (StringUtils.isEmpty(sourceField)) {
-      LOG.fatal("source_field is not set for filter. Thiss filter will not be applied");
+      logger.fatal("source_field is not set for filter. Thiss filter will not be applied");
       return;
     }
   }
@@ -140,7 +141,7 @@ public class FilterKeyValue extends Filter<LogFeederProps> {
     errorMetric.value++;
     String logMessageKey = this.getClass().getSimpleName() + "_PARSEERROR";
     LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Error parsing string. length=" + inputStr.length() + ", input=" +
-        getInput().getShortDescription() + ". First upto 200 characters=" + StringUtils.abbreviate(inputStr, 200), null, LOG,
+        getInput().getShortDescription() + ". First upto 200 characters=" + StringUtils.abbreviate(inputStr, 200), null, logger,
         Level.ERROR);
   }
 

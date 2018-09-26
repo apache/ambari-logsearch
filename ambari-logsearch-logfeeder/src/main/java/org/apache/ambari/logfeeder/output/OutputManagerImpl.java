@@ -33,8 +33,9 @@ import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.ambari.logsearch.config.api.OutputConfigMonitor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -44,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 public class OutputManagerImpl extends OutputManager {
-  private static final Logger LOG = Logger.getLogger(OutputManagerImpl.class);
+  private static final Logger logger = LogManager.getLogger(OutputManagerImpl.class);
 
   private static final int MAX_OUTPUT_SIZE = 32765; // 32766-1
 
@@ -155,7 +156,7 @@ public class OutputManagerImpl extends OutputManager {
           }
           output.write(jsonObj, inputMarker);
         } catch (Exception e) {
-          LOG.error("Error writing. to " + output.getShortDescription(), e);
+          logger.error("Error writing. to " + output.getShortDescription(), e);
         }
       }
     }
@@ -178,7 +179,7 @@ public class OutputManagerImpl extends OutputManager {
       String logMessageKey = this.getClass().getSimpleName() + "_MESSAGESIZE";
       LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Message is too big. size=" + logMessage.getBytes().length +
         ", input=" + input.getShortDescription() + ". Truncating to " + MAX_OUTPUT_SIZE + ", first upto 100 characters=" +
-        StringUtils.abbreviate(logMessage, 100), null, LOG, Level.WARN);
+        StringUtils.abbreviate(logMessage, 100), null, logger, Level.WARN);
       logMessage = new String(logMessage.getBytes(), 0, MAX_OUTPUT_SIZE);
       jsonObj.put("log_message", logMessage);
       List<String> tagsList = (List<String>) jsonObj.get("tags");
@@ -199,7 +200,7 @@ public class OutputManagerImpl extends OutputManager {
         try {
           output.write(jsonBlock, inputMarker);
         } catch (Exception e) {
-          LOG.error("Error writing. to " + output.getShortDescription(), e);
+          logger.error("Error writing. to " + output.getShortDescription(), e);
         }
       }
     }
@@ -212,7 +213,7 @@ public class OutputManagerImpl extends OutputManager {
       try {
         output.copyFile(inputFile, inputMarker);
       }catch (Exception e) {
-        LOG.error("Error coyping file . to " + output.getShortDescription(), e);
+        logger.error("Error coyping file . to " + output.getShortDescription(), e);
       }
     }
   }
@@ -232,7 +233,7 @@ public class OutputManagerImpl extends OutputManager {
   }
 
   public void close() {
-    LOG.info("Close called for outputs ...");
+    logger.info("Close called for outputs ...");
     for (Output output : outputs) {
       try {
         output.setDrain(true);
@@ -251,7 +252,7 @@ public class OutputManagerImpl extends OutputManager {
         if (!output.isClosed()) {
           try {
             allClosed = false;
-            LOG.warn("Waiting for output to close. " + output.getShortDescription() + ", " + (iterations - i) + " more seconds");
+            logger.warn("Waiting for output to close. " + output.getShortDescription() + ", " + (iterations - i) + " more seconds");
             Thread.sleep(waitTimeMS);
           } catch (Throwable t) {
             // Ignore
@@ -259,15 +260,15 @@ public class OutputManagerImpl extends OutputManager {
         }
       }
       if (allClosed) {
-        LOG.info("All outputs are closed. Iterations=" + i);
+        logger.info("All outputs are closed. Iterations=" + i);
         return;
       }
     }
 
-    LOG.warn("Some outpus were not closed after " + iterations + "  iterations");
+    logger.warn("Some outpus were not closed after " + iterations + "  iterations");
     for (Output output : outputs) {
       if (!output.isClosed()) {
-        LOG.warn("Output not closed. Will ignore it." + output.getShortDescription() + ", pendingCound=" + output.getPendingCount());
+        logger.warn("Output not closed. Will ignore it." + output.getShortDescription() + ", pendingCound=" + output.getPendingCount());
       }
     }
   }

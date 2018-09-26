@@ -78,7 +78,7 @@ else
   LOGSEARCH_GC_LOGFILE="$LOG_PATH_WITHOUT_SLASH/$LOGSEARCH_GC_LOGFILE"
 fi
 
-LOGSEARCH_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$LOGSEARCH_GC_LOGFILE"
+LOGSEARCH_GC_OPTS="-Xlog:gc*:file=$LOGSEARCH_GC_LOGFILE:time"
 
 function print_usage() {
   cat << EOF

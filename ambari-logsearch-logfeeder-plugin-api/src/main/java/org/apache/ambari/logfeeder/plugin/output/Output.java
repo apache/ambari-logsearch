@@ -26,8 +26,8 @@ import org.apache.ambari.logfeeder.plugin.common.MetricData;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
 import org.apache.ambari.logsearch.config.api.LogSearchConfigLogFeeder;
 import org.apache.ambari.logsearch.config.api.OutputConfigMonitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.Map;
 
 public abstract class Output<PROP_TYPE extends LogFeederProperties, INPUT_MARKER extends InputMarker> extends ConfigItem<PROP_TYPE> implements OutputConfigMonitor {
 
-  private static final Logger LOG = LoggerFactory.getLogger(Output.class);
+  private static final Logger LOG = LogManager.getLogger(Output.class);
 
   private final static String GSON_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
   private static Gson gson = new GsonBuilder().setDateFormat(GSON_DATE_FORMAT).create();

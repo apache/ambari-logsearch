@@ -21,8 +21,8 @@ package org.apache.ambari.logsearch.web.filters;
 import org.apache.ambari.logsearch.conf.AuthPropsConfig;
 import org.apache.ambari.logsearch.dao.RoleDao;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,7 +57,7 @@ import java.util.List;
  */
 public class LogsearchTrustedProxyFilter extends AbstractAuthenticationProcessingFilter {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LogsearchTrustedProxyFilter.class);
+  private static final Logger logger = LogManager.getLogger(LogsearchTrustedProxyFilter.class);
 
   private static final String TRUSTED_PROXY_KNOX_HEADER = "X-Forwarded-For";
 
@@ -73,11 +73,11 @@ public class LogsearchTrustedProxyFilter extends AbstractAuthenticationProcessin
     String doAsUserName = request.getParameter("doAs");
     final List<GrantedAuthority> authorities = RoleDao.createDefaultAuthorities();
     final UserDetails principal = new User(doAsUserName, "", authorities);
-    final Authentication finalAuthentication = new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    final AbstractAuthenticationToken finalAuthentication = new UsernamePasswordAuthenticationToken(principal, "", authorities);
     WebAuthenticationDetails webDetails = new WebAuthenticationDetails(request);
-    ((AbstractAuthenticationToken) finalAuthentication).setDetails(webDetails);
+    finalAuthentication.setDetails(webDetails);
     SecurityContextHolder.getContext().setAuthentication(finalAuthentication);
-    LOG.info("Logged into Log Search User as doAsUser = {}", doAsUserName);
+    logger.info("Logged into Log Search User as doAsUser = {}", doAsUserName);
     return finalAuthentication;
   }
 

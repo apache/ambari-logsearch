@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.MapAnonymizeDescriptorImpl;
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -30,11 +29,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MapperAnonymizeTest {
-  private static final Logger LOG = Logger.getLogger(MapperAnonymizeTest.class);
 
   @Test
   public void testMapperAnonymize_anonymize() {
-    LOG.info("testMapperAnonymize_anonymize()");
 
     MapAnonymizeDescriptorImpl mapAnonymizeDescriptorImpl = new MapAnonymizeDescriptorImpl();
     mapAnonymizeDescriptorImpl.setPattern("secret <hide> / <hide> is here");
@@ -51,7 +48,6 @@ public class MapperAnonymizeTest {
 
   @Test
   public void testMapperAnonymize_anonymize2() {
-    LOG.info("testMapperAnonymize_anonymize2()");
 
     MapAnonymizeDescriptorImpl mapAnonymizeDescriptorImpl = new MapAnonymizeDescriptorImpl();
     mapAnonymizeDescriptorImpl.setPattern("<hide> / <hide> is the secret");
@@ -69,7 +65,6 @@ public class MapperAnonymizeTest {
 
   @Test
   public void testMapperAnonymize_noPattern() {
-    LOG.info("testMapperAnonymize_noPattern()");
 
     MapAnonymizeDescriptorImpl mapAnonymizeDescriptorImpl = new MapAnonymizeDescriptorImpl();
 

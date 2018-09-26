@@ -21,6 +21,7 @@ package org.apache.ambari.logsearch.conf;
 import javax.ws.rs.ApplicationPath;
 
 import org.apache.ambari.logsearch.rest.ServiceLogsResource;
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletProperties;
 
@@ -29,7 +30,7 @@ public class LogSearchJerseyResourceConfig extends ResourceConfig {
 
   public LogSearchJerseyResourceConfig() {
     packages(ServiceLogsResource.class.getPackage().getName());
-    register(com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider.class);
+    register(JacksonJaxbJsonProvider.class);
     property(ServletProperties.FILTER_FORWARD_ON_404, true);
   }
 

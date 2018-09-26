@@ -22,10 +22,11 @@ RUN yum -y install glibc-common
 ENV HOME /root
 
 #Install JAVA
-ENV JAVA_VERSION 8u131
-ENV BUILD_VERSION b11
-RUN wget --no-check-certificate --no-cookies --header "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION-$BUILD_VERSION/d54c1d3a095b4ff2b6607d096fa80163/jdk-$JAVA_VERSION-linux-x64.rpm -O jdk-8-linux-x64.rpm
-RUN rpm -ivh jdk-8-linux-x64.rpm
+ENV JAVA_VERSION 11
+ENV BUILD_VERSION 28
+
+RUN wget --no-check-certificate --no-cookies --header "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION+$BUILD_VERSION/55eed80b163941c8885ad9298e6d786a/jdk-${JAVA_VERSION}_linux-x64_bin.rpm -O jdk-11-linux-x64.rpm
+RUN rpm -ivh jdk-11-linux-x64.rpm
 ENV JAVA_HOME /usr/java/default/
 
 #Install Selenium server
@@ -62,7 +63,7 @@ RUN cd /root && tar -zxvf /root/solr-$SOLR_VERSION.tgz
 WORKDIR /
 RUN adduser knox
 ENV KNOX_VERSION 1.1.0
-RUN wget -q -O /knox-${KNOX_VERSION}.zip http://download.nextag.com/apache/knox/${KNOX_VERSION}/knox-${KNOX_VERSION}.zip && unzip /knox-${KNOX_VERSION}.zip && rm knox-${KNOX_VERSION}.zip && ln -nsf knox-${KNOX_VERSION} knox && chmod +x /knox/bin/*.sh && chown -R knox /knox/
+RUN wget --no-check-certificate -q -O /knox-${KNOX_VERSION}.zip https://github.com/oleewere/ambari/releases/download/KNOX-${KNOX_VERSION}/knox-${KNOX_VERSION}.zip && unzip /knox-${KNOX_VERSION}.zip && rm knox-${KNOX_VERSION}.zip && ln -nsf knox-${KNOX_VERSION} knox && chmod +x /knox/bin/*.sh && chown -R knox /knox/
 
 ADD knox/keystores /knox-secrets
 RUN cd /knox-secrets && unzip test-secrets.zip

@@ -24,11 +24,11 @@ import com.google.gson.JsonParser;
 import org.apache.ambari.logsearch.config.api.InputConfigMonitor;
 import org.apache.ambari.logsearch.config.api.LogLevelFilterMonitor;
 import org.apache.ambari.logsearch.config.api.LogSearchConfigLogFeeder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.ambari.logsearch.config.json.JsonHelper;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputConfigGson;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputConfigImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,7 @@ import java.util.regex.Matcher;
  */
 public class LogSearchConfigLogFeederLocal extends LogSearchConfigLocal implements LogSearchConfigLogFeeder {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LogSearchConfigLogFeederLocal.class);
+  private static final Logger logger = LogManager.getLogger(LogSearchConfigLogFeederLocal.class);
 
   private String configDir;
 

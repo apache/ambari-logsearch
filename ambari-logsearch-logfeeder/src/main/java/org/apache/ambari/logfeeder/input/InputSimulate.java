@@ -29,9 +29,9 @@ import org.apache.ambari.logsearch.config.api.model.inputconfig.InputDescriptor;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.FilterJsonDescriptorImpl;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputDescriptorImpl;
 import org.apache.commons.collections.MapUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.util.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InputSimulate extends InputFile {
-  private static final Logger LOG = LoggerFactory.getLogger(InputSimulate.class);
+  private static final Logger logger = LogManager.getLogger(InputSimulate.class);
   private static final String LOG_TEXT_PATTERN = "{ logtime=\"%d\", level=\"%s\", log_message=\"%s\", host=\"%s\"}";
 
   private static final Map<String, String> typeToFilePath = new HashMap<>();
@@ -114,7 +114,7 @@ public class InputSimulate extends InputFile {
       simulateOutputs.add(outputCopy);
       super.addOutput(outputCopy);
     } catch (Exception e) {
-      LOG.warn("Could not copy Output class " + output.getClass() + ", using original output");
+      logger.warn("Could not copy Output class " + output.getClass() + ", using original output");
       super.addOutput(output);
     }
   }

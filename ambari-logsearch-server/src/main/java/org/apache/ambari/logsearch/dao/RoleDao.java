@@ -25,8 +25,8 @@ import org.apache.ambari.logsearch.util.FileUtil;
 import org.apache.ambari.logsearch.util.JSONUtil;
 import org.apache.ambari.logsearch.web.model.Privilege;
 import org.apache.ambari.logsearch.web.model.Role;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.annotation.PostConstruct;
@@ -47,7 +47,7 @@ import static java.util.Collections.singletonList;
 @Named
 public class RoleDao {
 
-  private static final Logger LOG = LoggerFactory.getLogger(RoleDao.class);
+  private static final Logger logger = LogManager.getLogger(RoleDao.class);
 
   @Inject
   private AuthPropsConfig authPropsConfig;
@@ -60,10 +60,10 @@ public class RoleDao {
     if (authPropsConfig.isFileAuthorization()) {
       try {
         String userRoleFileName = authPropsConfig.getRoleFile();
-        LOG.info("USER ROLE JSON file NAME:" + userRoleFileName);
+        logger.info("USER ROLE JSON file NAME:" + userRoleFileName);
         File jsonFile = FileUtil.getFileFromClasspath(userRoleFileName);
         if (jsonFile == null || !jsonFile.exists()) {
-          LOG.error("Role json file not found on the classpath :" + userRoleFileName);
+          logger.error("Role json file not found on the classpath :" + userRoleFileName);
           System.exit(1);
         }
         Map<String, Object> userRoleInfo = JSONUtil.readJsonFromFile(jsonFile);
@@ -72,10 +72,10 @@ public class RoleDao {
           simpleRolesMap.put(roleEntry.getKey(), (List<String>) roleEntry.getValue());
         }
       } catch (Exception e) {
-        LOG.error("Error while reading user role file: {}", e.getMessage());
+        logger.error("Error while reading user role file: {}", e.getMessage());
       }
     } else {
-      LOG.info("File authorization is disabled");
+      logger.info("File authorization is disabled");
     }
   }
 
@@ -86,11 +86,11 @@ public class RoleDao {
         if (!Collections.isEmpty(roles)) {
           for (String role : roles) {
             String roleName = "ROLE_" + role;
-            LOG.debug("Found role '{}' for user '{}'", roleName, user);
+            logger.debug("Found role '{}' for user '{}'", roleName, user);
             authorities.add(createRoleWithReadPrivilage(roleName));
           }
         } else {
-          LOG.warn("Not found roles for user '{}'", user);
+          logger.warn("Not found roles for user '{}'", user);
         }
       return authorities;
     } else {

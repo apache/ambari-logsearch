@@ -23,6 +23,8 @@ import com.google.gson.GsonBuilder;
 import org.apache.ambari.logsearch.config.api.LogLevelFilterManager;
 import org.apache.ambari.logsearch.config.api.model.loglevelfilter.LogLevelFilter;
 import org.apache.ambari.logsearch.config.api.model.loglevelfilter.LogLevelFilterMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -30,8 +32,6 @@ import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,7 +41,7 @@ import java.util.TreeMap;
  */
 public class LogLevelFilterManagerSolr implements LogLevelFilterManager {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LogLevelFilterManagerSolr.class);
+  private static final Logger logger = LogManager.getLogger(LogLevelFilterManagerSolr.class);
 
   private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
   private final SolrClient solrClient;
@@ -66,7 +66,7 @@ public class LogLevelFilterManagerSolr implements LogLevelFilterManager {
     doc.addField("rowtype", "log_level_filter");
     doc.addField("jsons", gson.toJson(filter));
     doc.addField("username", "default");
-    LOG.debug("Creating log level filter - logid: {}, cluster: {}", logId, clusterName);
+    logger.debug("Creating log level filter - logid: {}, cluster: {}", logId, clusterName);
     solrClient.add(doc);
   }
 
@@ -130,7 +130,7 @@ public class LogLevelFilterManagerSolr implements LogLevelFilterManager {
         }
       }
     } catch (Exception e) {
-      LOG.error("Error during getting log level filters: {}", e.getMessage());
+      logger.error("Error during getting log level filters: {}", e.getMessage());
     }
     logLevelFilterMap.setFilter(logLevelFilterTreeMap);
     return logLevelFilterMap;
@@ -152,20 +152,20 @@ public class LogLevelFilterManagerSolr implements LogLevelFilterManager {
     boolean solrAvailable = false;
     while (!solrAvailable) {
       try {
-        LOG.debug("Start solr ping for log level filter collection");
+        logger.debug("Start solr ping for log level filter collection");
         SolrPingResponse pingResponse = solrClient.ping();
         if (pingResponse.getStatus() == 0) {
           solrAvailable = true;
           break;
         }
       } catch (Exception e) {
-        LOG.error("{}", e);
+        logger.error("{}", e);
       }
-      LOG.info("Solr (collection for log level filters) is not available yet. Sleeping 10 sec. Retrying...");
+      logger.info("Solr (collection for log level filters) is not available yet. Sleeping 10 sec. Retrying...");
       try {
         Thread.sleep(10000);
       } catch (InterruptedException e) {
-        LOG.error("{}", e);
+        logger.error("{}", e);
       }
     }
   }

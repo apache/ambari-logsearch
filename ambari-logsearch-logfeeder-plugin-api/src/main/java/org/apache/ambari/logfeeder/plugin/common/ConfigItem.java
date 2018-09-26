@@ -21,8 +21,8 @@ package org.apache.ambari.logfeeder.plugin.common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -32,7 +32,7 @@ import java.util.Map;
 
 public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implements Cloneable, Serializable {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ConfigItem.class);
+  private static final Logger logger = LogManager.getLogger(ConfigItem.class);
 
   private final static String GSON_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
   private static Gson gson = new GsonBuilder().setDateFormat(GSON_DATE_FORMAT).create();
@@ -96,7 +96,7 @@ public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implemen
     long currMS = System.currentTimeMillis();
     String postFix = ", key=" + getShortDescription();
     if (currStat > metric.prevLogValue) {
-      LOG.info(prefixStr + ": total_count=" + metric.value + ", duration=" + (currMS - metric.prevLogTime) / 1000 +
+      logger.info(prefixStr + ": total_count=" + metric.value + ", duration=" + (currMS - metric.prevLogTime) / 1000 +
         " secs, count=" + (currStat - metric.prevLogValue) + postFix);
     }
     metric.prevLogValue = currStat;

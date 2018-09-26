@@ -43,7 +43,7 @@
     </copy>
     <copy todir="target/package/conf" includeEmptyDirs="no">
       <fileset file="src/main/scripts/logsearch-env.sh"/>
-      <fileset file="target/classes/log4j.xml"/>
+      <fileset file="target/classes/log4j2.yml"/>
       <fileset file="target/classes/default.properties"/>
       <fileset file="target/classes/logsearch.properties"/>
       <fileset file="target/classes/info.properties"/>

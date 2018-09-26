@@ -28,10 +28,9 @@ import org.apache.ambari.logfeeder.input.file.checkpoint.util.ResumeLineNumberHe
 import org.apache.ambari.logfeeder.input.monitor.CheckpointCleanupMonitor;
 import org.apache.ambari.logfeeder.plugin.manager.CheckpointManager;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -40,7 +39,7 @@ import java.util.stream.Stream;
 
 public class FileCheckpointManager implements CheckpointManager<InputFile, InputFileMarker, LogFeederProps> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(FileCheckpointManager.class);
+  private static final Logger logger = LogManager.getLogger(FileCheckpointManager.class);
 
   private static final String CHECKPOINT_SUBFOLDER_NAME = "logfeeder_checkpoints";
 
@@ -50,7 +49,7 @@ public class FileCheckpointManager implements CheckpointManager<InputFile, Input
   @Override
   public void init(LogFeederProps logFeederProps) {
     checkPointExtension = logFeederProps.getCheckPointExtension();
-    LOG.info("Determining valid checkpoint folder");
+    logger.info("Determining valid checkpoint folder");
     boolean isCheckPointFolderValid = false;
     // We need to keep track of the files we are reading.
     String checkPointFolder = logFeederProps.getCheckpointFolder();
@@ -62,16 +61,16 @@ public class FileCheckpointManager implements CheckpointManager<InputFile, Input
     if (!isCheckPointFolderValid) {
       // Let's use tmp folder
       checkPointFolderFile = new File(logFeederProps.getTmpDir(), CHECKPOINT_SUBFOLDER_NAME);
-      LOG.info("Checking if tmp folder can be used for checkpoints. Folder=" + checkPointFolderFile);
+      logger.info("Checking if tmp folder can be used for checkpoints. Folder=" + checkPointFolderFile);
       isCheckPointFolderValid = verifyCheckPointFolder(checkPointFolderFile);
       if (isCheckPointFolderValid) {
-        LOG.warn("Using tmp folder " + checkPointFolderFile + " to store check points. This is not recommended." +
+        logger.warn("Using tmp folder " + checkPointFolderFile + " to store check points. This is not recommended." +
           "Please set logfeeder.checkpoint.folder property");
       }
     }
 
     if (isCheckPointFolderValid) {
-      LOG.info("Using folder " + checkPointFolderFile + " for storing checkpoints");
+      logger.info("Using folder " + checkPointFolderFile + " for storing checkpoints");
       // check checkpoint cleanup every 2000 min
       Thread checkpointCleanupThread = new Thread(new CheckpointCleanupMonitor(this, 2000),"checkpoint_cleanup");
       checkpointCleanupThread.setDaemon(true);
@@ -161,10 +160,10 @@ public class FileCheckpointManager implements CheckpointManager<InputFile, Input
     if (!folderPathFile.exists()) {
       try {
         if (!folderPathFile.mkdir()) {
-          LOG.warn("Error creating folder for check point. folder=" + folderPathFile);
+          logger.warn("Error creating folder for check point. folder=" + folderPathFile);
         }
       } catch (Throwable t) {
-        LOG.warn("Error creating folder for check point. folder=" + folderPathFile, t);
+        logger.warn("Error creating folder for check point. folder=" + folderPathFile, t);
       }
     }
 
@@ -175,7 +174,7 @@ public class FileCheckpointManager implements CheckpointManager<InputFile, Input
         testFile.createNewFile();
         return testFile.delete();
       } catch (IOException e) {
-        LOG.warn("Couldn't create test file in " + folderPathFile.getAbsolutePath() + " for checkPoint", e);
+        logger.warn("Couldn't create test file in " + folderPathFile.getAbsolutePath() + " for checkPoint", e);
       }
     }
     return false;

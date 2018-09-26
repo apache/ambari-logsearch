@@ -25,10 +25,10 @@ import org.apache.ambari.logsearch.config.api.model.loglevelfilter.LogLevelFilte
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.ACL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ import java.util.TreeMap;
 
 public class LogLevelFilterManagerZK implements LogLevelFilterManager {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LogLevelFilterManagerZK.class);
+  private static final Logger logger = LogManager.getLogger(LogLevelFilterManagerZK.class);
 
   private final CuratorFramework client;
   private final TreeCache serverCache;
@@ -72,9 +72,9 @@ public class LogLevelFilterManagerZK implements LogLevelFilterManager {
     String logLevelFilterJson = gson.toJson(filter);
     try {
       client.create().creatingParentContainersIfNeeded().withACL(aclList).forPath(nodePath, logLevelFilterJson.getBytes());
-      LOG.info("Uploaded log level filter for the log " + logId + " for cluster " + clusterName);
+      logger.info("Uploaded log level filter for the log " + logId + " for cluster " + clusterName);
     } catch (KeeperException.NodeExistsException e) {
-      LOG.debug("Did not upload log level filters for log " + logId + " as it was already uploaded by another Log Feeder");
+      logger.debug("Did not upload log level filters for log " + logId + " as it was already uploaded by another Log Feeder");
     }
   }
 
@@ -86,7 +86,7 @@ public class LogLevelFilterManagerZK implements LogLevelFilterManager {
       String currentLogLevelFilterJson = new String(serverCache.getCurrentData(nodePath).getData());
       if (!logLevelFilterJson.equals(currentLogLevelFilterJson)) {
         client.setData().forPath(nodePath, logLevelFilterJson.getBytes());
-        LOG.info("Set log level filter for the log " + e.getKey() + " for cluster " + clusterName);
+        logger.info("Set log level filter for the log " + e.getKey() + " for cluster " + clusterName);
       }
     }
   }

@@ -28,8 +28,9 @@ import org.apache.ambari.logfeeder.util.DateUtil;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -57,7 +58,7 @@ import java.util.stream.Collectors;
 
 public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
-  private static final Logger LOG = Logger.getLogger(OutputSolr.class);
+  private static final Logger logger = LogManager.getLogger(OutputSolr.class);
 
   private static final int SHARDS_WAIT_MS = 10000;
 
@@ -153,18 +154,18 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
     maxBufferSize = getIntValue("flush_size", DEFAULT_MAX_BUFFER_SIZE);
     if (maxBufferSize < 1) {
-      LOG.warn("maxBufferSize is less than 1. Making it 1");
+      logger.warn("maxBufferSize is less than 1. Making it 1");
       maxBufferSize = 1;
     }
 
-    LOG.info(String.format("Config: Number of workers=%d, splitMode=%s, splitInterval=%d."
+    logger.info(String.format("Config: Number of workers=%d, splitMode=%s, splitInterval=%d."
         + getShortDescription(), workers, splitMode, splitInterval));
 
     implicitRouting = logFeederProps.isSolrImplicitRouting(); // TODO: in the future, load it from output config (can be a use case to use different routing for audit/service logs)
     if (implicitRouting) {
-      LOG.info("Config: Use implicit routing globally for adding docs to Solr.");
+      logger.info("Config: Use implicit routing globally for adding docs to Solr.");
     } else {
-      LOG.info("Config: Use compositeId globally for adding docs to Solr.");
+      logger.info("Config: Use compositeId globally for adding docs to Solr.");
     }
   }
 
@@ -173,14 +174,14 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
     if (securityEnabled) {
       String javaSecurityConfig = System.getProperty(JAVA_SECURITY_AUTH_LOGIN_CONFIG);
       String solrHttpBuilderFactory = System.getProperty(SOLR_HTTPCLIENT_BUILDER_FACTORY);
-      LOG.info("setupSecurity() called for kerberos configuration, jaas file: "
+      logger.info("setupSecurity() called for kerberos configuration, jaas file: "
         + javaSecurityConfig + ", solr http client factory: " + solrHttpBuilderFactory);
     }
   }
 
   private void createOutgoingBuffer() {
     int bufferSize = maxBufferSize * (workers + 3);
-    LOG.info("Creating blocking queue with bufferSize=" + bufferSize);
+    logger.info("Creating blocking queue with bufferSize=" + bufferSize);
     outgoingBuffer = new LinkedBlockingQueue<OutputData>(bufferSize);
   }
 
@@ -199,17 +200,17 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
   private void pingSolr(int count, SolrClient solrClient) {
     try {
-      LOG.info("Pinging Solr server.");
+      logger.info("Pinging Solr server.");
       SolrPingResponse response = solrClient.ping();
       if (response.getStatus() == 0) {
-        LOG.info("Ping to Solr server is successful for worker=" + count);
+        logger.info("Ping to Solr server is successful for worker=" + count);
       } else {
-        LOG.warn(
+        logger.warn(
             String.format("Ping to Solr server failed. It would check again. worker=%d, collection=%s, " +
                 "response=%s", count, collection, response));
       }
     } catch (Throwable t) {
-      LOG.warn(String.format(
+      logger.warn(String.format(
           "Ping to Solr server failed. It would check again. worker=%d, collection=%s", count, collection), t);
     }
   }
@@ -243,7 +244,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
   }
 
   public void flush() {
-    LOG.info("Flush called...");
+    logger.info("Flush called...");
     setDrain(true);
 
     int wrapUpTimeSecs = 30;
@@ -263,7 +264,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
       }
       if (isPending) {
         try {
-          LOG.info("Will give " + (wrapUpTimeSecs - i) + " seconds to wrap up");
+          logger.info("Will give " + (wrapUpTimeSecs - i) + " seconds to wrap up");
           Thread.sleep(1000);
         } catch (InterruptedException e) {
           // ignore
@@ -289,10 +290,10 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
   @Override
   public void close() {
-    LOG.info("Closing Solr client...");
+    logger.info("Closing Solr client...");
     flush();
 
-    LOG.info("Closed Solr client");
+    logger.info("Closed Solr client");
     super.close();
   }
 
@@ -316,7 +317,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
     @Override
     public void run() {
-      LOG.info("SolrWorker thread started");
+      logger.info("SolrWorker thread started");
       long lastDispatchTime = System.currentTimeMillis();
 
       while (true) {
@@ -340,7 +341,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
             boolean response = sendToSolr(outputData);
             if (isDrain() && !response) {
               //Since sending to Solr response failed and it is in draining mode, let's break;
-              LOG.warn("In drain mode and sending to Solr failed. So exiting. output=" + getShortDescription());
+              logger.warn("In drain mode and sending to Solr failed. So exiting. output=" + getShortDescription());
               break;
             }
           }
@@ -352,7 +353,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
           // Handle thread exiting
         } catch (Throwable t) {
           String logMessageKey = this.getClass().getSimpleName() + "_SOLR_MAINLOOP_EXCEPTION";
-          LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Caught exception in main loop. " + outputData, t, LOG,
+          LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Caught exception in main loop. " + outputData, t, logger,
                 Level.ERROR);
         }
       }
@@ -360,7 +361,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
       closeSolrClient();
 
       resetLocalBuffer();
-      LOG.info("Exiting Solr worker thread. output=" + getShortDescription());
+      logger.info("Exiting Solr worker thread. output=" + getShortDescription());
     }
     
     /**
@@ -385,7 +386,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
         } catch (IOException | SolrException exception) {
           // Transient error, lets block till it is available
           try {
-            LOG.warn("Solr is not reachable. Going to retry after " + RETRY_INTERVAL + " seconds. " + "output="
+            logger.warn("Solr is not reachable. Going to retry after " + RETRY_INTERVAL + " seconds. " + "output="
                 + getShortDescription(), exception);
             Thread.sleep(RETRY_INTERVAL * 1000);
           } catch (Throwable t) {
@@ -396,7 +397,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
           // Clear the buffer
           String logMessageKey = this.getClass().getSimpleName() + "_SOLR_UPDATE_EXCEPTION";
           LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Error sending log message to server. Dropping logs",
-              serverException, LOG, Level.ERROR);
+              serverException, logger, Level.ERROR);
           resetLocalBuffer();
           break;
         }
@@ -424,7 +425,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
           localBufferBytesSize += obj.toString().length();
         } catch (Throwable t) {
           String logMessageKey = this.getClass().getSimpleName() + "_BYTE_COUNT_ERROR";
-          LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Error calculating byte size. object=" + obj, t, LOG,
+          LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Error calculating byte size. object=" + obj, t, logger,
               Level.ERROR);
         }
       }
@@ -452,7 +453,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
       String shard = shards.get(slotByMin);
 
       if (lastSlotByMin != slotByMin) {
-        LOG.info("Switching to shard " + shard + ", output=" + getShortDescription());
+        logger.info("Switching to shard " + shard + ", output=" + getShortDescription());
         lastSlotByMin = slotByMin;
       }
 
@@ -466,7 +467,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
       if (response.getStatus() != 0) {
         String logMessageKey = this.getClass().getSimpleName() + "_SOLR_UPDATE_ERROR";
         LogFeederUtil.logErrorMessageByInterval(logMessageKey,
-            String.format("Error writing to Solr. response=%s, log=%s", response, outputData), null, LOG, Level.ERROR);
+            String.format("Error writing to Solr. response=%s, log=%s", response, outputData), null, logger, Level.ERROR);
       }
       statMetric.value += localBuffer.size();
       writeBytesMetric.value += localBufferBytesSize;

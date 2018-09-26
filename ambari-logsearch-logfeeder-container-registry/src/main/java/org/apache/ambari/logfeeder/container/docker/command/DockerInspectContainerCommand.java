@@ -16,39 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logfeeder.docker.command;
+package org.apache.ambari.logfeeder.container.docker.command;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Run 'docker ps -a -q' (+ logfeeder type filter) and save the response in a string list (container ids)
+ * Run 'docker inspect' on container ids - and read response and convert it from json response to a map object
  */
-public class DockerListContainerCommand implements ContainerCommand<List<String>> {
+public class DockerInspectContainerCommand implements ContainerCommand<List<Map<String, Object>>> {
 
-  private static final Logger logger = LoggerFactory.getLogger(DockerListContainerCommand.class);
+  private static final Logger logger = LogManager.getLogger(DockerInspectContainerCommand.class);
 
   @Override
-  public List<String> execute(Map<String, String> params) {
+  public List<Map<String, Object>> execute(Map<String, String> params) {
+    List<String> containerIds = Arrays.asList(params.get("containerIds").split(","));
     CommandResponse commandResponse = null;
+    List<Map<String, Object>> listResponse = new ArrayList<>();
     List<String> commandList = new ArrayList<>();
     commandList.add("/usr/local/bin/docker");
-    commandList.add("ps");
-    commandList.add("-a");
-    commandList.add("-q");
-    // TODO: add --filter="label=logfeeder.log.type"
+    commandList.add("inspect");
+    commandList.addAll(containerIds);
     try {
       commandResponse = CommandExecutionHelper.executeCommand(commandList, null);
       if (commandResponse.getExitCode() != 0) {
         logger.error("Error during inspect containers request: {} (exit code: {})", commandResponse.getStdErr(), commandResponse.getExitCode());
+      } else {
+        String jsonResponse = StringUtils.join(commandResponse.getStdOut(), "");
+        ObjectMapper mapper = new ObjectMapper();
+        listResponse = mapper.readValue(jsonResponse, List.class);
       }
     } catch (Exception e) {
       logger.error("Error during inspect containers request", e);
     }
-    return commandResponse != null ? commandResponse.getStdOut() : null;
+    return listResponse;
   }
 }

@@ -27,8 +27,8 @@ import io.jsonwebtoken.SignatureException;
 import org.apache.ambari.logsearch.auth.model.JWTAuthenticationToken;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -61,7 +61,7 @@ import java.util.Map;
 
 public abstract class AbstractJWTFilter extends AbstractAuthenticationProcessingFilter {
 
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractJWTFilter.class);
+  private static final Logger logger = LogManager.getLogger(AbstractJWTFilter.class);
 
   private static final String PEM_HEADER = "-----BEGIN CERTIFICATE-----\n";
   private static final String PEM_FOOTER = "\n-----END CERTIFICATE-----";
@@ -87,8 +87,8 @@ public abstract class AbstractJWTFilter extends AbstractAuthenticationProcessing
         .parseClaimsJws(getJWTFromCookie(request))
         .getBody();
       String userName  = claims.getSubject();
-      LOG.info("USERNAME: " + userName);
-      LOG.info("URL = " + request.getRequestURL());
+      logger.info("USERNAME: " + userName);
+      logger.info("URL = " + request.getRequestURL());
       if (StringUtils.isNotEmpty(claims.getAudience()) && !getAudiences().contains(claims.getAudience())) {
         throw new IllegalArgumentException(String.format("Audience validation failed. (Not found: %s)", claims.getAudience()));
       }
@@ -97,8 +97,8 @@ public abstract class AbstractJWTFilter extends AbstractAuthenticationProcessing
       SecurityContextHolder.getContext().setAuthentication(authentication);
       return authentication;
     } catch (ExpiredJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
-      LOG.info("URL = " + request.getRequestURL());
-      LOG.warn("Error during JWT authentication: {}", e.getMessage());
+      logger.info("URL = " + request.getRequestURL());
+      logger.warn("Error during JWT authentication: {}", e.getMessage());
       throw new BadCredentialsException(e.getMessage(), e);
     }
   }
@@ -148,7 +148,7 @@ public abstract class AbstractJWTFilter extends AbstractAuthenticationProcessing
     if (cookies != null) {
       for (Cookie cookie : cookies) {
         if (getCookieName().equals(cookie.getName())) {
-          LOG.info(getCookieName() + " cookie has been found and is being processed");
+          logger.info(getCookieName() + " cookie has been found and is being processed");
           serializedJWT = cookie.getValue();
           break;
         }
@@ -218,7 +218,7 @@ public abstract class AbstractJWTFilter extends AbstractAuthenticationProcessing
 
         return builder.build().toString();
       } catch (URISyntaxException ue) {
-        LOG.error("URISyntaxException while build xforward url ", ue);
+        logger.error("URISyntaxException while build xforward url ", ue);
         return request.getRequestURL().toString();
       }
     } else {

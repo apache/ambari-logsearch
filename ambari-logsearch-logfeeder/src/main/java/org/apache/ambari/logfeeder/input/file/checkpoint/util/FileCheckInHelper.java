@@ -22,8 +22,9 @@ import org.apache.ambari.logfeeder.input.InputFile;
 import org.apache.ambari.logfeeder.input.InputFileMarker;
 import org.apache.ambari.logfeeder.util.FileUtil;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -32,7 +33,7 @@ import java.util.Map;
 
 public class FileCheckInHelper {
 
-  private static final Logger LOG = Logger.getLogger(FileCheckInHelper.class);
+  private static final Logger logger = LogManager.getLogger(FileCheckInHelper.class);
 
   private FileCheckInHelper() {
   }
@@ -82,12 +83,12 @@ public class FileCheckInHelper {
       if (inputFile.isClosed()) {
         String logMessageKey = inputFile.getClass().getSimpleName() + "_FINAL_CHECKIN";
         LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Wrote final checkPoint, input=" + inputFile.getShortDescription() +
-          ", checkPointFile=" + checkPointFile.getAbsolutePath() + ", checkPoint=" + jsonStr, null, LOG, Level.INFO);
+          ", checkPointFile=" + checkPointFile.getAbsolutePath() + ", checkPoint=" + jsonStr, null, logger, Level.INFO);
       }
     } catch (Throwable t) {
       String logMessageKey = inputFile.getClass().getSimpleName() + "_CHECKIN_EXCEPTION";
       LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Caught exception checkIn. , input=" + inputFile.getShortDescription(), t,
-        LOG, Level.ERROR);
+        logger, Level.ERROR);
     }
   }
 

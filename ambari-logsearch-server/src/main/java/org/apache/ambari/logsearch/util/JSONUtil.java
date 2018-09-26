@@ -29,7 +29,8 @@ import java.util.List;
 
 import org.apache.ambari.logsearch.manager.MalformedInputException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -42,7 +43,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class JSONUtil {
-  private static final Logger logger = Logger.getLogger(JSONUtil.class);
+  private static final Logger logger = LogManager.getLogger(JSONUtil.class);
 
   private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
   private static final Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();

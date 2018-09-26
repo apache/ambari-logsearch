@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.MapFieldValueDescriptorImpl;
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -30,11 +29,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MapperFieldValueTest {
-  private static final Logger LOG = Logger.getLogger(MapperFieldValueTest.class);
 
   @Test
   public void testMapperFieldValue_replaceValue() {
-    LOG.info("testMapperFieldValue_replaceValue()");
 
     MapFieldValueDescriptorImpl mapFieldValueDescriptor = new MapFieldValueDescriptorImpl();
     mapFieldValueDescriptor.setPreValue("someValue");
@@ -54,7 +51,6 @@ public class MapperFieldValueTest {
 
   @Test
   public void testMapperFieldValue_noPostValue() {
-    LOG.info("testMapperFieldValue_noPostValue()");
 
     MapFieldValueDescriptorImpl mapFieldValueDescriptor = new MapFieldValueDescriptorImpl();
 
@@ -64,7 +60,6 @@ public class MapperFieldValueTest {
 
   @Test
   public void testMapperFieldValue_noPreValueFound() {
-    LOG.info("testMapperFieldValue_noPreValueFound()");
 
     MapFieldValueDescriptorImpl mapFieldValueDescriptor = new MapFieldValueDescriptorImpl();
     mapFieldValueDescriptor.setPreValue("someValue");

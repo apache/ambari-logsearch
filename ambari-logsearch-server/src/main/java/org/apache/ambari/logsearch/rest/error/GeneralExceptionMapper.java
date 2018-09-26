@@ -36,8 +36,8 @@ import org.apache.ambari.logsearch.common.StatusMessage;
 import org.apache.ambari.logsearch.manager.AlreadyExistsException;
 import org.apache.ambari.logsearch.manager.MalformedInputException;
 import org.apache.ambari.logsearch.manager.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -48,7 +48,7 @@ import com.google.common.collect.Maps;
 @Named
 @Provider
 public class GeneralExceptionMapper implements ExceptionMapper<Exception> {
-  private static final Logger LOG = LoggerFactory.getLogger(GeneralExceptionMapper.class);
+  private static final Logger LOG = LogManager.getLogger(GeneralExceptionMapper.class);
   static final String INTERNAL_SERVER_ERROR_MESSAGE = "Something went wrong, For more details check the logs or configuration.";
 
   private static final Map<Class<? extends Exception>, Response.Status> exceptionStatusCodeMap = Maps.newHashMap();

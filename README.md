@@ -2,7 +2,9 @@
 
 Log aggregation, analysis, and visualization for Ambari managed (and any other) services.
 
-## Setup local environment with docker
+## Development
+
+Requires JDK 11
 
 ### Prerequisites
 

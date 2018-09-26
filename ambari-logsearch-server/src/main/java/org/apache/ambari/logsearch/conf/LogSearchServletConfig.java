@@ -21,30 +21,25 @@ package org.apache.ambari.logsearch.conf;
 import org.apache.ambari.logsearch.configurer.SslConfigurer;
 import org.apache.ambari.logsearch.web.listener.LogSearchSessionListener;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
+import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
+import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSessionListener;
 
-import static org.apache.ambari.logsearch.common.LogSearchConstants.LOGSEARCH_APPLICATION_NAME;
-import static org.apache.ambari.logsearch.common.LogSearchConstants.LOGSEARCH_SESSION_ID;
-
 @Configuration
 public class LogSearchServletConfig {
-
-  private static final Integer SESSION_TIMEOUT = 60 * 30;
 
   @Inject
   private ServerProperties serverProperties;
@@ -68,28 +63,8 @@ public class LogSearchServletConfig {
   }
 
   @Bean
-  public EmbeddedServletContainerFactory containerFactory() {
-    final JettyEmbeddedServletContainerFactory jettyEmbeddedServletContainerFactory = new JettyEmbeddedServletContainerFactory() {
-      @Override
-      protected JettyEmbeddedServletContainer getJettyEmbeddedServletContainer(Server server) {
-        return new JettyEmbeddedServletContainer(server);
-      }
-    };
-    jettyEmbeddedServletContainerFactory.setSessionTimeout(SESSION_TIMEOUT);
-    serverProperties.getSession().getCookie().setName(LOGSEARCH_SESSION_ID);
-    serverProperties.setDisplayName(LOGSEARCH_APPLICATION_NAME);
-    if ("https".equals(logSearchHttpConfig.getProtocol())) {
-      sslConfigurer.ensureStorePasswords();
-      sslConfigurer.loadKeystore();
-      jettyEmbeddedServletContainerFactory.addServerCustomizers((JettyServerCustomizer) server -> {
-        SslContextFactory sslContextFactory = sslConfigurer.getSslContextFactory();
-        ServerConnector sslConnector = new ServerConnector(server, sslContextFactory);
-        sslConnector.setPort(logSearchHttpConfig.getHttpsPort());
-        server.setConnectors(new Connector[]{sslConnector});
-      });
-    } else {
-      jettyEmbeddedServletContainerFactory.setPort(logSearchHttpConfig.getHttpPort());
-    }
-    return jettyEmbeddedServletContainerFactory;
+  public ServletWebServerFactory webServerFactory() {
+    return new JettyServletWebServerFactory();
   }
+
 }

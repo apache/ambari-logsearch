@@ -16,26 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logsearch.util;
+package org.apache.ambari.logsearch.layout;
 
-import java.security.SecureRandom;
 
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class CommonUtil {
-  private CommonUtil() {
-    throw new UnsupportedOperationException();
+public class LayoutTest {
+  private static final Logger logger = LogManager.getLogger(LayoutTest.class);
+
+  public static void main(String[] args) {
+
+    try {
+      throwException();
+    } catch (ClassCastException castException) {
+      logger.error("error", castException);
+    }
+
   }
-  
-  private static SecureRandom secureRandom = new SecureRandom();
-  private static int counter = 0;
 
-  public static String genGUI() {
-    return System.currentTimeMillis() + "_" + secureRandom.nextInt(1000) + "_" + counter++;
-  }
-  
-  private static final Md5PasswordEncoder md5Encoder = new Md5PasswordEncoder();
-  public static String encryptPassword(String username, String password) {
-    return md5Encoder.encodePassword(password, username);
+  public static void throwException() {
+    throw new ClassCastException("test");
   }
 }

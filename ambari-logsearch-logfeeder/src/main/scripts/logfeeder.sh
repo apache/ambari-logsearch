@@ -80,7 +80,7 @@ else
   LOGFEEDER_GC_LOGFILE="$LOG_PATH_WITHOUT_SLASH/$LOGFEEDER_GC_LOGFILE"
 fi
 
-LOGFEEDER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$LOGFEEDER_GC_LOGFILE"
+LOGFEEDER_GC_OPTS="-Xlog:gc*:file=$LOGFEEDER_GC_LOGFILE:time"
 
 function print_usage() {
   cat << EOF

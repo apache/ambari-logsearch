@@ -57,6 +57,16 @@ public class LogSearchHttpConfig {
   @Value("${logsearch.protocol:http}")
   private String protocol;
 
+  @LogSearchPropertyDescription(
+    name = "logsearch.session.timeout",
+    description = "Log Search http session timeout in minutes.",
+    examples = {"300"},
+    defaultValue = "30",
+    sources = {LOGSEARCH_PROPERTIES_FILE}
+  )
+  @Value("${logsearch.session.timeout:30}")
+  private Integer sessionTimeout;
+
   public String getProtocol() {
     return protocol;
   }
@@ -79,5 +89,13 @@ public class LogSearchHttpConfig {
 
   public void setHttpsPort(int httpsPort) {
     this.httpsPort = httpsPort;
+  }
+
+  public Integer getSessionTimeout() {
+    return sessionTimeout;
+  }
+
+  public void setSessionTimeout(Integer sessionTimeout) {
+    this.sessionTimeout = sessionTimeout;
   }
 }

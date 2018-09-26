@@ -37,13 +37,13 @@ import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputConfi
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputConfigImpl;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputDescriptorImpl;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.InputS3FileDescriptorImpl;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 
 /**
  * Write log file into s3 bucket.
@@ -55,7 +55,7 @@ import java.util.Map;
  * </ul>
  */
 public class OutputS3File extends OutputFile implements RolloverCondition, RolloverHandler {
-  private static final Logger LOG = Logger.getLogger(OutputS3File.class);
+  private static final Logger logger = LogManager.getLogger(OutputS3File.class);
 
   public static final String GLOBAL_CONFIG_S3_PATH_SUFFIX = "global.config.json";
 
@@ -130,8 +130,8 @@ public class OutputS3File extends OutputFile implements RolloverCondition, Rollo
     String s3ResolvedKey = new S3LogPathResolver().getResolvedPath(getStringValue("s3_config_dir"), s3KeySuffix,
         s3OutputConfiguration.getCluster());
 
-    S3Util.writeIntoS3File(configJson, s3OutputConfiguration.getS3BucketName(), s3ResolvedKey,
-        s3OutputConfiguration.getS3AccessKey(), s3OutputConfiguration.getS3SecretKey());
+    S3Util.writeDataIntoS3File(configJson, s3OutputConfiguration.getS3BucketName(), s3ResolvedKey,
+      s3OutputConfiguration.getS3Endpoint(), s3OutputConfiguration.getS3AccessKey(), s3OutputConfiguration.getS3SecretKey());
   }
 
   private String getComponentConfigFileName(String componentName) {
@@ -200,7 +200,7 @@ public class OutputS3File extends OutputFile implements RolloverCondition, Rollo
         s3Uploader = createUploader(input.getInputDescriptor().getType());
         logSpooler.add(block);
       } else {
-        LOG.error("Cannot write from non local file...");
+        logger.error("Cannot write from non local file...");
       }
     }
   }
@@ -215,7 +215,7 @@ public class OutputS3File extends OutputFile implements RolloverCondition, Rollo
   @VisibleForTesting
   protected LogSpooler createSpooler(String filePath) {
     String spoolDirectory = logFeederProps.getTmpDir() + "/s3/service";
-    LOG.info(String.format("Creating spooler with spoolDirectory=%s, filePath=%s", spoolDirectory, filePath));
+    logger.info(String.format("Creating spooler with spoolDirectory=%s, filePath=%s", spoolDirectory, filePath));
     return new LogSpooler(spoolDirectory, new File(filePath).getName()+"-", this, this,
         s3OutputConfiguration.getRolloverTimeThresholdSecs());
   }
@@ -234,7 +234,7 @@ public class OutputS3File extends OutputFile implements RolloverCondition, Rollo
     long currentSize = spoolFile.length();
     boolean result = (currentSize >= s3OutputConfiguration.getRolloverSizeThresholdBytes());
     if (result) {
-      LOG.info(String.format("Rolling over %s, current size %d, threshold size %d", spoolFile, currentSize,
+      logger.info(String.format("Rolling over %s, current size %d, threshold size %d", spoolFile, currentSize,
           s3OutputConfiguration.getRolloverSizeThresholdBytes()));
     }
     return result;

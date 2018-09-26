@@ -23,8 +23,8 @@ import org.apache.ambari.logsearch.config.api.LogSearchPropertyDescription;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
 
 public class LogFeederSecurityConfig {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LogFeederSecurityConfig.class);
+  private static final Logger logger = LogManager.getLogger(LogFeederSecurityConfig.class);
 
   private static final String KEYSTORE_LOCATION_ARG = "javax.net.ssl.keyStore";
   private static final String TRUSTSTORE_LOCATION_ARG = "javax.net.ssl.trustStore";
@@ -166,7 +166,7 @@ public class LogFeederSecurityConfig {
       char[] passwordChars = config.getPassword(propertyName);
       return (ArrayUtils.isNotEmpty(passwordChars)) ? new String(passwordChars) : null;
     } catch (Exception e) {
-      LOG.warn(String.format("Could not load password %s from credential store, using default password", propertyName));
+      logger.warn(String.format("Could not load password %s from credential store, using default password", propertyName));
       return null;
     }
   }
@@ -181,7 +181,7 @@ public class LogFeederSecurityConfig {
         return FileUtils.readFileToString(pwdFile, Charset.defaultCharset());
       }
     } catch (Exception e) {
-      LOG.warn("Exception occurred during read/write password file for keystore/truststore.", e);
+      logger.warn("Exception occurred during read/write password file for keystore/truststore.", e);
       return null;
     }
   }

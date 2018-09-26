@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logfeeder.docker;
+package org.apache.ambari.logfeeder.container.docker;
 
-import org.apache.ambari.logfeeder.ContainerMetadata;
+import org.apache.ambari.logfeeder.container.ContainerMetadata;
 
 public class DockerMetadata implements ContainerMetadata {
 

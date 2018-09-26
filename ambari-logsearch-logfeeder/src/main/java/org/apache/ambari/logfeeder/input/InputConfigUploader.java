@@ -23,8 +23,8 @@ import org.apache.ambari.logfeeder.loglevelfilter.LogLevelFilterHandler;
 import org.apache.ambari.logfeeder.common.ConfigHandler;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logsearch.config.api.LogSearchConfigLogFeeder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InputConfigUploader extends Thread {
-  protected static final Logger LOG = LoggerFactory.getLogger(InputConfigUploader.class);
+  private static final Logger logger = LogManager.getLogger(InputConfigUploader.class);
 
   private static final long SLEEP_BETWEEN_CHECK = 2000;
 
@@ -87,18 +87,18 @@ public class InputConfigUploader extends Thread {
               }
               filesHandled.add(inputConfigFile.getAbsolutePath());
             } catch (Exception e) {
-              LOG.warn("Error handling file " + inputConfigFile.getAbsolutePath(), e);
+              logger.warn("Error handling file " + inputConfigFile.getAbsolutePath(), e);
             }
           }
         }
       } else {
-        LOG.warn("Cannot find input config files in config dir ({})", logFeederProps.getConfDir());
+        logger.warn("Cannot find input config files in config dir ({})", logFeederProps.getConfDir());
       }
 
       try {
         Thread.sleep(SLEEP_BETWEEN_CHECK);
       } catch (InterruptedException e) {
-        LOG.debug("Interrupted during sleep", e);
+        logger.debug("Interrupted during sleep", e);
       }
     }
   }

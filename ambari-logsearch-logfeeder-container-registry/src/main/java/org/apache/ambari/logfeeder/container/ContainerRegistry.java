@@ -16,33 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logfeeder.docker.command;
+package org.apache.ambari.logfeeder.container;
 
-import java.util.List;
+import java.util.Map;
 
 /**
- * Represent a bash command response (stdout as string list, stderr in string and an exit code)
+ * Responsible of register or drop new / existing containers.
+ * @param <METADATA_TYPE> type of metadata - could be docker or other container implementation
  */
-public class CommandResponse {
-  private final int exitCode;
-  private final List<String> stdOut;
-  private final String stdErr;
+public interface ContainerRegistry<METADATA_TYPE extends ContainerMetadata> {
 
-  CommandResponse(int exitCode, List<String> stdOut, String stdErr) {
-    this.exitCode = exitCode;
-    this.stdOut = stdOut;
-    this.stdErr = stdErr;
-  }
+  /**
+   * Register process of running containers
+   */
+  void register();
 
-  public int getExitCode() {
-    return exitCode;
-  }
+  /**
+   * Holds container metadata per log component type and container id.
+   * @return container metadata
+   */
+  Map<String, Map<String, METADATA_TYPE>> getContainerMetadataMap();
 
-  public List<String> getStdOut() {
-    return stdOut;
-  }
-
-  public String getStdErr() {
-    return stdErr;
-  }
 }

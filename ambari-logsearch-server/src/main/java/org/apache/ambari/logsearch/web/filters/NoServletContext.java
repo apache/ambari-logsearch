@@ -76,6 +76,36 @@ public class NoServletContext implements ServletContext {
   }
 
   @Override
+  public int getSessionTimeout() {
+    return 0;
+  }
+
+  @Override
+  public void setSessionTimeout(int i) {
+
+  }
+
+  @Override
+  public String getRequestCharacterEncoding() {
+    return null;
+  }
+
+  @Override
+  public void setRequestCharacterEncoding(String s) {
+
+  }
+
+  @Override
+  public String getResponseCharacterEncoding() {
+    return null;
+  }
+
+  @Override
+  public void setResponseCharacterEncoding(String s) {
+
+  }
+
+  @Override
   public SessionCookieConfig getSessionCookieConfig() {
     return null;
   }
@@ -253,19 +283,24 @@ public class NoServletContext implements ServletContext {
   }
 
   @Override
-  public javax.servlet.ServletRegistration.Dynamic addServlet(
+  public ServletRegistration.Dynamic addServlet(
       String servletName, Class<? extends Servlet> servletClass) {
     return null;
   }
 
   @Override
-  public javax.servlet.ServletRegistration.Dynamic addServlet(
+  public ServletRegistration.Dynamic addJspFile(String s, String s1) {
+    return null;
+  }
+
+  @Override
+  public ServletRegistration.Dynamic addServlet(
       String servletName, Servlet servlet) {
     return null;
   }
 
   @Override
-  public javax.servlet.ServletRegistration.Dynamic addServlet(
+  public ServletRegistration.Dynamic addServlet(
       String servletName, String className) {
     return null;
   }

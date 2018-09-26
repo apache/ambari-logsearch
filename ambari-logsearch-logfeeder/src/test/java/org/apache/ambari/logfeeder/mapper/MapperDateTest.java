@@ -27,7 +27,6 @@ import java.util.Map;
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logsearch.config.json.model.inputconfig.impl.MapDateDescriptorImpl;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -35,11 +34,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MapperDateTest {
-  private static final Logger LOG = Logger.getLogger(MapperDateTest.class);
 
   @Test
   public void testMapperDate_epoch() {
-    LOG.info("testMapperDate_epoch()");
 
     MapDateDescriptorImpl mapDateDescriptor = new MapDateDescriptorImpl();
     mapDateDescriptor.setTargetDatePattern("epoch");
@@ -60,7 +57,6 @@ public class MapperDateTest {
 
   @Test
   public void testMapperDate_pattern() throws Exception {
-    LOG.info("testMapperDate_pattern()");
 
     MapDateDescriptorImpl mapDateDescriptor = new MapDateDescriptorImpl();
     mapDateDescriptor.setTargetDatePattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -82,7 +78,6 @@ public class MapperDateTest {
 
   @Test
   public void testMapperDate_noDatePattern() {
-    LOG.info("testMapperDate_noDatePattern()");
 
     MapDateDescriptorImpl mapDateDescriptor = new MapDateDescriptorImpl();
 
@@ -92,7 +87,6 @@ public class MapperDateTest {
 
   @Test
   public void testMapperDate_notParsableDatePattern() {
-    LOG.info("testMapperDate_notParsableDatePattern()");
 
     MapDateDescriptorImpl mapDateDescriptor = new MapDateDescriptorImpl();
     mapDateDescriptor.setTargetDatePattern("not_parsable_content");
@@ -103,7 +97,6 @@ public class MapperDateTest {
 
   @Test
   public void testMapperDate_invalidEpochValue() {
-    LOG.info("testMapperDate_invalidEpochValue()");
 
     MapDateDescriptorImpl mapDateDescriptor = new MapDateDescriptorImpl();
     mapDateDescriptor.setTargetDatePattern("epoch");
@@ -121,7 +114,6 @@ public class MapperDateTest {
 
   @Test
   public void testMapperDate_invalidDateStringValue() {
-    LOG.info("testMapperDate_invalidDateStringValue()");
 
     MapDateDescriptorImpl mapDateDescriptor = new MapDateDescriptorImpl();
     mapDateDescriptor.setTargetDatePattern("yyyy-MM-dd HH:mm:ss.SSS");

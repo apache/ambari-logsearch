@@ -32,7 +32,8 @@ import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.ambari.logfeeder.util.PlaceholderUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Date;
@@ -46,7 +47,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * The events are spooled on the local file system and uploaded in batches asynchronously.
  */
 public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> implements RolloverHandler, RolloverCondition {
-  private static final Logger LOG = Logger.getLogger(OutputHDFSFile.class);
+  private static final Logger logger = LogManager.getLogger(OutputHDFSFile.class);
   
   private static final long DEFAULT_ROLLOVER_THRESHOLD_TIME_SECONDS = 5 * 60L;// 5 min by default
 
@@ -78,20 +79,20 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
     rolloverThresholdTimeMillis = rolloverThresholdTimeSeconds * 1000L;
     filenamePrefix = getStringValue("file_name_prefix", filenamePrefix);
     if (StringUtils.isEmpty(hdfsOutDir)) {
-      LOG.error("HDFS config property <hdfs_out_dir> is not set in config file.");
+      logger.error("HDFS config property <hdfs_out_dir> is not set in config file.");
       return;
     }
     if (StringUtils.isEmpty(hdfsHost)) {
-      LOG.error("HDFS config property <hdfs_host> is not set in config file.");
+      logger.error("HDFS config property <hdfs_host> is not set in config file.");
       return;
     }
     if (StringUtils.isEmpty(hdfsPort)) {
-      LOG.error("HDFS config property <hdfs_port> is not set in config file.");
+      logger.error("HDFS config property <hdfs_port> is not set in config file.");
       return;
     }
     HashMap<String, String> contextParam = buildContextParam();
     hdfsOutDir = PlaceholderUtil.replaceVariables(hdfsOutDir, contextParam);
-    LOG.info("hdfs Output dir=" + hdfsOutDir);
+    logger.info("hdfs Output dir=" + hdfsOutDir);
     String localFileDir = logFeederProps.getTmpDir() + "hdfs/service/";
     logSpooler = new LogSpooler(localFileDir, filenamePrefix, this, this);
     this.startHDFSCopyThread();
@@ -99,7 +100,7 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
 
   @Override
   public void close() {
-    LOG.info("Closing file." + getShortDescription());
+    logger.info("Closing file." + getShortDescription());
     logSpooler.rollover();
     this.stopHDFSCopyThread();
     setClosed(true);
@@ -138,10 +139,10 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
                 boolean isCopied = LogFeederHDFSUtil.copyFromLocal(localFile.getAbsolutePath(), destFilePath, fileSystem,
                     overWrite, delSrc);
                 if (isCopied) {
-                  LOG.debug("File copy to hdfs hdfspath :" + destFilePath + " and deleted local file :" + localPath);
+                  logger.debug("File copy to hdfs hdfspath :" + destFilePath + " and deleted local file :" + localPath);
                 } else {
                   // TODO Need to write retry logic, in next release we can handle it
-                  LOG.error("Hdfs file copy  failed for hdfspath :" + destFilePath + " and localpath :" + localPath);
+                  logger.error("Hdfs file copy  failed for hdfspath :" + destFilePath + " and localpath :" + localPath);
                 }
               }
               localFileIterator.remove();
@@ -154,11 +155,11 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
                 }
               }
             } catch (InterruptedException e) {
-              LOG.error(e.getLocalizedMessage(),e);
+              logger.error(e.getLocalizedMessage(),e);
             }
           }
         } catch (Exception e) {
-          LOG.error("Exception in hdfsCopyThread errorMsg:" + e.getLocalizedMessage(), e);
+          logger.error("Exception in hdfsCopyThread errorMsg:" + e.getLocalizedMessage(), e);
         }
       }
     };
@@ -168,20 +169,20 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
 
   private void stopHDFSCopyThread() {
     if (hdfsCopyThread != null) {
-      LOG.info("waiting till copy all local files to hdfs.......");
+      logger.info("waiting till copy all local files to hdfs.......");
       while (!localReadyFiles.isEmpty()) {
         try {
           Thread.sleep(1000);
         } catch (InterruptedException e) {
-          LOG.error(e.getLocalizedMessage(), e);
+          logger.error(e.getLocalizedMessage(), e);
         }
-        LOG.debug("still waiting to copy all local files to hdfs.......");
+        logger.debug("still waiting to copy all local files to hdfs.......");
       }
-      LOG.info("calling interrupt method for hdfsCopyThread to stop it.");
+      logger.info("calling interrupt method for hdfsCopyThread to stop it.");
       try {
         hdfsCopyThread.interrupt();
       } catch (SecurityException exception) {
-        LOG.error(" Current thread : '" + Thread.currentThread().getName() +
+        logger.error(" Current thread : '" + Thread.currentThread().getName() +
             "' does not have permission to interrupt the Thread: '" + hdfsCopyThread.getName() + "'");
       }
       LogFeederHDFSUtil.closeFileSystem(fileSystem);
@@ -201,7 +202,7 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
         readyMonitor.notifyAll();
       }
     } catch (Exception e) {
-      LOG.error(e.getLocalizedMessage(),e);
+      logger.error(e.getLocalizedMessage(),e);
     }
   }
 
@@ -233,7 +234,7 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
     long timeSinceCreation = new Date().getTime() - currentSpoolerContext.getActiveLogCreationTime().getTime();
     boolean shouldRollover = timeSinceCreation > rolloverThresholdTimeMillis;
     if (shouldRollover) {
-      LOG.info("Detecting that time since file creation time " + currentSpoolerContext.getActiveLogCreationTime() +
+      logger.info("Detecting that time since file creation time " + currentSpoolerContext.getActiveLogCreationTime() +
           " has crossed threshold (msecs) " + rolloverThresholdTimeMillis);
     }
     return shouldRollover;

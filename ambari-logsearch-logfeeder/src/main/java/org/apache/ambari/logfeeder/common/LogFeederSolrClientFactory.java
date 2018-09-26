@@ -19,21 +19,15 @@
 package org.apache.ambari.logfeeder.common;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class LogFeederSolrClientFactory {
 
-  private static final Logger logger = LoggerFactory.getLogger(LogFeederSolrClientFactory.class);
+  private static final Logger logger = LogManager.getLogger(LogFeederSolrClientFactory.class);
 
   public SolrClient createSolrClient(String zkConnectionString, String[] solrUrls, String collection) {
     logger.info("Creating solr client ...");

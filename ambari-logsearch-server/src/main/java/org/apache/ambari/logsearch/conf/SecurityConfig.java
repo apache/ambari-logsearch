@@ -60,6 +60,8 @@ import org.springframework.security.ldap.authentication.NullLdapAuthoritiesPopul
 import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -187,7 +189,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public LdapAuthoritiesPopulator ldapAuthoritiesPopulator() {
-    if (StringUtils.isNotBlank(authPropsConfig.getLdapAuthConfig().getLdapGroupSearchBase())) {
+    if (authPropsConfig.isAuthLdapEnabled() || StringUtils.isNotBlank(authPropsConfig.getLdapAuthConfig().getLdapGroupSearchBase())) {
       final DefaultLdapAuthoritiesPopulator ldapAuthoritiesPopulator =
         new DefaultLdapAuthoritiesPopulator(ldapContextSource(), authPropsConfig.getLdapAuthConfig().getLdapGroupSearchBase());
       ldapAuthoritiesPopulator.setGroupSearchFilter(authPropsConfig.getLdapAuthConfig().getLdapGroupSearchFilter());
@@ -260,6 +262,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     filter.setAuthenticationFailureHandler(new LogsearchAuthFailureHandler());
     filter.setAuthenticationManager(authenticationManagerBean());
     return filter;
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 
   private LogsearchFilter logsearchServiceLogFilter() {

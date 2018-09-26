@@ -21,6 +21,7 @@ package org.apache.ambari.logfeeder.output;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.output.spool.LogSpoolerContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -63,6 +64,7 @@ public class OutputS3FileTest {
     }
   }
 
+  @Ignore("Until EasyMock 3.7 upgrade - waiting for release")
   @Test
   public void shouldRolloverWhenSufficientSizeIsReached() throws Exception {
 
@@ -81,6 +83,7 @@ public class OutputS3FileTest {
     assertTrue(outputS3File.shouldRollover(logSpoolerContext));
   }
 
+  @Ignore("Until EasyMock 3.7 upgrade - waiting for release")
   @Test
   public void shouldNotRolloverBeforeSufficientSizeIsReached() throws Exception {
     String thresholdSize = Long.toString(15 * 1024 * 1024L);

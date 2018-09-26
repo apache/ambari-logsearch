@@ -24,8 +24,8 @@ import org.apache.ambari.logsearch.appender.LogsearchConversion;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.InputSocketDescriptor;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.spi.LoggingEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;
@@ -39,7 +39,7 @@ import java.net.SocketException;
 
 public class InputSocket extends Input<LogFeederProps, InputSocketMarker, InputSocketDescriptor> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(InputSocket.class);
+  private static final Logger logger = LogManager.getLogger(InputSocket.class);
 
   private ServerSocket serverSocket;
   private Thread thread;
@@ -64,7 +64,7 @@ public class InputSocket extends Input<LogFeederProps, InputSocketMarker, InputS
   @Override
   public boolean monitor() {
     if (isReady()) {
-      LOG.info("Start monitoring socket thread...");
+      logger.info("Start monitoring socket thread...");
       thread = new Thread(this, getNameForThread());
       thread.start();
       return true;
@@ -75,7 +75,7 @@ public class InputSocket extends Input<LogFeederProps, InputSocketMarker, InputS
 
   @Override
   public void start() throws Exception {
-    LOG.info("Starting socket server (port: {}, protocol: {}, secure: {})", port, protocol, secure);
+    logger.info("Starting socket server (port: {}, protocol: {}, secure: {})", port, protocol, secure);
     ServerSocketFactory socketFactory = secure ? SSLServerSocketFactory.getDefault() : ServerSocketFactory.getDefault();
     InputSocketMarker inputSocketMarker = new InputSocketMarker(this, port, protocol, secure, log4j);
     LogsearchConversion loggerConverter = new LogsearchConversion();
@@ -88,19 +88,19 @@ public class InputSocket extends Input<LogFeederProps, InputSocketMarker, InputS
           try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()))) {
             LoggingEvent loggingEvent = (LoggingEvent) ois.readObject();
             String jsonStr = loggerConverter.createOutput(loggingEvent);
-            LOG.trace("Incoming socket logging event: " + jsonStr);
+            logger.trace("Incoming socket logging event: " + jsonStr);
             outputLine(jsonStr, inputSocketMarker);
           }
         } else {
           try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));) {
             String line = in.readLine();
-            LOG.trace("Incoming socket message: " + line);
+            logger.trace("Incoming socket message: " + line);
             outputLine(line, inputSocketMarker);
           }
         }
       }
     } catch (SocketException socketEx) {
-      LOG.warn("{}", socketEx.getMessage());
+      logger.warn("{}", socketEx.getMessage());
     } finally {
       serverSocket.close();
     }
@@ -109,12 +109,12 @@ public class InputSocket extends Input<LogFeederProps, InputSocketMarker, InputS
   @Override
   public void setDrain(boolean drain) {
     super.setDrain(drain);
-    LOG.info("Stopping socket input: {}", getShortDescription());
+    logger.info("Stopping socket input: {}", getShortDescription());
     try {
       serverSocket.close();
       setClosed(true);
     } catch (Exception e) {
-      LOG.error("Error during closing socket input.", e);
+      logger.error("Error during closing socket input.", e);
     }
   }
 
