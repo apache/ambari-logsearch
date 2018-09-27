@@ -91,6 +91,7 @@
     <surefire.argLine>-Xmx1024m -Xms512m</surefire.argLine>
     <skipSurefireTests>false</skipSurefireTests>
     <compiler.version>3.8.0</compiler.version>
+    <ambari-metrics.version>2.7.0.0.0</ambari-metrics.version>
   </properties>
 
   <licenses>

@@ -1,10 +1,12 @@
 # Log Search
+[![Build Status](https://builds.apache.org/buildStatus/icon?job=Ambari-LogSearch-master-Commit)](https://builds.apache.org/view/A/view/Ambari/job/Ambari-LogSearch-master-Commit/)
+![license](http://img.shields.io/badge/license-Apache%20v2-blue.svg)
 
 Log aggregation, analysis, and visualization for Ambari managed (and any other) services.
 
 ## Development
 
-Requires JDK 11
+Requires JDK 8 (JDK 11 is recommended)
 
 ### Prerequisites
 
@@ -42,15 +44,16 @@ In case if you started the containers separately and if you would like to access
 
 ## Package build process
 
-
 1. Check out the code from GIT repository
 
 2. On the logsearch root folder (ambari/ambari-logsearch), please execute the following Maven command to build RPM/DPKG:
 ```bash
+# for building with jdk 8, use -Djdk.version=1.8
 mvn -Dbuild-rpm clean package
 ```
   or
 ```bash
+# for building with jdk 8, use -Djdk.version=1.8
 mvn -Dbuild-deb clean package
 ```
 3. Generated RPM/DPKG files will be found in ambari-logsearch-assembly/target folder

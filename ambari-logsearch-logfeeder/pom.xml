@@ -142,7 +142,7 @@
     <dependency>
       <groupId>org.apache.ambari</groupId>
       <artifactId>ambari-metrics-common</artifactId>
-      <version>${project.version}</version>
+      <version>${ambari-metrics.version}</version>
     </dependency>
     <dependency>
       <groupId>io.minio</groupId>
