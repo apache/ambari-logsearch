@@ -1,8 +1,10 @@
-# Log Search
+# Apache Ambari Log Search
 [![Build Status](https://builds.apache.org/buildStatus/icon?job=Ambari-LogSearch-master-Commit)](https://builds.apache.org/view/A/view/Ambari/job/Ambari-LogSearch-master-Commit/)
 ![license](http://img.shields.io/badge/license-Apache%20v2-blue.svg)
 
 Log aggregation, analysis, and visualization for Ambari managed (and any other) services.
+
+Log Search is a sub-project of [Apache Ambari](https://github.com/apache/ambari)
 
 ## Development
 
@@ -72,3 +74,8 @@ mvn clean integration-test -Dselenium-tests failsafe:verify
 # you can specify story file folde location with -Dbackend.stories.location and -Dui.stories.location (absolute file path) in the commands
 ```
 Also you can run from the IDE, but make sure all of the ambari logsearch modules are built.
+
+## License
+
+- http://ambari.apache.org/license.html 
+- See more at [Ambari repository](https://github.com/apache/ambari)
