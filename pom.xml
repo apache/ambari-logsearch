@@ -92,6 +92,7 @@
     <skipSurefireTests>false</skipSurefireTests>
     <compiler.version>3.8.0</compiler.version>
     <ambari-metrics.version>2.7.0.0.0</ambari-metrics.version>
+    <logsearch.docker.tag>latest</logsearch.docker.tag>
   </properties>
 
   <licenses>
@@ -147,6 +148,11 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>0.27.1</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
@@ -339,6 +345,7 @@
             <exclude>**/docker/knox/**</exclude>
             <exclude>**/node_modules/**</exclude>
             <exclude>**/dist/**</exclude>
+            <exclude>.repository/**</exclude>
           </excludes>
         </configuration>
         <executions>

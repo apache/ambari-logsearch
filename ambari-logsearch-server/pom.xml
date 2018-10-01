@@ -41,6 +41,25 @@
     <jjwt.version>0.6.0</jjwt.version>
     <javax-servlet.version>4.0.1</javax-servlet.version>
   </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <configuration>
+          <verbose>true</verbose>
+          <images>
+            <image>
+              <name>apache/ambari-logsearch-portal:${logsearch.docker.tag}</name>
+              <build>
+                <dockerFileDir>${project.build.directory}/docker-logsearch-portal</dockerFileDir>
+              </build>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <profiles>
     <profile>
       <id>dev</id>
