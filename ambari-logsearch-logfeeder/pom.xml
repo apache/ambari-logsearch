@@ -303,6 +303,21 @@
 
     <plugins>
       <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <configuration>
+          <verbose>true</verbose>
+          <images>
+            <image>
+              <name>apache/ambari-logsearch-logfeeder:${logsearch.docker.tag}</name>
+              <build>
+                <dockerFileDir>${project.build.directory}/docker-logsearch-logfeeder</dockerFileDir>
+              </build>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring-boot.version}</version>

@@ -51,5 +51,11 @@
         <exclude name="**/*.sh"/>
       </tarfileset>
     </tar>
+    <copy todir="target" >
+      <fileset dir="../jenkins/containers" includes="**"/>
+    </copy>
+    <copy todir="target/docker-logsearch-logfeeder/logfeeder" >
+      <fileset dir="target/package" includes="**"/>
+    </copy>
   </target>
 </project>

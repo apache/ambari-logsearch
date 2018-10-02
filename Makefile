@@ -22,6 +22,15 @@ endif
 package:
 	$(MAVEN_BINARY) clean package
 
+install:
+	$(MAVEN_BINARY) clean install -DskipTests
+
+be:
+	$(MAVEN_BINARY) clean package -Pbe
+
+fe:
+	$(MAVEN_BINARY) clean package -Pfe
+
 test:
 	$(MAVEN_BINARY) clean test
 
