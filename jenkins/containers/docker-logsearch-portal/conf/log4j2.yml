@@ -47,4 +47,3 @@ Configutation:
       level: info
       AppenderRef:
       - ref: Console_Appender
-      - ref: RollingFile_Appender

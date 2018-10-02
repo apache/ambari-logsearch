@@ -29,8 +29,9 @@ ENV LOGSEARCH_INIT_FILE /init.sh
 ENV LOGSEARCH_PORT="61888"
 ENV LOGSEARCH_PATH="/usr/lib/ambari-logsearch-portal"
 ENV LOGSEARCH_CONF_DIR="/usr/lib/ambari-logsearch-portal/conf"
+ENV LOG_PATH="/var/log/ambari-logsearch-portal"
 ENV LOGFILE="/var/log/ambari-logsearch-portal/logsearch.log"
-ENV PID_FILE="/var/run/ambari-logsearch-portal/logsearch.pid"
+ENV LOGSEARCH_PID_FILE="/var/run/ambari-logsearch-portal/logsearch.pid"
 
 ENV LOGSEARCH_DEBUG=false
 ENV LOGSEARCH_DEBUG_PORT=5005
@@ -38,6 +39,8 @@ ENV LOGSEARCH_SSL="false"
 
 RUN groupadd -r --gid $LOGSEARCH_GID $LOGSEARCH_GROUP && useradd -r --uid $LOGSEARCH_UID --gid $LOGSEARCH_GID $LOGSEARCH_USER
 RUN chown -R $LOGSEARCH_USER:$LOGSEARCH_GROUP /usr/lib/ambari-logsearch-portal
+RUN mkdir -p /var/log/ambari-logsearch-portal && chown -R $LOGSEARCH_USER:$LOGSEARCH_GROUP /var/log/ambari-logsearch-portal
+RUN mkdir -p /var/run/ambari-logsearch-portal && chown -R $LOGSEARCH_USER:$LOGSEARCH_GROUP /var/run/ambari-logsearch-portal
 RUN find /usr/lib/ambari-logsearch-portal -type d -exec chmod 755 {} +
 RUN find /usr/lib/ambari-logsearch-portal -type f -exec chmod 644 {} +
 RUN chmod 755 $LOGSEARCH_PATH/bin/logsearch.sh
@@ -45,5 +48,6 @@ RUN chmod 755 $LOGSEARCH_PATH/conf/logsearch-env.sh
 RUN chmod 755 /entrypoint.sh
 RUN chmod 755 /init.sh
 
+USER $LOGSEARCH_USER
 WORKDIR /usr/lib/ambari-logsearch-portal
 CMD ["/entrypoint.sh"]
