@@ -40,6 +40,27 @@ rpm:
 deb:
 	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests
 
+package-jdk8:
+	$(MAVEN_BINARY) clean package -Djdk.version=1.8
+
+install-jdk8:
+	$(MAVEN_BINARY) clean install -DskipTests -Djdk.version=1.8
+
+be-jdk8:
+	$(MAVEN_BINARY) clean package -Pbe -Djdk.version=1.8
+
+fe-jdk8:
+	$(MAVEN_BINARY) clean package -Pfe -Djdk.version=1.8
+
+test-jdk8:
+	$(MAVEN_BINARY) clean test -Djdk.version=1.8
+
+rpm-jdk8:
+	$(MAVEN_BINARY) clean package -Dbuild-rpm -DskipTests -Djdk.version=1.8
+
+deb-jdk8:
+	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=1.8
+
 docker-build:
 	$(MAVEN_BINARY) clean package docker:build -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG)
 
