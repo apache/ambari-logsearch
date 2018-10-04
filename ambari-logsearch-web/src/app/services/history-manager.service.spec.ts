@@ -47,6 +47,12 @@ import {LogsStateService} from '@app/services/storage/logs-state.service';
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 import {NotificationService} from '@modules/shared/services/notification.service';
 
+import { AuthService } from '@app/services/auth.service';
+import * as auth from '@app/store/reducers/auth.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 describe('HistoryManagerService', () => {
   beforeEach(() => {
 
@@ -67,8 +73,11 @@ describe('HistoryManagerService', () => {
           components,
           hosts,
           serviceLogsTruncated,
-          tabs
-        })
+          tabs,
+          auth: auth.reducer
+        }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects)
       ],
       providers: [
         ...MockHttpRequestModules,
@@ -93,7 +102,8 @@ describe('HistoryManagerService', () => {
         LogsFilteringUtilsService,
         LogsStateService,
         NotificationsService,
-        NotificationService
+        NotificationService,
+        AuthService
       ]
     });
   });

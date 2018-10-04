@@ -21,9 +21,12 @@ import {FormGroup} from '@angular/forms';
 import {FilterCondition, TimeUnitListItem} from '@app/classes/filtering';
 import {ListItem} from '@app/classes/list-item';
 import {HomogeneousObject} from '@app/classes/object';
-import {AuthService} from '@app/services/auth.service';
 import {LogsContainerService} from '@app/services/logs-container.service';
 import {Router} from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { LogOutAction } from '@app/store/actions/auth.actions';
 
 @Component({
   selector: 'top-menu',
@@ -32,7 +35,11 @@ import {Router} from '@angular/router';
 })
 export class TopMenuComponent {
 
-  constructor(private authService: AuthService, private logsContainer: LogsContainerService, private router: Router) {}
+  constructor(
+    private logsContainer: LogsContainerService,
+    private router: Router,
+    private store: Store<AppStore>
+  ) {}
 
   get filtersForm(): FormGroup {
     return this.logsContainer.filtersForm;
@@ -45,10 +52,10 @@ export class TopMenuComponent {
   openSettings = (): void => {};
 
   /**
-   * Request a logout action from AuthService
+   * Dispatch the LogOutAction.
    */
   logout = (): void => {
-    this.authService.logout();
+    this.store.dispatch(new LogOutAction());
   }
 
   navigateToShipperConfig = (): void => {

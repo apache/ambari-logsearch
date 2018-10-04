@@ -25,7 +25,13 @@
   "authorization.name": "Username",
   "authorization.password": "Password",
   "authorization.signIn": "Sign In",
-  "authorization.error.401": "Unable to sign in. Invalid username/password combination.",
+  "authorization.checkingAuthorization": "Checking authorization...",
+  "authorization.authorized": "Successful authorization.",
+  "authorization.loggedOut": "Successfuly logged out.",
+  "authorization.error.authorizationError": "Error during authorization. Maybe your session expired.",
+  "authorization.error.unauthorized": "Unable to sign in. Invalid username/password combination.",
+  "authorization.error.forbidden": "Access forbidden.",
+  "authorization.error.authorizationTimeout": "Authorization timeout.",
 
   "login.title": "Login",
 

@@ -63,7 +63,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   constructor(
-    private logsContainer: LogsContainerService,
+    private logsContainerService: LogsContainerService,
     private historyManager: HistoryManagerService,
     private settings: UserSettingsService,
     private route: ActivatedRoute,
@@ -98,7 +98,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   get captureSeconds(): number {
-    return this.logsContainer.captureSeconds;
+    return this.logsContainerService.captureSeconds;
   }
 
   setModalSubmitDisabled(isDisabled: boolean): void {
@@ -126,7 +126,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   refresh(): void {
-    this.logsContainer.loadLogs();
+    this.logsContainerService.loadLogs();
   }
 
   onSelectCluster(cluster: string) {
@@ -157,15 +157,15 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   startCapture(): void {
-    this.logsContainer.startCaptureTimer();
+    this.logsContainerService.startCaptureTimer();
   }
 
   stopCapture(): void {
-    this.logsContainer.stopCaptureTimer();
+    this.logsContainerService.stopCaptureTimer();
   }
 
   cancelCapture(): void {
-    this.logsContainer.cancelCapture();
+    this.logsContainerService.cancelCapture();
   }
 
 }

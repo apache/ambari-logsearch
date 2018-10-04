@@ -54,6 +54,11 @@ import {NotificationService} from '@modules/shared/services/notification.service
 
 import { dataAvailabilityStates, DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-availability-state.store';
 
+import * as auth from '@app/store/reducers/auth.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 describe('TimeZonePickerComponent', () => {
   let component: TimeZonePickerComponent;
   let fixture: ComponentFixture<TimeZonePickerComponent>;
@@ -81,8 +86,11 @@ describe('TimeZonePickerComponent', () => {
           serviceLogsHistogramData,
           serviceLogsTruncated,
           tabs,
-          dataAvailabilityStates
+          dataAvailabilityStates,
+          auth: auth.reducer
         }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects),
         ...TranslationModules
       ],
       providers: [

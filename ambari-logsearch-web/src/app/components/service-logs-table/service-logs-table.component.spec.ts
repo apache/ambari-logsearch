@@ -56,6 +56,11 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 import {NotificationService} from '@modules/shared/services/notification.service';
 
+import * as auth from '@app/store/reducers/auth.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 describe('ServiceLogsTableComponent', () => {
   let component: ServiceLogsTableComponent;
   let fixture: ComponentFixture<ServiceLogsTableComponent>;
@@ -88,8 +93,11 @@ describe('ServiceLogsTableComponent', () => {
           tabs,
           clusters,
           components,
-          hosts
+          hosts,
+          auth: auth.reducer
         }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects),
         TooltipModule.forRoot()
       ],
       providers: [

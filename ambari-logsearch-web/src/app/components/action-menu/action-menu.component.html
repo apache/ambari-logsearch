@@ -35,7 +35,7 @@
              (buttonClick)="stopCapture()"></menu-button>
 <menu-button label="{{'topMenu.refresh' | translate}}" iconClass="fa fa-refresh"
              (buttonClick)="refresh()"></menu-button>
-<modal-dialog
+<modal-dialog *ngIf="isLogIndexFilterDisplayed$ | async"
   class="log-index-filter"
   [visible]="isLogIndexFilterDisplayed$ | async"
   [showCloseBtn]="false"

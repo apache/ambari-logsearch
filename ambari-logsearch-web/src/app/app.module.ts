@@ -17,10 +17,9 @@
  */
 
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule, CUSTOM_ELEMENTS_SCHEMA, Injector} from '@angular/core';
+import {NgModule, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER, Injector} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpModule, Http, XHRBackend, BrowserXhr, ResponseOptions, XSRFStrategy} from '@angular/http';
-import {InMemoryBackendService} from 'angular-in-memory-web-api';
+import { HttpModule, Http } from '@angular/http';
 import {TypeaheadModule, TooltipModule} from 'ngx-bootstrap';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {StoreModule} from '@ngrx/store';
@@ -30,7 +29,7 @@ import {MomentTimezoneModule} from 'angular-moment-timezone';
 import {NgStringPipesModule} from 'angular-pipes';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 
-import {environment} from '@envs/environment';
+import { EffectsModule } from '@ngrx/effects';
 
 import {SharedModule} from '@modules/shared/shared.module';
 import {AppLoadModule} from '@modules/app-load/app-load.module';
@@ -115,6 +114,9 @@ import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.serv
 import {LogsStateService} from '@app/services/storage/logs-state.service';
 import {LoginScreenGuardService} from '@app/services/login-screen-guard.service';
 
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -186,7 +188,11 @@ import {LoginScreenGuardService} from '@app/services/login-screen-guard.service'
       maxAge: 5
     }),
 
-    AppRoutingModule
+    AppRoutingModule,
+
+    EffectsModule.run(AuthEffects),
+    EffectsModule.run(NotificationEffects)
+
   ],
   providers: [
     HttpClientService,

@@ -56,6 +56,12 @@ import {NotificationService} from '@modules/shared/services/notification.service
 
 import { DataAvailabilityStatesStore, dataAvailabilityStates } from '@app/modules/app-load/stores/data-availability-state.store';
 
+import * as auth from '@app/store/reducers/auth.reducers';
+import { AuthService } from '@app/services/auth.service';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 describe('ActionMenuComponent', () => {
   let component: ActionMenuComponent;
   let fixture: ComponentFixture<ActionMenuComponent>;
@@ -81,8 +87,11 @@ describe('ActionMenuComponent', () => {
           hosts,
           serviceLogsTruncated,
           tabs,
-          dataAvailabilityStates
-        })
+          dataAvailabilityStates,
+          auth: auth.reducer
+        }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects)
       ],
       declarations: [
         LogIndexFilterComponent,
@@ -116,7 +125,8 @@ describe('ActionMenuComponent', () => {
         LogsStateService,
         NotificationsService,
         NotificationService,
-        DataAvailabilityStatesStore
+        DataAvailabilityStatesStore,
+        AuthService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

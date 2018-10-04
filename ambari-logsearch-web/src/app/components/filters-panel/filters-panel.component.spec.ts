@@ -48,6 +48,12 @@ import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.serv
 import {NotificationService} from '@modules/shared/services/notification.service';
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 
+import * as auth from '@app/store/reducers/auth.reducers';
+import { AuthService } from '@app/services/auth.service';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 describe('FiltersPanelComponent', () => {
   let component: FiltersPanelComponent;
   let fixture: ComponentFixture<FiltersPanelComponent>;
@@ -80,8 +86,11 @@ describe('FiltersPanelComponent', () => {
           serviceLogsHistogramData,
           appState,
           serviceLogsTruncated,
-          tabs
+          tabs,
+          auth: auth.reducer
         }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects),
         ...TranslationModules
       ],
       providers: [
@@ -106,7 +115,8 @@ describe('FiltersPanelComponent', () => {
         LogsFilteringUtilsService,
         LogsStateService,
         NotificationsService,
-        NotificationService
+        NotificationService,
+        AuthService
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
