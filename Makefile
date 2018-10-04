@@ -40,6 +40,9 @@ rpm:
 deb:
 	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests
 
+update-version:
+	$(MAVEN_BINARY) versions:set -DnewVersion=$(new-version) -DgenerateBackupPoms=false
+
 package-jdk8:
 	$(MAVEN_BINARY) clean package -Djdk.version=1.8
 
@@ -66,3 +69,9 @@ docker-build:
 
 docker-push:
 	$(MAVEN_BINARY) clean package docker:build docker:push -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG)
+
+docker-dev-start:
+	cd docker && docker-compose up -d
+
+docker-dev-build-and-start:
+	$(MAVEN_BINARY) clean package && cd docker && docker-compose up -d
