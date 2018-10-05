@@ -44,6 +44,7 @@ public interface LogLevelFilterMonitor {
 
   /**
    * Helper function to get all log level filters
+   * @return get log level filters per log types
    */
   Map<String, LogLevelFilter> getLogLevelFilters();
 

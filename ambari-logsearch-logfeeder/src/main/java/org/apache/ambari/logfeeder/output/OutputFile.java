@@ -90,7 +90,7 @@ public class OutputFile extends Output<LogFeederProps, InputFileMarker> {
         // Ignore this exception
       }
     }
-    setClosed(true);
+    shouldCloseOutput();
   }
 
   @Override

@@ -38,7 +38,7 @@ public class MapperFieldValueTest {
     mapFieldValueDescriptor.setPostValue("someOtherValue");
 
     MapperFieldValue mapperFieldValue = new MapperFieldValue();
-    assertTrue("Could not initialize!", mapperFieldValue.init(null, "someField", null, mapFieldValueDescriptor));
+    assertTrue("Could not initialize!", mapperFieldValue.init(null,null, "someField", null, mapFieldValueDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
 
@@ -55,7 +55,7 @@ public class MapperFieldValueTest {
     MapFieldValueDescriptorImpl mapFieldValueDescriptor = new MapFieldValueDescriptorImpl();
 
     MapperFieldValue mapperFieldValue = new MapperFieldValue();
-    assertFalse("Was not able to initialize!", mapperFieldValue.init(null, "someField", null, mapFieldValueDescriptor));
+    assertFalse("Was not able to initialize!", mapperFieldValue.init(null, null, "someField", null, mapFieldValueDescriptor));
   }
 
   @Test
@@ -66,7 +66,7 @@ public class MapperFieldValueTest {
     mapFieldValueDescriptor.setPostValue("someOtherValue");
 
     MapperFieldValue mapperFieldValue = new MapperFieldValue();
-    assertTrue("Could not initialize!", mapperFieldValue.init(null, "someField", null, mapFieldValueDescriptor));
+    assertTrue("Could not initialize!", mapperFieldValue.init(null, null, "someField", null, mapFieldValueDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
 

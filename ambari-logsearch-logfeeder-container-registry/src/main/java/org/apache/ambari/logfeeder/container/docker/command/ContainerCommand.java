@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * Responsible of execute container commands. (like listing or inspecting containers)
- * @param <RESPONSE_TYPE>
+ * @param <RESPONSE_TYPE> object that should be returned by a container command
  */
 public interface ContainerCommand<RESPONSE_TYPE> {
 

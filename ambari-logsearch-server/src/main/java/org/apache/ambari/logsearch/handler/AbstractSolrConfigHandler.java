@@ -67,12 +67,20 @@ public abstract class AbstractSolrConfigHandler implements SolrZkRequestHandler<
 
   /**
    * Update config file (like solrconfig.xml) to zookeeper znode of solr
+   * @param solrPropsConfig hold global solr configurations
+   * @param zkClient zk client of the solr client
+   * @param file that needs to be uploaded to zookeeper
+   * @param separator file separator
+   * @param content file content
+   * @return true if upload was successful (or can be skipped)
+   * @throws IOException error during file uploading
    */
   public abstract boolean updateConfigIfNeeded(SolrPropsConfig solrPropsConfig, SolrZkClient zkClient, File file,
                                                String separator, byte[] content) throws IOException;
 
   /**
-   * Config file name which should be uploaded to zookeeper
+   * Get config file name
+   * @return config file name which should be uploaded to zookeeper
    */
   public abstract String getConfigFileName();
 

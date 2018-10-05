@@ -90,6 +90,9 @@ public class JSONUtil {
 
   /**
    * WRITE JOSN IN FILE ( Delete existing file and create new file)
+   * @param jsonStr the json string that will be written
+   * @param outputFile file where the json content will be written
+   * @param beautify use beautify on json string
    */
   public static synchronized void writeJSONInFile(String jsonStr, File outputFile, boolean beautify) {
     FileWriter fileWriter = null;
@@ -129,13 +132,17 @@ public class JSONUtil {
 
   /**
    * GET VALUES FROM JSON BY GIVING KEY RECURSIVELY
+   * @param jsonStr the json string that will be read as an JSONObject
+   * @param keyName a key that will be gathered
+   * @param values results will be loaded here
+   * @return response with string type
    */
   @SuppressWarnings("rawtypes")
   public static String getValuesOfKey(String jsonStr, String keyName, List<String> values) {
     if (values == null) {
       return null;
     }
-    Object jsonObj = null;
+    JSONObject jsonObj = null;
     try {
       jsonObj = new JSONObject(jsonStr);
     } catch (Exception e) {
@@ -159,7 +166,7 @@ public class JSONUtil {
       return null;
     }
 
-    Iterator iterator = ((JSONObject) jsonObj).keys();
+    Iterator iterator = jsonObj.keys();
     if (iterator == null) {
       return null;
     }
@@ -169,17 +176,17 @@ public class JSONUtil {
       if (key != null && key.equals(keyName)) {
 
         try {
-          String val = ((JSONObject) jsonObj).getString(key);
+          String val = jsonObj.getString(key);
           values.add(val);
         } catch (Exception e) {
           // ignore
         }
 
-      } else if ((((JSONObject) jsonObj).optJSONArray(key) != null) || (((JSONObject) jsonObj).optJSONObject(key) != null)) {
+      } else if ((jsonObj.optJSONArray(key) != null) || (jsonObj.optJSONObject(key) != null)) {
 
         String str = null;
         try {
-          str = getValuesOfKey("" + ((JSONObject) jsonObj).getString(key), keyName, values);
+          str = getValuesOfKey("" + jsonObj.getString(key), keyName, values);
         } catch (Exception e) {
           // ignore
         }

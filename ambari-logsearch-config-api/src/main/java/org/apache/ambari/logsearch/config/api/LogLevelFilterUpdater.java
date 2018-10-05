@@ -61,6 +61,7 @@ public abstract class LogLevelFilterUpdater extends Thread {
 
   /**
    * Periodically check filters from a source (and use log level filter monitor to create/update/delete it)
+   * @param logLevelFilterMonitor log level filter monitor (as input) which can be used to change state
    */
   protected abstract void checkFilters(final LogLevelFilterMonitor logLevelFilterMonitor);
 }

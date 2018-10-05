@@ -91,7 +91,7 @@ public class FilterGrok extends Filter<LogFeederProps> {
       skipOnError = ((FilterGrokDescriptor) getFilterDescriptor()).isSkipOnError();
       if (logFeederProps.isDockerContainerRegistryEnabled()) {
         Input input = getInput();
-        if (input != null && input instanceof InputFile) {
+        if (input instanceof InputFile) {
           dockerEnabled = BooleanUtils.toBooleanDefaultIfNull(((InputFileDescriptor) input.getInputDescriptor()).getDockerEnabled(), false);
         }
       }

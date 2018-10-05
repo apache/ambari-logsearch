@@ -50,17 +50,18 @@ public class ExternalServerClient {
 
   /**
    * Send GET request to an external server
+   * @param loginUrl external url
+   * @param klass response object type
+   * @param username basic auth credential user
+   * @param password basic auth credential password
+   * @return response
+   * @throws Exception error during send request to external location
    */
   public Object sendGETRequest(String loginUrl, Class<?> klass, String username, String password) throws Exception {
     if (localJerseyClient == null) {
-      localJerseyClient = new ThreadLocal<JerseyClient>() {
-        @Override
-        protected JerseyClient initialValue() {
-          return sslConfigurer.isKeyStoreSpecified() ?
-            new JerseyClientBuilder().sslContext(sslConfigurer.getSSLContext()).build() :
-            JerseyClientBuilder.createClient();
-        }
-      };
+      localJerseyClient = ThreadLocal.withInitial(() -> sslConfigurer.isKeyStoreSpecified() ?
+        new JerseyClientBuilder().sslContext(sslConfigurer.getSSLContext()).build() :
+        JerseyClientBuilder.createClient());
     }
     String url = authPropsConfig.getExternalAuthHostUrl() + loginUrl;
     JerseyClient client = localJerseyClient.get();

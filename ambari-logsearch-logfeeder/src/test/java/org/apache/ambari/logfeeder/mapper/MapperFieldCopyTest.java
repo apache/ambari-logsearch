@@ -37,7 +37,7 @@ public class MapperFieldCopyTest {
     mapFieldCopyDescriptor.setCopyName("someOtherField");
 
     MapperFieldCopy mapperFieldCopy = new MapperFieldCopy();
-    assertTrue("Could not initialize!", mapperFieldCopy.init(null, "someField", null, mapFieldCopyDescriptor));
+    assertTrue("Could not initialize!", mapperFieldCopy.init(null, null, "someField", null, mapFieldCopyDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
     jsonObj.put("someField", "someValue");
@@ -55,6 +55,6 @@ public class MapperFieldCopyTest {
     MapFieldCopyDescriptorImpl mapFieldCopyDescriptor = new MapFieldCopyDescriptorImpl();
 
     MapperFieldCopy mapperFieldCopy = new MapperFieldCopy();
-    assertFalse("Was not able to initialize!", mapperFieldCopy.init(null, "someField", null, mapFieldCopyDescriptor));
+    assertFalse("Was not able to initialize!", mapperFieldCopy.init(null, null, "someField", null, mapFieldCopyDescriptor));
   }
 }

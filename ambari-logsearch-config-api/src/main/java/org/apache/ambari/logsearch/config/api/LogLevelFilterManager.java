@@ -29,7 +29,7 @@ public interface LogLevelFilterManager {
    * @param clusterName The name of the cluster where the log is.
    * @param logId The id of the log.
    * @param filter The log level filter for the log.
-   * @throws Exception
+   * @throws Exception error during creating the log lelev filter
    */
   void createLogLevelFilter(String clusterName, String logId, LogLevelFilter filter) throws Exception;
 
@@ -38,7 +38,7 @@ public interface LogLevelFilterManager {
    *
    * @param clusterName The name of the cluster where the logs are.
    * @param filters The log level filters to set.
-   * @throws Exception
+   * @throws Exception error during setting the log lelev filter
    */
   void setLogLevelFilters(String clusterName, LogLevelFilterMap filters) throws Exception;
 

@@ -56,6 +56,34 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * Ship (transformed) input data to solr destination. Works with both solr cloud mode or providing static solr url(s).
+ * In Solr cloud mode Log Feeder will manage and listen a ZooKeeper connection. If tthere are too many Log Feeder nodes that can mean
+ * it requires a lot of client connections. (for static urls, use "solr_urls" field, for Solr cloud mode use "zk_connect_string")
+ * Example configuration (using JSON config api):
+ * <pre>
+ *   {
+ *   "output": [
+ *     {
+ *       "is_enabled": "true",
+ *       "comment": "Output to solr for service logs",
+ *       "collection" : "hadoop_logs",
+ *       "destination": "solr",
+ *       "zk_connect_string": "localhost:9983",
+ *       "type": "service",
+ *       "skip_logtime": "true",
+ *       "conditions": {
+ *         "fields": {
+ *           "rowtype": [
+ *             "service"
+ *           ]
+ *         }
+ *       }
+ *     }
+ *     ]
+ *   }
+ * </pre>
+ */
 public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
   private static final Logger logger = LogManager.getLogger(OutputSolr.class);
@@ -74,7 +102,6 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
   private String type;
   private String collection;
-  private String splitMode;
   private int splitInterval;
   private String zkConnectString;
   private String[] solrUrls = null;
@@ -90,11 +117,6 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
   private List<SolrWorkerThread> workerThreadList = new ArrayList<>();
 
   private LogFeederProps logFeederProps;
-
-  @Override
-  public boolean monitorConfigChanges() {
-    return true;
-  };
 
   @Override
   public String getOutputType() {
@@ -142,7 +164,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
     workers = getIntValue("workers", DEFAULT_NUMBER_OF_WORKERS);
 
     splitInterval = 0;
-    splitMode = getStringValue("split_interval", "none");
+    String splitMode = getStringValue("split_interval", "none");
     if (!splitMode.equals("none")) {
       splitInterval = Integer.parseInt(splitMode);
     }
@@ -498,7 +520,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
   }
 
   @Override
-  public void write(String block, InputMarker inputMarker) throws Exception {
+  public void write(String block, InputMarker inputMarker) {
   }
 
   @Override

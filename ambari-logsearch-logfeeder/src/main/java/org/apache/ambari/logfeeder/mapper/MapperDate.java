@@ -45,7 +45,7 @@ public class MapperDate extends Mapper<LogFeederProps> {
   private FastDateFormat srcDateFormatter=null;
 
   @Override
-  public boolean init(String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
+  public boolean init(LogFeederProps logFeederProps, String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
     init(inputDesc, fieldName, mapClassCode);
     
     String targetDateFormat = ((MapDateDescriptor)mapFieldDescriptor).getTargetDatePattern();

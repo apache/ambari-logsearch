@@ -48,12 +48,14 @@ import java.util.List;
 
 /**
  * Filter servlet to handle trusted proxy authentication.
- * It is disabled by default (see: {@link AuthPropsConfig#isTrustedProxy()}) <br/>
- * There are 4 main configuration properties of this filter (allow authentication only if these are matches with the request details): <br/>
- * - {@link AuthPropsConfig#getProxyUsers()} - Proxy users <br/>
- * - {@link AuthPropsConfig#getProxyUserGroups()} - Proxy groups <br/>
- * - {@link AuthPropsConfig#getProxyUserHosts()} - Proxy hosts <br/>
- * - {@link AuthPropsConfig#getProxyIp()} - Proxy server IPs<br/>
+ * It is disabled by default (see: {@link AuthPropsConfig#isTrustedProxy()})
+ * There are 4 main configuration properties of this filter (allow authentication only if these are matches with the request details):
+ * <pre>
+ * - {@link AuthPropsConfig#getProxyUsers()} - Proxy users
+ * - {@link AuthPropsConfig#getProxyUserGroups()} - Proxy groups
+ * - {@link AuthPropsConfig#getProxyUserHosts()} - Proxy hosts
+ * - {@link AuthPropsConfig#getProxyIp()} - Proxy server IPs
+ * </pre>
  */
 public class LogsearchTrustedProxyFilter extends AbstractAuthenticationProcessingFilter {
 

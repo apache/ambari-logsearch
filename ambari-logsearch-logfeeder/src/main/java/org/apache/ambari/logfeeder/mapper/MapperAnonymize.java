@@ -43,7 +43,7 @@ public class MapperAnonymize extends Mapper<LogFeederProps> {
   private char hideChar;
 
   @Override
-  public boolean init(String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
+  public boolean init(LogFeederProps logFeederProps, String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
     init(inputDesc, fieldName, mapClassCode);
     
     pattern = ((MapAnonymizeDescriptor)mapFieldDescriptor).getPattern();

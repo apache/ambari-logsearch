@@ -30,7 +30,6 @@ import org.apache.ambari.logfeeder.plugin.input.InputMarker;
 import org.apache.ambari.logfeeder.plugin.manager.OutputManager;
 import org.apache.ambari.logfeeder.plugin.output.Output;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
-import org.apache.ambari.logsearch.config.api.OutputConfigMonitor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -51,8 +50,6 @@ public class OutputManagerImpl extends OutputManager {
 
   private List<Output> outputs = new ArrayList<>();
 
-  private boolean addMessageMD5 = true;
-
   private static long docCounter = 0;
   private MetricData messageTruncateMetric = new MetricData(null, false);
 
@@ -68,20 +65,11 @@ public class OutputManagerImpl extends OutputManager {
     return outputs;
   }
 
-  public List<? extends OutputConfigMonitor> getOutputsToMonitor() {
-    List<Output> outputsToMonitor = new ArrayList<>();
-    for (Output output : outputs) {
-      if (output.monitorConfigChanges()) {
-        outputsToMonitor.add(output);
-      }
-    }
-    return outputsToMonitor;
-  }
-
   public void add(Output output) {
     this.outputs.add(output);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void init() throws Exception {
     for (Output output : outputs) {
@@ -89,6 +77,7 @@ public class OutputManagerImpl extends OutputManager {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void write(Map<String, Object> jsonObj, InputMarker inputMarker) {
     Input input = inputMarker.getInput();
 
@@ -117,19 +106,17 @@ public class OutputManagerImpl extends OutputManager {
 
 
       byte[] bytes = LogFeederUtil.getGson().toJson(jsonObj).getBytes();
-      Long eventMD5 = Hashing.md5().hashBytes(bytes).asLong();
+      long eventMD5 = Hashing.md5().hashBytes(bytes).asLong();
       if (input.isGenEventMD5()) {
-        jsonObj.put("event_md5", prefix + eventMD5.toString());
+        jsonObj.put("event_md5", prefix + Long.toString(eventMD5));
       }
       if (input.isUseEventMD5()) {
-        jsonObj.put("id", prefix + eventMD5.toString());
+        jsonObj.put("id", prefix + Long.toString(eventMD5));
       }
     }
 
-    jsonObj.put("seq_num", new Long(docCounter++));
-    if (jsonObj.get("event_count") == null) {
-      jsonObj.put("event_count", new Integer(1));
-    }
+    jsonObj.put("seq_num", docCounter++);
+    jsonObj.computeIfAbsent("event_count", k -> 1);
     if (StringUtils.isNotBlank(input.getInputDescriptor().getGroup())) {
       jsonObj.put("group", input.getInputDescriptor().getGroup());
     }
@@ -141,9 +128,7 @@ public class OutputManagerImpl extends OutputManager {
       // TODO: Let's check size only for log_message for now
       String logMessage = (String) jsonObj.get("log_message");
       logMessage = truncateLongLogMessage(jsonObj, input, logMessage);
-      if (addMessageMD5) {
-        jsonObj.put("message_md5", "" + Hashing.md5().hashBytes(logMessage.getBytes()).asLong());
-      }
+      jsonObj.put("message_md5", "" + Hashing.md5().hashBytes(logMessage.getBytes()).asLong());
     }
     List<String> defaultLogLevels = getDefaultLogLevels(input);
     if (logLevelFilterHandler.isAllowed(jsonObj, inputMarker, defaultLogLevels)
@@ -192,6 +177,7 @@ public class OutputManagerImpl extends OutputManager {
     return logMessage;
   }
 
+  @SuppressWarnings("unchecked")
   public void write(String jsonBlock, InputMarker inputMarker) {
     List<String> defaultLogLevels = getDefaultLogLevels(inputMarker.getInput());
     if (logLevelFilterHandler.isAllowed(jsonBlock, inputMarker, defaultLogLevels)) {
@@ -206,6 +192,7 @@ public class OutputManagerImpl extends OutputManager {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void copyFile(File inputFile, InputMarker inputMarker) {
     Input input = inputMarker.getInput();
     List<? extends Output> outputList = input.getOutputList();

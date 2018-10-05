@@ -49,8 +49,6 @@ public class InputManagerImpl extends InputManager {
 
   private MetricData filesCountMetric = new MetricData("input.files.count", true);
 
-  private Thread inputIsReadyMonitor;
-
   @Inject
   private DockerContainerRegistry dockerContainerRegistry;
 
@@ -66,11 +64,7 @@ public class InputManagerImpl extends InputManager {
 
   @Override
   public void add(String serviceName, Input input) {
-    List<Input> inputList = inputs.get(serviceName);
-    if (inputList == null) {
-      inputList = new ArrayList<>();
-      inputs.put(serviceName, inputList);
-    }
+    List<Input> inputList = inputs.computeIfAbsent(serviceName, k -> new ArrayList<>());
     inputList.add(input);
   }
 
@@ -82,7 +76,10 @@ public class InputManagerImpl extends InputManager {
     }
     for (Input input : inputList) {
       while (!input.isClosed()) {
-        try { Thread.sleep(100); } catch (InterruptedException e) {}
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
       }
     }
     inputList.clear();
@@ -116,6 +113,7 @@ public class InputManagerImpl extends InputManager {
     return count;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void init() throws Exception {
     checkpointHandler.init(logFeederProps);
@@ -132,7 +130,7 @@ public class InputManagerImpl extends InputManager {
   }
 
   private void startMonitorThread() {
-    inputIsReadyMonitor = new Thread("InputIsReadyMonitor") {
+    Thread inputIsReadyMonitor = new Thread("InputIsReadyMonitor") {
       @Override
       public void run() {
         logger.info("Going to monitor for these missing files: " + notReadyList.toString());
@@ -211,33 +209,6 @@ public class InputManagerImpl extends InputManager {
 
     filesCountMetric.value = getActiveFilesCount();
     // TODO: logStatForMetric(filesCountMetric, "Stat: Files Monitored Count", "");
-  }
-
-  public void waitOnAllInputs() {
-    //wait on inputs
-    for (List<Input> inputList : inputs.values()) {
-      for (Input input : inputList) {
-        if (input != null) {
-          Thread inputThread = input.getThread();
-          if (inputThread != null) {
-            try {
-              inputThread.join();
-            } catch (InterruptedException e) {
-              // ignore
-            }
-          }
-        }
-      }
-    }
-    // wait on monitor
-    if (inputIsReadyMonitor != null) {
-      try {
-        this.close();
-        inputIsReadyMonitor.join();
-      } catch (InterruptedException e) {
-        // ignore
-      }
-    }
   }
 
   public void checkInAll() {

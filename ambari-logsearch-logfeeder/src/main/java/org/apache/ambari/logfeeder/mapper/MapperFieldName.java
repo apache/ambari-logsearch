@@ -40,7 +40,7 @@ public class MapperFieldName extends Mapper<LogFeederProps> {
   private String newValue = null;
 
   @Override
-  public boolean init(String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
+  public boolean init(LogFeederProps logFeederProps, String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
     init(inputDesc, fieldName, mapClassCode);
 
     newValue = ((MapFieldNameDescriptor)mapFieldDescriptor).getNewFieldName();

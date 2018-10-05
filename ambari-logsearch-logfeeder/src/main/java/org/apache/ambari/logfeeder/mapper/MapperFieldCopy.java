@@ -38,7 +38,7 @@ public class MapperFieldCopy extends Mapper<LogFeederProps> {
   private String copyName = null;
 
   @Override
-  public boolean init(String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
+  public boolean init(LogFeederProps logFeederProps, String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
     init(inputDesc, fieldName, mapClassCode);
     copyName = ((MapFieldCopyDescriptor)mapFieldDescriptor).getCopyName();
     if (StringUtils.isEmpty(copyName)) {
