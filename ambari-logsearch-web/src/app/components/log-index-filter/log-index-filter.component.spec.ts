@@ -55,6 +55,12 @@ import {ComponentLabelPipe} from '@app/pipes/component-label';
 
 import { dataAvailabilityStates, DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-availability-state.store';
 
+import * as auth from '@app/store/reducers/auth.reducers';
+import { AuthService } from '@app/services/auth.service';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 describe('LogIndexFilterComponent', () => {
   let component: LogIndexFilterComponent;
   let fixture: ComponentFixture<LogIndexFilterComponent>;
@@ -79,8 +85,11 @@ describe('LogIndexFilterComponent', () => {
           hosts,
           serviceLogsTruncated,
           tabs,
-          dataAvailabilityStates
-        })
+          dataAvailabilityStates,
+          auth: auth.reducer
+        }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects)
       ],
       declarations: [
         LogIndexFilterComponent,
@@ -113,7 +122,8 @@ describe('LogIndexFilterComponent', () => {
         LogsStateService,
         NotificationsService,
         NotificationService,
-        DataAvailabilityStatesStore
+        DataAvailabilityStatesStore,
+        AuthService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

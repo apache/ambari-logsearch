@@ -22,6 +22,11 @@
     <top-menu *ngIf="(isAuthorized$ | async) && (isBaseDataAvailable$ | async)"></top-menu>
   </nav>
 </header>
-<data-loading-indicator *ngIf="!(isBaseDataAvailable$ | async) && (isAuthorized$ | async)"></data-loading-indicator>
-<main-container *ngIf="!(isAuthorized$ | async) || (isBaseDataAvailable$ | async)"></main-container>
-<simple-notifications [options]="notificationServiceOptions"></simple-notifications>
+
+<ng-container *ngIf="(authorizationStatus$ | async) !== authorizationStatuses.LOGGED_OUT">
+  <data-loading-indicator *ngIf="!(isBaseDataAvailable$ | async) && (isAuthorized$ | async)"></data-loading-indicator>
+
+  <main-container *ngIf="!(isAuthorized$ | async) || (isBaseDataAvailable$ | async)"></main-container>
+
+  <simple-notifications [options]="notificationServiceOptions"></simple-notifications>
+</ng-container>

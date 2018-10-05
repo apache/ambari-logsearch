@@ -43,11 +43,18 @@ import {TabsComponent} from '@app/components/tabs/tabs.component';
 import {LogsContainerComponent} from './logs-container.component';
 import {ClusterSelectionService} from '@app/services/storage/cluster-selection.service';
 import {RouterTestingModule} from '@angular/router/testing';
-import {LogsStateService} from '@app/services/storage/logs-state.service';
 import {RoutingUtilsService} from '@app/services/routing-utils.service';
 import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.service';
 import {NotificationService} from '@modules/shared/services/notification.service';
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
+
+import {LogsStateService} from '@app/services/storage/logs-state.service';
+
+import * as auth from '@app/store/reducers/auth.reducers';
+import { AuthService } from '@app/services/auth.service';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
 
 describe('LogsContainerComponent', () => {
   let component: LogsContainerComponent;
@@ -74,8 +81,11 @@ describe('LogsContainerComponent', () => {
           serviceLogsHistogramData,
           tabs,
           hosts,
-          serviceLogsTruncated
+          serviceLogsTruncated,
+          auth: auth.reducer
         }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects),
         ...TranslationModules,
         TooltipModule.forRoot(),
       ],
@@ -99,9 +109,10 @@ describe('LogsContainerComponent', () => {
         ClusterSelectionService,
         RoutingUtilsService,
         LogsFilteringUtilsService,
-        LogsStateService,
         NotificationsService,
-        NotificationService
+        NotificationService,
+        LogsStateService,
+        AuthService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

@@ -48,6 +48,11 @@ import {NotificationService} from '@modules/shared/services/notification.service
 
 import { dataAvailabilityStates, DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-availability-state.store';
 
+import { AuthService } from '@app/services/auth.service';
+import * as auth from '@app/store/reducers/auth.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+
 describe('UserSettingsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -67,8 +72,10 @@ describe('UserSettingsService', () => {
           hosts,
           serviceLogsTruncated,
           tabs,
-          dataAvailabilityStates
+          dataAvailabilityStates,
+          auth: auth.reducer
         }),
+        EffectsModule.run(AuthEffects),
         ...TranslationModules
       ],
       providers: [
@@ -95,7 +102,8 @@ describe('UserSettingsService', () => {
         LogsStateService,
         NotificationsService,
         NotificationService,
-        DataAvailabilityStatesStore
+        DataAvailabilityStatesStore,
+        AuthService
       ]
     });
   });

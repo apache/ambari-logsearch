@@ -33,7 +33,7 @@ import { UtilsService } from '@app/services/utils.service';
 import { ClustersService } from '@app/services/storage/clusters.service';
 import { HostsService } from '@app/services/storage/hosts.service';
 import { DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-availability-state.store';
-import { DataAvailabilityValues, DataAvailability } from '@app/classes/string';
+import { DataAvailabilityValues } from '@app/classes/string';
 
 @Component({
   selector: 'log-index-filter',
@@ -68,7 +68,7 @@ export class LogIndexFilterComponent implements OnInit, OnDestroy, OnChanges, Co
 
   configsAvailabilityState$: Observable<string> = this.dataAvailablilityStore.getParameter('logIndexFilter');
   configsAreLoading$: Observable<boolean> = this.configsAvailabilityState$.distinctUntilChanged().map(
-    (state: DataAvailability) => state === DataAvailabilityValues.LOADING
+    (state: DataAvailabilityValues) => state === DataAvailabilityValues.LOADING
   );
 
   @Input()

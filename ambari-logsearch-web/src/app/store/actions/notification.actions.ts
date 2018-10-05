@@ -15,11 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Options } from 'angular2-notifications/src/options.type';
-import { NotificationType } from '@modules/shared/services/notification.service';
 
-export interface NotificationInterface extends Options {
-  type: NotificationType | string;
-  message: string;
-  title?: string;
+import { Action } from '@ngrx/store';
+
+import { NotificationInterface } from '@modules/shared/interfaces/notification.interface';
+
+export enum NotificationActionTypes {
+  ADD_NOTIFICATION = '[Notification] Add'
 }
+
+export class AddNotificationAction implements Action {
+  readonly type = NotificationActionTypes.ADD_NOTIFICATION;
+  constructor(public payload: NotificationInterface) {}
+}
+
+export type NotificationActions =
+  | AddNotificationAction;

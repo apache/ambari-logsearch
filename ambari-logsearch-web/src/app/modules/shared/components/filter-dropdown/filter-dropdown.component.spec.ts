@@ -47,6 +47,11 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {NotificationService} from '@modules/shared/services/notification.service';
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 
+import * as auth from '@app/store/reducers/auth.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from '@app/store/effects/auth.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+
 describe('FilterDropdownComponent', () => {
   let component: FilterDropdownComponent;
   let fixture: ComponentFixture<FilterDropdownComponent>;
@@ -93,8 +98,11 @@ describe('FilterDropdownComponent', () => {
           tabs,
           clusters,
           components,
-          hosts
+          hosts,
+          auth: auth.reducer
         }),
+        EffectsModule.run(AuthEffects),
+        EffectsModule.run(NotificationEffects),
         ...TranslationModules
       ],
       providers: [

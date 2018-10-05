@@ -52,6 +52,8 @@ import {NotificationService} from '@modules/shared/services/notification.service
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 import { DataAvailabilityStatesStore, dataAvailabilityStates } from '@app/modules/app-load/stores/data-availability-state.store';
 
+import * as auth from '@app/store/reducers/auth.reducers';
+
 describe('ClusterFilterComponent', () => {
   let component: ClusterFilterComponent;
   let fixture: ComponentFixture<ClusterFilterComponent>;
@@ -84,7 +86,8 @@ describe('ClusterFilterComponent', () => {
           clusters,
           components,
           hosts,
-          dataAvailabilityStates
+          dataAvailabilityStates,
+          auth: auth.reducer
         })
       ],
       providers: [

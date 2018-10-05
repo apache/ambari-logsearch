@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {ListItem} from '@app/classes/list-item';
-import {UtilsService} from '@app/services/utils.service';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { ListItem } from '@app/classes/list-item';
+import { UtilsService } from '@app/services/utils.service';
 
 @Component({
   selector: 'dropdown-button',
@@ -87,7 +87,9 @@ export class DropdownButtonComponent {
     return this.showSelectedValue && !this.isMultipleChoice && this.selection.length > 0;
   }
 
-  constructor(protected utils: UtilsService) {}
+  constructor(
+    protected utils: UtilsService
+  ) {}
 
   updateSelection(updates: ListItem | ListItem[]): void {
     if (updates && (!Array.isArray(updates) || updates.length)) {

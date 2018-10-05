@@ -79,10 +79,14 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
 
   private subscriptions: Subscription[] = [];
 
+  instanceId: string;
+
   constructor(
     private componentGenerator: ComponentGeneratorService,
     private changeDetector: ChangeDetectorRef
-  ) {}
+  ) {
+    this.instanceId = `dropdown-list-${Date.now()}`;
+  }
 
   ngOnInit() {
     this.separateSelections();

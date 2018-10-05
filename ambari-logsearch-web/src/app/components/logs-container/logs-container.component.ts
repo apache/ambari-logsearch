@@ -313,7 +313,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
             filtersParams,
             tab.appState.activeLogsType
           );
-          // we dont't have to reset the form with the new values when there is tab changes
+          // we don't have to reset the form with the new values when there is tab changes
           // because the onActiveTabIdChange will call the setActiveTabById on LogsContainerService
           // which will reset the form to the tab's activeFilters prop.
           // If we do reset wvery time then the form will be reseted twice with every tab changes... not a big deal anyway

@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-import {Injectable} from '@angular/core';
-import {FormGroup, FormControl} from '@angular/forms';
-import {Response} from '@angular/http';
-import {Subject} from 'rxjs/Subject';
-import {Observable} from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Response } from '@angular/http';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -28,42 +28,46 @@ import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/takeUntil';
 import * as moment from 'moment-timezone';
-import {HttpClientService} from '@app/services/http-client.service';
-import {UtilsService} from '@app/services/utils.service';
-import {AuditLogsService} from '@app/services/storage/audit-logs.service';
-import {AuditLogsFieldsService, ResponseRootProperties} from '@app/services/storage/audit-logs-fields.service';
-import {AuditLogsGraphDataService} from '@app/services/storage/audit-logs-graph-data.service';
-import {ServiceLogsService} from '@app/services/storage/service-logs.service';
-import {ServiceLogsFieldsService} from '@app/services/storage/service-logs-fields.service';
-import {ServiceLogsHistogramDataService} from '@app/services/storage/service-logs-histogram-data.service';
-import {ServiceLogsTruncatedService} from '@app/services/storage/service-logs-truncated.service';
-import {AppStateService} from '@app/services/storage/app-state.service';
-import {AppSettingsService} from '@app/services/storage/app-settings.service';
-import {TabsService} from '@app/services/storage/tabs.service';
-import {ClustersService} from '@app/services/storage/clusters.service';
-import {ComponentsService} from '@app/services/storage/components.service';
-import {HostsService} from '@app/services/storage/hosts.service';
-import {ActiveServiceLogEntry} from '@app/classes/active-service-log-entry';
+import { HttpClientService } from '@app/services/http-client.service';
+import { UtilsService } from '@app/services/utils.service';
+import { AuditLogsService } from '@app/services/storage/audit-logs.service';
+import { AuditLogsFieldsService, ResponseRootProperties } from '@app/services/storage/audit-logs-fields.service';
+import { AuditLogsGraphDataService } from '@app/services/storage/audit-logs-graph-data.service';
+import { ServiceLogsService } from '@app/services/storage/service-logs.service';
+import { ServiceLogsFieldsService } from '@app/services/storage/service-logs-fields.service';
+import { ServiceLogsHistogramDataService } from '@app/services/storage/service-logs-histogram-data.service';
+import { ServiceLogsTruncatedService } from '@app/services/storage/service-logs-truncated.service';
+import { AppStateService } from '@app/services/storage/app-state.service';
+import { AppSettingsService } from '@app/services/storage/app-settings.service';
+import { TabsService } from '@app/services/storage/tabs.service';
+import { ClustersService } from '@app/services/storage/clusters.service';
+import { ComponentsService } from '@app/services/storage/components.service';
+import { HostsService } from '@app/services/storage/hosts.service';
+import { ActiveServiceLogEntry } from '@app/classes/active-service-log-entry';
 import {
   FilterCondition, TimeUnitListItem, SearchBoxParameter, SearchBoxParameterTriggered
 } from '@app/classes/filtering';
-import {ListItem} from '@app/classes/list-item';
-import {HomogeneousObject, LogLevelObject} from '@app/classes/object';
-import {DataAvailability, DataAvailabilityValues, LogsType, ScrollType} from '@app/classes/string';
-import {LogTypeTab} from '@app/classes/models/log-type-tab';
-import {AuditFieldsDefinitionSet} from '@app/classes/object';
-import {AuditLog} from '@app/classes/models/audit-log';
-import {ServiceLog} from '@app/classes/models/service-log';
-import {BarGraph} from '@app/classes/models/bar-graph';
-import {NodeItem} from '@app/classes/models/node-item';
-import {CommonEntry} from '@app/classes/models/common-entry';
-import {ClusterSelectionService} from '@app/services/storage/cluster-selection.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.service';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {LogsStateService} from '@app/services/storage/logs-state.service';
-import {LogLevelComponent} from '@app/components/log-level/log-level.component';
-import {NotificationService, NotificationType} from '@modules/shared/services/notification.service';
+import { ListItem } from '@app/classes/list-item';
+import { HomogeneousObject, LogLevelObject } from '@app/classes/object';
+import { DataAvailabilityValues, LogsType, ScrollType  } from '@app/classes/string';
+import { LogTypeTab } from '@app/classes/models/log-type-tab';
+import { AuditFieldsDefinitionSet } from '@app/classes/object';
+import { AuditLog } from '@app/classes/models/audit-log';
+import { ServiceLog } from '@app/classes/models/service-log';
+import { BarGraph } from '@app/classes/models/bar-graph';
+import { NodeItem } from '@app/classes/models/node-item';
+import { CommonEntry } from '@app/classes/models/common-entry';
+import { ClusterSelectionService } from '@app/services/storage/cluster-selection.service';
+import { Router } from '@angular/router';
+import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.service';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { LogsStateService } from '@app/services/storage/logs-state.service';
+import { LogLevelComponent } from '@app/components/log-level/log-level.component';
+import { NotificationService, NotificationType } from '@modules/shared/services/notification.service';
+
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
 
 @Injectable()
 export class LogsContainerService {
@@ -377,11 +381,11 @@ export class LogsContainerService {
     private serviceLogsTruncatedStorage: ServiceLogsTruncatedService, private appSettings: AppSettingsService,
     private clusterSelectionStoreService: ClusterSelectionService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private logsFilteringUtilsService: LogsFilteringUtilsService,
     private logsStateService: LogsStateService,
     private notificationService: NotificationService,
-    private componentsService: ComponentsService
+    private componentsService: ComponentsService,
+    private store: Store<AppStore>
   ) {
     const formItems = Object.keys(this.filters).reduce((currentObject: any, key: string): HomogeneousObject<FormControl> => {
       const formControl = new FormControl();
@@ -402,9 +406,17 @@ export class LogsContainerService {
     appState.getParameter('activeLogsType').subscribe((value: LogsType) => {
       if (this.isLogsTypeSupported(value)) {
         this.activeLogsType = value;
-        this.loadLogs(this.activeLogsType);
       }
     });
+
+    Observable.combineLatest(
+      this.store.select(isAuthorizedSelector),
+      this.appState.getParameter('baseDataSetState')
+        .map((dataSetState: DataAvailabilityValues) => dataSetState === DataAvailabilityValues.AVAILABLE),
+      appState.getParameter('activeLogsType')
+    ).filter(([isAuthorized, dataAvailable, activeLogsType]) => isAuthorized && dataAvailable)
+      .map(([isAuthorized, dataAvailable, activeLogsType]) => activeLogsType)
+      .subscribe(this.loadLogs);
 
     appSettings.getParameter('timeZone').subscribe((value: string) => this.timeZone = value || this.defaultTimeZone);
     tabsStorage.mapCollection((tab: LogTypeTab): LogTypeTab => {
@@ -445,7 +457,7 @@ export class LogsContainerService {
   resetFiltersForms(filters): void {
     this.appState.getParameter('baseDataSetState')
     // do it only when the base data set is available so that the dropdowns can set the selections
-      .filter((dataSetState: DataAvailability) => dataSetState === DataAvailabilityValues.AVAILABLE)
+      .filter((dataSetState: DataAvailabilityValues) => dataSetState === DataAvailabilityValues.AVAILABLE)
       .first()
       .subscribe(() => {
         this.filtersFormSyncInProgress.next(true);
@@ -510,7 +522,7 @@ export class LogsContainerService {
    */
   setActiveTabById(tabId: string): void {
     this.tabsStorage.findInCollection((tab: LogTypeTab) => tab.id === tabId).first().subscribe((tab: LogTypeTab | null) => {
-      if (tab) {
+      if (tab && !tab.isActive) {
         this.switchTab(tab);
         this.logsStateService.setParameter('activeTabId', tabId);
       }

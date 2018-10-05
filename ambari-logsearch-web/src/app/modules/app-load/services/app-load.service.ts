@@ -17,23 +17,27 @@
  */
 
 import { Injectable } from '@angular/core';
-import {Response} from '@angular/http';
+import { Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
-import {AppStateService} from 'app/services/storage/app-state.service';
-import {HttpClientService} from 'app/services/http-client.service';
-import {ClustersService} from 'app/services/storage/clusters.service';
-import {ServiceLogsFieldsService} from 'app/services/storage/service-logs-fields.service';
-import {AuditLogsFieldsService} from 'app/services/storage/audit-logs-fields.service';
-import {AuditFieldsDefinitionSet, LogField} from 'app/classes/object';
-import {Observable} from 'rxjs/Observable';
-import {HostsService} from 'app/services/storage/hosts.service';
-import {NodeItem} from 'app/classes/models/node-item';
-import {ComponentsService} from 'app/services/storage/components.service';
-import {DataAvailabilityValues} from 'app/classes/string';
+import { AppStateService } from 'app/services/storage/app-state.service';
+import { HttpClientService } from 'app/services/http-client.service';
+import { ClustersService } from 'app/services/storage/clusters.service';
+import { ServiceLogsFieldsService } from 'app/services/storage/service-logs-fields.service';
+import { AuditLogsFieldsService } from 'app/services/storage/audit-logs-fields.service';
+import { AuditFieldsDefinitionSet, LogField } from 'app/classes/object';
+import { Observable } from 'rxjs/Observable';
+import { HostsService } from 'app/services/storage/hosts.service';
+import { NodeItem } from 'app/classes/models/node-item';
+import { ComponentsService } from 'app/services/storage/components.service';
+import { DataAvailabilityValues } from 'app/classes/string';
 import { DataAvaibilityStatesModel } from '@app/modules/app-load/models/data-availability-state.model';
 import { DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-availability-state.store';
+
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
 
 // @ToDo create a separate data state enrty in the store with keys of the model names
 export enum DataStateStoreKeys {
@@ -64,9 +68,10 @@ export class AppLoadService {
     private translationService: TranslateService,
     private hostStoreService: HostsService,
     private componentsStorageService: ComponentsService,
-    private dataAvaibilityStateStore: DataAvailabilityStatesStore
+    private dataAvaibilityStateStore: DataAvailabilityStatesStore,
+    private store: Store<AppStore>
   ) {
-    this.appStateService.getParameter('isAuthorized').subscribe(this.initOnAuthorization);
+    this.store.select(isAuthorizedSelector).subscribe(this.initOnAuthorization);
     this.appStateService.setParameter('isInitialLoading', true);
 
     Observable.combineLatest(
@@ -83,11 +88,9 @@ export class AppLoadService {
         let nextDataState: DataAvailabilityValues = DataAvailabilityValues.NOT_AVAILABLE;
         if (values.indexOf(DataAvailabilityValues.ERROR) > -1) {
           nextDataState = DataAvailabilityValues.ERROR;
-        }
-        if (values.indexOf(DataAvailabilityValues.LOADING) > -1) {
+        } else if (values.indexOf(DataAvailabilityValues.LOADING) > -1) {
           nextDataState = DataAvailabilityValues.LOADING;
-        }
-        if ( values.filter((value: DataAvailabilityValues) => value !== DataAvailabilityValues.AVAILABLE).length === 0 ) {
+        } else if ( values.filter((value: DataAvailabilityValues) => value !== DataAvailabilityValues.AVAILABLE).length === 0 ) {
           nextDataState = DataAvailabilityValues.AVAILABLE;
         }
         return nextDataState;

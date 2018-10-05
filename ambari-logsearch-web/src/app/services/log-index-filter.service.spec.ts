@@ -24,6 +24,9 @@ import {
 
 import { AppStateService } from '@app/services/storage/app-state.service';
 
+import {NotificationService} from '@modules/shared/services/notification.service';
+import {NotificationsService} from 'angular2-notifications/src/notifications.service';
+
 import { LogIndexFilterService } from './log-index-filter.service';
 
 describe('LogIndexFilterService', () => {
@@ -34,7 +37,9 @@ describe('LogIndexFilterService', () => {
       ],
       providers: [
         AppStateService,
-        LogIndexFilterService
+        LogIndexFilterService,
+        NotificationService,
+        NotificationsService
       ]
     }));
   });

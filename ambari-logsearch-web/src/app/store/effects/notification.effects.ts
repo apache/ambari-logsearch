@@ -15,11 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Options } from 'angular2-notifications/src/options.type';
-import { NotificationType } from '@modules/shared/services/notification.service';
 
-export interface NotificationInterface extends Options {
-  type: NotificationType | string;
-  message: string;
-  title?: string;
+import { Injectable } from '@angular/core';
+import { Actions, Effect } from '@ngrx/effects';
+import { Observable } from 'rxjs/Observable';
+
+import 'rxjs/add/operator/do';
+
+import { NotificationService } from '@modules/shared/services/notification.service';
+import {
+  NotificationActionTypes,
+  AddNotificationAction
+} from '../actions/notification.actions';
+
+
+@Injectable()
+export class NotificationEffects {
+
+  @Effect({ dispatch: false })
+  AddNotificationAction: Observable<any> = this.actions$
+    .ofType(NotificationActionTypes.ADD_NOTIFICATION)
+    .do((action: AddNotificationAction) => {
+      this.notificationService.addNotification(action.payload);
+    });
+
+  constructor(
+    private actions$: Actions,
+    private notificationService: NotificationService
+  ) {}
+
 }

@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Options } from 'angular2-notifications/src/options.type';
-import { NotificationType } from '@modules/shared/services/notification.service';
 
-export interface NotificationInterface extends Options {
-  type: NotificationType | string;
-  message: string;
-  title?: string;
+export interface User {
+  username: string;
+  name?: string;
+  email?: string;
 }
