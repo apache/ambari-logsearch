@@ -48,15 +48,17 @@ In case if you started the containers separately and if you would like to access
 
 1. Check out the code from GIT repository
 
-2. On the logsearch root folder (ambari/ambari-logsearch), please execute the following Maven command to build RPM/DPKG:
+2. On the logsearch root folder (ambari/ambari-logsearch), please execute the following make command to build RPM/DPKG:
 ```bash
-# for building with jdk 8, use -Djdk.version=1.8
-mvn -Dbuild-rpm clean package
+make rpm
+# or for jdk8
+make rpm-jdk8
 ```
   or
 ```bash
-# for building with jdk 8, use -Djdk.version=1.8
-mvn -Dbuild-deb clean package
+make deb
+# or for jdk8
+make deb-jdk8
 ```
 3. Generated RPM/DPKG files will be found in ambari-logsearch-assembly/target folder
 
@@ -75,7 +77,20 @@ mvn clean integration-test -Dselenium-tests failsafe:verify
 ```
 Also you can run from the IDE, but make sure all of the ambari logsearch modules are built.
 
+
+## Update version (for release or specific builds)
+
+```bash
+make set-version new-version="2.8.0.0-11"
+```
+
+## Contributing
+
+https://cwiki.apache.org/confluence/display/AMBARI/How+to+Contribute
+
+(That is the ambari contribution guide, everything is the same here except use ambari-logsearch repository instead of ambari)
+
 ## License
 
-- http://ambari.apache.org/license.html 
+- http://ambari.apache.org/license.html
 - See more at [Ambari repository](https://github.com/apache/ambari)
