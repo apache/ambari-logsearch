@@ -30,6 +30,9 @@ import org.apache.zookeeper.KeeperException.NodeExistsException;
 
 import com.google.gson.Gson;
 
+/**
+ * Common ZooKeeper related shipper configuration operations that can be used by both Log Feeder and Log Search server.
+ */
 public class LogSearchConfigZK implements LogSearchConfig {
   private static final Logger logger = LogManager.getLogger(LogSearchConfigZK.class);
 

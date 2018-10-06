@@ -25,10 +25,21 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 
+/**
+ * Factory for creating specific Solr clients based on provided configurations (simple / LB or cloud Solr client)
+ */
 public class LogFeederSolrClientFactory {
 
   private static final Logger logger = LogManager.getLogger(LogFeederSolrClientFactory.class);
 
+  /**
+   * Creates a new Solr client. If solr urls are provided create a LB client (Use simple Http client if only 1 provided),
+   * otherwise create a cloud client. That means at least providing zookeeper connection string or Solr urls are required.
+   * @param zkConnectionString zookeeper connection string, e.g.: localhost1:2181,localhost2:2181/solr
+   * @param solrUrls list of solr urls
+   * @param collection name of the Solr collection
+   * @return created client
+   */
   public SolrClient createSolrClient(String zkConnectionString, String[] solrUrls, String collection) {
     logger.info("Creating solr client ...");
     logger.info("Using collection=" + collection);

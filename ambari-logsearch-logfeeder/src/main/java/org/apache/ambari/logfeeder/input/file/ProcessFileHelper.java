@@ -28,6 +28,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.File;
 
+/**
+ * Helper for input file processing (open files, read line and pass them to filters and output(s))
+ */
 public class ProcessFileHelper {
 
   private static final Logger logger = LogManager.getLogger(ProcessFileHelper.class);
@@ -35,6 +38,13 @@ public class ProcessFileHelper {
   private ProcessFileHelper() {
   }
 
+  /**
+   * Process input (apply on filters then send to an output) log file(s) until EOF - stop processing onlu
+   * @param inputFile input file descriptor
+   * @param logPathFile input file object
+   * @param follow if is is set the processing won't stop at EOF
+   * @throws Exception error during file processing
+   */
   public static void processFile(InputFile inputFile, File logPathFile, boolean follow) throws Exception {
     logger.info("Monitoring logPath=" + inputFile.getLogPath() + ", logPathFile=" + logPathFile);
     BufferedReader br = null;

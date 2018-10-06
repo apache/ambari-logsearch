@@ -32,7 +32,17 @@ import org.apache.logging.log4j.Logger;
 import java.util.Map;
 
 /**
- * Overrides the value for the field
+ * Overrides the name of a field
+ * <pre>
+ *   "post_map_values": {
+ *         "Status": [
+ *           {
+ *             "map_field_name": {
+ *               "new_field_name": "ws_status"
+ *             }
+ *           }
+ *       }
+ * </pre>
  */
 public class MapperFieldName extends Mapper<LogFeederProps> {
   private static final Logger logger = LogManager.getLogger(MapperFieldName.class);

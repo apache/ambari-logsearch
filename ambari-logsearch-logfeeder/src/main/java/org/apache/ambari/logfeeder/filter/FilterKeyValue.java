@@ -35,6 +35,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * Filter for parsing lines as key value pairs (it is required to provide delimiters for splitting values/fields and borders as well)
+ * Example configuration: (input: "User(admin), RemoteIp(10.0.0.1)")
+ * <pre>
+ * "filter": [
+ *    "filter": "keyvalue",
+ *    "sort_order": 1,
+ *    "conditions": {
+ *      "fields": {
+ *         "type": [
+ *           "ambari_audit"
+ *         ]
+ *      }
+ *    },
+ *    "source_field": "log_message",
+ *    "field_split": ", ",
+ *    "value_borders": "()",
+ *    "post_map_values": {
+ *      "User": {
+ *        "map_field_value": {
+ *           "pre_value": "null",
+ *           "post_value": "unknown"
+ *        }
+ *      }
+ *    }
+ * ]
+ * </pre>
+ */
 public class FilterKeyValue extends Filter<LogFeederProps> {
 
   private static final Logger logger = LogManager.getLogger(FilterKeyValue.class);
@@ -59,7 +87,6 @@ public class FilterKeyValue extends Filter<LogFeederProps> {
         fieldSplit + ", " + getShortDescription());
     if (StringUtils.isEmpty(sourceField)) {
       logger.fatal("source_field is not set for filter. Thiss filter will not be applied");
-      return;
     }
   }
 
@@ -84,8 +111,8 @@ public class FilterKeyValue extends Filter<LogFeederProps> {
       String[] tokens = keyValueString.split(splitPattern);
       for (String nv : tokens) {
         String[] nameValue = getNameValue(nv);
-        String name = nameValue != null && nameValue.length == 2 ? nameValue[0] : null;
-        String value = nameValue != null && nameValue.length == 2 ? nameValue[1] : null;
+        String name = nameValue.length == 2 ? nameValue[0] : null;
+        String value = nameValue.length == 2 ? nameValue[1] : null;
         if (name != null && value != null) {
           if (valueMap.containsKey(value)) {
             value = valueMap.get(value);
@@ -123,7 +150,9 @@ public class FilterKeyValue extends Filter<LogFeederProps> {
           String value = keyValueString.substring(lastPos, pos).trim();
           String valueId = "$VALUE" + (++valueNum);
           valueMap.put(valueId, value);
-          processed.append(valueSplit + valueId);
+          processed
+            .append(valueSplit)
+            .append(valueId);
           lastPos = pos + 1;
         }
       }

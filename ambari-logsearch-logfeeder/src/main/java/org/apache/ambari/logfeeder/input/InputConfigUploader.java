@@ -36,6 +36,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Upload configs with config handler (if those do not exist in the config store) and cache them in order to not check them again
+ */
 public class InputConfigUploader extends Thread {
   private static final Logger logger = LogManager.getLogger(InputConfigUploader.class);
 

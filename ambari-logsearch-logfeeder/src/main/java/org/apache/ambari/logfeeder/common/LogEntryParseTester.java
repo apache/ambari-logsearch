@@ -45,6 +45,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * Class for testing log parsing by test entries and service configs
+ */
 public class LogEntryParseTester {
 
   private final String logEntry;
@@ -78,6 +81,12 @@ public class LogEntryParseTester {
     }
   }
 
+  /**
+   * It tries to parse log line entry against the Log Feeder configurations (required inputs: log type (id), log entry, shipper config and a global config)
+   * @return result of the parsing - key / value pairs (fields and values)
+   * @throws Exception error that happens during log line parsing
+   */
+  @SuppressWarnings("unchecked")
   public Map<String, Object> parse() throws Exception {
     InputConfig inputConfig = getInputConfig();
     ConfigHandler configHandler = new ConfigHandler(null);
@@ -99,7 +108,7 @@ public class LogEntryParseTester {
     input.getFirstFilter().init(logFeederProps);
     input.addOutput(new Output<LogFeederProps, InputFileMarker>() {
       @Override
-      public void init(LogFeederProps logFeederProperties) throws Exception {
+      public void init(LogFeederProps logFeederProperties) {
       }
 
       @Override
@@ -134,7 +143,7 @@ public class LogEntryParseTester {
       @Override
       public void copyFile(File inputFile, InputMarker inputMarker) throws UnsupportedOperationException {
       }
-      
+
       @Override
       public void write(Map<String, Object> jsonObj, InputFileMarker inputMarker) {
         result.putAll(jsonObj);

@@ -37,6 +37,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Map date string from string format to date with providing date patterns. (source and target patterns can be provided)
+ * <pre>
+ *   "post_map_values": {
+ *         "logtime": {
+ *           "map_date": {
+ *             "target_date_pattern": "yyyy-MM-dd HH:mm:ss,SSS",
+ *             "src_date_pattern" :"MMM dd HH:mm:ss"
+ *           }
+ *         }
+ *       }
+ * </pre>
+ */
 public class MapperDate extends Mapper<LogFeederProps> {
   private static final Logger logger = LogManager.getLogger(MapperDate.class);
 

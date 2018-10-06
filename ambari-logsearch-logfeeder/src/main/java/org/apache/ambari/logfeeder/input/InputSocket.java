@@ -37,6 +37,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+/**
+ * Open a socket input (with specific port) to handle incoming messages (as serialized log objects or simple messages)
+ */
 public class InputSocket extends Input<LogFeederProps, InputSocketMarker, InputSocketDescriptor> {
 
   private static final Logger logger = LogManager.getLogger(InputSocket.class);

@@ -49,6 +49,34 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * Parses lines, and split them to different fields based on grok expressions. Can be used with docker inputs as well. (with {@link DockerLogFilter})
+ * Example configuration (see message_pattern and multiline_pattern):
+ * <pre>
+ *   "filter": [
+ *     {
+ *       "filter": "grok",
+ *       "conditions": {
+ *         "fields": {
+ *           "type": [
+ *             "logsearch_server"
+ *           ]
+ *         }
+ *       },
+ *       "log4j_format": "",
+ *       "multiline_pattern": "^(%{DATESTAMP:logtime})",
+ *       "message_pattern": "(?m)^%{DATESTAMP:logtime}%{SPACE}\\[%{DATA:thread_name}\\]%{SPACE}%{LOGLEVEL:level}%{SPACE}%{JAVACLASS}%{SPACE}\\(%{JAVAFILE:file}:%{INT:line_number}\\)%{SPACE}-%{SPACE}%{GREEDYDATA:log_message}",
+ *       "post_map_values": {
+ *         "logtime": {
+ *           "map_date": {
+ *             "target_date_pattern":"yyyy-MM-dd HH:mm:ss,SSS"
+ *           }
+ *         }
+ *       }
+ *     }
+ *   ]
+ * </pre>
+ */
 public class FilterGrok extends Filter<LogFeederProps> {
   private static final Logger logger = LogManager.getLogger(FilterGrok.class);
 

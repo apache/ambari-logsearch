@@ -30,7 +30,17 @@ import org.apache.logging.log4j.Logger;
 import java.util.Map;
 
 /**
- * Overrides the value for the field
+ * Copy field to an another field
+ * <pre>
+ *   "post_map_values": {
+ *         "Status": [
+ *           {
+ *             "map_field_copy": {
+ *               "copy_name": "ws_status_copied"
+ *             }
+ *           }
+ *       }
+ * </pre>
  */
 public class MapperFieldCopy extends Mapper<LogFeederProps> {
   private static final Logger logger = LogManager.getLogger(MapperFieldCopy.class);

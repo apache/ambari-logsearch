@@ -29,6 +29,9 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Map;
 
+/**
+ * Utility class to cleanup checkpoint files.
+ */
 public class FileCheckpointCleanupHelper {
 
   private static final Logger logger = LogManager.getLogger(FileCheckpointCleanupHelper.class);
@@ -36,6 +39,11 @@ public class FileCheckpointCleanupHelper {
   private FileCheckpointCleanupHelper() {
   }
 
+  /**
+   * Cleanup checkpoint files in the checkpoint folder if required.
+   * @param checkPointFolderFile checkpoint file folder that contains the checkpoint files
+   * @param checkPointExtension checkpoint file extension. e.g: .cp
+   */
   public static void cleanCheckPointFiles(File checkPointFolderFile, String checkPointExtension) {
     if (checkPointFolderFile == null) {
       logger.info("Will not clean checkPoint files. checkPointFolderFile=null");

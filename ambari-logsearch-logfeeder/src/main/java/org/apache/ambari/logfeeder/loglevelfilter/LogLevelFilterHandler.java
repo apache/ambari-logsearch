@@ -48,6 +48,9 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Manage log level filter object and cache them. (in memory)
+ */
 public class LogLevelFilterHandler implements LogLevelFilterMonitor {
   private static final Logger logger = LogManager.getLogger(LogLevelFilterHandler.class);
 

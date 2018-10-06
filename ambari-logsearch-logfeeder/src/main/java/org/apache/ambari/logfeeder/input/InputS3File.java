@@ -29,13 +29,18 @@ import org.apache.solr.common.util.Base64;
 import java.io.BufferedReader;
 import java.io.File;
 
+/**
+ * Download file from S3 then start processing it.
+ */
 public class InputS3File extends InputFile {
 
   private static final Logger logger = LogManager.getLogger(InputS3File.class);
 
+  private boolean ready = false;
+
   @Override
   public boolean isReady() {
-    if (!isReady()) {
+    if (!ready) {
       // Let's try to check whether the file is available
       setLogFiles(getActualFiles(getLogPath()));
       if (!ArrayUtils.isEmpty(getLogFiles())) {
@@ -49,7 +54,12 @@ public class InputS3File extends InputFile {
         logger.debug(getLogPath() + " file doesn't exist. Ignoring for now");
       }
     }
-    return isReady();
+    return ready;
+  }
+
+  @Override
+  public void setReady(boolean ready) {
+    this.ready = ready;
   }
 
   private File[] getActualFiles(String searchPath) {

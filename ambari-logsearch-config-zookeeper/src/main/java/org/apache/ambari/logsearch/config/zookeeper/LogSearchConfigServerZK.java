@@ -37,6 +37,9 @@ import com.google.gson.JsonParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * ZooKeeper related shipper configuration operations for Log Search Server.
+ */
 public class LogSearchConfigServerZK extends LogSearchConfigZK implements LogSearchConfigServer {
   private static final Logger logger = LogManager.getLogger(LogSearchConfigServerZK.class);
 

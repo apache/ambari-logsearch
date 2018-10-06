@@ -37,6 +37,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+/**
+ * Handle checkpoints (as JSON files) for inputs.
+ */
 public class FileCheckpointManager implements CheckpointManager<InputFile, InputFileMarker, LogFeederProps> {
 
   private static final Logger logger = LogManager.getLogger(FileCheckpointManager.class);

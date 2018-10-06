@@ -26,10 +26,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 
+/**
+ * Factory for reading file inputs
+ */
 public enum LogsearchReaderFactory {
   INSTANCE;
   private static final Logger logger = LogManager.getLogger(LogsearchReaderFactory.class);
 
+  /**
+   * Get a reader for a file based (for simple text file or for gzipped file)
+   * @param file input file to read
+   * @return file reader object
+   * @throws FileNotFoundException error that happens if file is not found
+   */
   public Reader getReader(File file) throws FileNotFoundException {
     logger.debug("Inside reader factory for file:" + file);
     if (GZIPReader.isValidFile(file.getAbsolutePath())) {
