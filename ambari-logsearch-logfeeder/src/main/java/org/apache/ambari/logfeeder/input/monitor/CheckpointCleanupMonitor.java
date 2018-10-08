@@ -22,6 +22,9 @@ import org.apache.ambari.logfeeder.plugin.manager.CheckpointManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Periodically execute a cleanup on checkpoints. (E.g.: it can delete a checkpoint file if it is too old)
+ */
 public class CheckpointCleanupMonitor implements Runnable {
 
   private static final Logger logger = LogManager.getLogger(CheckpointCleanupMonitor.class);

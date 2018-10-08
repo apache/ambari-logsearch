@@ -76,6 +76,12 @@ public class S3Util {
 
   /**
    * Get the buffer reader to read s3 file as a stream
+   * @param s3Path s3 specific path
+   * @param s3Endpoint url of an s3 server
+   * @param accessKey s3 access key - pass by an input shipper configuration
+   * @param secretKey s3 secret key - pass by an input shipper configuration
+   * @return buffered reader object which can be used to read s3 file object
+   * @throws Exception error that happens during reading s3 file
    */
   public static BufferedReader getReader(String s3Path, String s3Endpoint, String accessKey, String secretKey) throws Exception {
     // TODO error handling

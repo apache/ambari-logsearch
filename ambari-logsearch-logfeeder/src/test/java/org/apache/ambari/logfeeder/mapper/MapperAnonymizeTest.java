@@ -37,7 +37,7 @@ public class MapperAnonymizeTest {
     mapAnonymizeDescriptorImpl.setPattern("secret <hide> / <hide> is here");
 
     MapperAnonymize mapperAnonymize = new MapperAnonymize();
-    assertTrue("Could not initialize!", mapperAnonymize.init(null, "someField", null, mapAnonymizeDescriptorImpl));
+    assertTrue("Could not initialize!", mapperAnonymize.init(null, null, "someField", null, mapAnonymizeDescriptorImpl));
 
     Map<String, Object> jsonObj = new HashMap<>();
     mapperAnonymize.apply(jsonObj, "something else secret SECRET1 / SECRET2 is here something else 2");
@@ -54,7 +54,7 @@ public class MapperAnonymizeTest {
     mapAnonymizeDescriptorImpl.setHideChar('X');
 
     MapperAnonymize mapperAnonymize = new MapperAnonymize();
-    assertTrue("Could not initialize!", mapperAnonymize.init(null, "someField", null, mapAnonymizeDescriptorImpl));
+    assertTrue("Could not initialize!", mapperAnonymize.init(null,null, "someField", null, mapAnonymizeDescriptorImpl));
 
     Map<String, Object> jsonObj = new HashMap<>();
     mapperAnonymize.apply(jsonObj, "something else SECRET1 / SECRET2 is the secret something else 2");
@@ -69,6 +69,6 @@ public class MapperAnonymizeTest {
     MapAnonymizeDescriptorImpl mapAnonymizeDescriptorImpl = new MapAnonymizeDescriptorImpl();
 
     MapperAnonymize mapperAnonymize = new MapperAnonymize();
-    assertFalse("Was not able to initialize!", mapperAnonymize.init(null, "someField", null, mapAnonymizeDescriptorImpl));
+    assertFalse("Was not able to initialize!", mapperAnonymize.init(null, null, "someField", null, mapAnonymizeDescriptorImpl));
   }
 }

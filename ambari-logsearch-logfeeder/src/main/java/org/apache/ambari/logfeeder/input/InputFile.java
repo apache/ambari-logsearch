@@ -32,8 +32,8 @@ import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.util.FileUtil;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.InputFileBaseDescriptor;
 import org.apache.ambari.logsearch.config.api.model.inputconfig.InputFileDescriptor;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -42,8 +42,16 @@ import org.apache.solr.common.util.Base64;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * Input file object holds input shipper configurations, and can be used to start threads to monitor specific input file.
+ * If used with wildcards path or in docker mode, it can start multiple threads. (docker: using multiple files based on docker labels,
+ * as it is possible to use the same label types on different containers on 1 host, wildcard: if a pattern can be matched on multiple files/folder,
+ * it will be needed to start multiple input threads)
+ */
 public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileBaseDescriptor> {
 
   private static final Logger logger = LogManager.getLogger(InputFile.class);
@@ -178,7 +186,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
               throw new RuntimeException(e);
             }
           }
-          dockerLogFileUpdateMonitorThread = new Thread(new DockerLogFileUpdateMonitor((InputFile) this, pathUpdateIntervalMin, detachTimeMin), "docker_logfiles_updater=" + logType);
+          dockerLogFileUpdateMonitorThread = new Thread(new DockerLogFileUpdateMonitor(this, pathUpdateIntervalMin, detachTimeMin), "docker_logfiles_updater=" + logType);
           dockerLogFileUpdateMonitorThread.setDaemon(true);
           dockerLogFileUpdateMonitorThread.start();
         }
@@ -323,7 +331,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
   }
 
   private void copyFiles(File[] files) {
-    boolean isCopyFile = BooleanUtils.toBooleanDefaultIfNull(((InputFileDescriptor)getInputDescriptor()).getCopyFile(), false);
+    boolean isCopyFile = BooleanUtils.toBooleanDefaultIfNull(getInputDescriptor().getCopyFile(), false);
     if (isCopyFile && files != null) {
       for (File file : files) {
         try {
@@ -340,6 +348,11 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
     }
   }
 
+  /**
+   * Start docker input file thread - by copying the input object and its filters (and set the log file to a specific json path)
+   * @param dockerMetadata holds docker metadata that was gathered by docker commands
+   * @throws CloneNotSupportedException error if input object could not be cloned
+   */
   public void startNewChildDockerInputFileThread(DockerMetadata dockerMetadata) throws CloneNotSupportedException {
     logger.info("Start docker child input thread - " + dockerMetadata.getLogPath());
     InputFile clonedObject = (InputFile) this.clone();
@@ -356,6 +369,10 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
     thread.start();
   }
 
+  /**
+   * Stop docker input file thread
+   * @param logPathKey file key for docker log (json)
+   */
   public void stopChildDockerInputFileThread(String logPathKey) {
     logger.info("Stop child input thread - " + logPathKey);
     String filePath = new File(logPathKey).getName();
@@ -371,6 +388,11 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
     }
   }
 
+  /**
+   * Start a new child input - if more files can be defined by an input (using wildcards) - clone this input object and start threads one-by-one
+   * @param folderFileEntry folder that holds the file that needs to be monitored.
+   * @throws CloneNotSupportedException error if input object could not be cloned
+   */
   public void startNewChildInputFileThread(Map.Entry<String, List<File>> folderFileEntry) throws CloneNotSupportedException {
     logger.info("Start child input thread - " + folderFileEntry.getKey());
     InputFile clonedObject = (InputFile) this.clone();
@@ -422,6 +444,10 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
     }
   }
 
+  /**
+   * Stop file input thread that was monitored by this class
+   * @param folderPathKey folder that contains input file that is monitored
+   */
   public void stopChildInputFileThread(String folderPathKey) {
     logger.info("Stop child input thread - " + folderPathKey);
     String filePath = new File(getFilePath()).getName();

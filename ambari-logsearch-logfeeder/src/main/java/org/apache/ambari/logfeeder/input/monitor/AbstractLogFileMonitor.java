@@ -22,6 +22,9 @@ import org.apache.ambari.logfeeder.input.InputFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Holds common file monitoring operations: start a thread that periodically do something which can be implemented by subclasses.
+ */
 public abstract class AbstractLogFileMonitor implements Runnable {
 
   private static final Logger LOG = LogManager.getLogger(AbstractLogFileMonitor.class);

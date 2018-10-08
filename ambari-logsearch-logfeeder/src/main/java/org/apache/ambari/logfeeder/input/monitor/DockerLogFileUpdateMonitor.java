@@ -31,14 +31,15 @@ import java.util.Map;
 /**
  * Periodically check docker containers metadata registry, stop monitoring container log files if those do not exist or stopped too long time ago.
  * If it finds a new container log for the specific type, it will start to monitoring it.
- * <br/>
- * Use cases:<br/>
- * - input has not monitored yet - found new container -> start monitoring it <br/>
- * - input has not monitored yet - found new stopped container -> start monitoring it <br/>
- * - input has not monitored yet - found new stopped container but log is too old -> do not monitoring it <br/>
- * - input has monitored already - container stopped - if it's stopped for too long time -> remove it from the monitoed list<br/>
- * - input has monitored already - container stopped - log is not too old -> keep in the monitored list <br/>
- * - input has monitored already - container does not exist - remove it from the monitoed list (and all other input with the same log type) <br/>
+ * <pre>
+ * Use cases:
+ * - input has not monitored yet - found new container: start monitoring it
+ * - input has not monitored yet - found new stopped container: start monitoring it
+ * - input has not monitored yet - found new stopped container but log is too old: do not monitoring it
+ * - input has monitored already - container stopped - if it's stopped for too long time : remove it from the monitored list
+ * - input has monitored already - container stopped - log is not too old: keep in the monitored list
+ * - input has monitored already - container does not exist - remove it from the monitored list (and all other input with the same log type)
+ * </pre>
  */
 public class DockerLogFileUpdateMonitor extends AbstractLogFileMonitor {
 

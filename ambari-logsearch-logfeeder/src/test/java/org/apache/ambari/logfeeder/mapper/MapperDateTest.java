@@ -42,7 +42,7 @@ public class MapperDateTest {
     mapDateDescriptor.setTargetDatePattern("epoch");
 
     MapperDate mapperDate = new MapperDate();
-    assertTrue("Could not initialize!", mapperDate.init(null, "someField", null, mapDateDescriptor));
+    assertTrue("Could not initialize!", mapperDate.init(null, null, "someField", null, mapDateDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class MapperDateTest {
     mapDateDescriptor.setTargetDatePattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     MapperDate mapperDate = new MapperDate();
-    assertTrue("Could not initialize!", mapperDate.init(null, "someField", null, mapDateDescriptor));
+    assertTrue("Could not initialize!", mapperDate.init(null, null, "someField", null, mapDateDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
     String dateString = "2016-04-08 15:55:23.548";
@@ -82,7 +82,7 @@ public class MapperDateTest {
     MapDateDescriptorImpl mapDateDescriptor = new MapDateDescriptorImpl();
 
     MapperDate mapperDate = new MapperDate();
-    assertFalse("Was not able to initialize!", mapperDate.init(null, "someField", null, mapDateDescriptor));
+    assertFalse("Was not able to initialize!", mapperDate.init(null, null, "someField", null, mapDateDescriptor));
   }
 
   @Test
@@ -92,7 +92,7 @@ public class MapperDateTest {
     mapDateDescriptor.setTargetDatePattern("not_parsable_content");
 
     MapperDate mapperDate = new MapperDate();
-    assertFalse("Was not able to initialize!", mapperDate.init(null, "someField", null, mapDateDescriptor));
+    assertFalse("Was not able to initialize!", mapperDate.init(null, null, "someField", null, mapDateDescriptor));
   }
 
   @Test
@@ -102,7 +102,7 @@ public class MapperDateTest {
     mapDateDescriptor.setTargetDatePattern("epoch");
 
     MapperDate mapperDate = new MapperDate();
-    assertTrue("Could not initialize!", mapperDate.init(null, "someField", null, mapDateDescriptor));
+    assertTrue("Could not initialize!", mapperDate.init(null, null, "someField", null, mapDateDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
     String invalidValue = "abc";
@@ -119,7 +119,7 @@ public class MapperDateTest {
     mapDateDescriptor.setTargetDatePattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     MapperDate mapperDate = new MapperDate();
-    assertTrue("Could not initialize!", mapperDate.init(null, "someField", null, mapDateDescriptor));
+    assertTrue("Could not initialize!", mapperDate.init(null, null, "someField", null, mapDateDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
     String invalidValue = "abc";

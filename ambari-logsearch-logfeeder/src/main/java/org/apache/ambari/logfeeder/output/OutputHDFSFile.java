@@ -103,7 +103,7 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
     logger.info("Closing file." + getShortDescription());
     logSpooler.rollover();
     this.stopHDFSCopyThread();
-    setClosed(true);
+    shouldCloseOutput();
   }
 
   @Override

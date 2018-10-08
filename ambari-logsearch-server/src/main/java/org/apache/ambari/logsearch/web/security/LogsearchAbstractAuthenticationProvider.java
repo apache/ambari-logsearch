@@ -39,6 +39,7 @@ abstract class LogsearchAbstractAuthenticationProvider implements Authentication
 
   /**
    * GET Default GrantedAuthority
+   * @return list of authorities
    */
   protected List<GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> grantedAuths = new ArrayList<>();

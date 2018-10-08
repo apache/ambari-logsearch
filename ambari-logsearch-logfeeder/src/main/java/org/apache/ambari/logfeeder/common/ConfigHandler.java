@@ -63,6 +63,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Initialize / close input and output managers and monitors input configuration changes.
+ */
 public class ConfigHandler implements InputConfigMonitor {
   private static final Logger logger = LogManager.getLogger(ConfigHandler.class);
 

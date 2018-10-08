@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+/**
+ * Helper class to map input/filter/outputs java classes to names,  which can be used in input configurations.
+ */
 public class AliasUtil {
 
   private static final Logger logger = LogManager.getLogger(AliasUtil.class);
@@ -116,7 +119,7 @@ public class AliasUtil {
     return aliasInfo;
   }
 
-  public static HashMap<String, Object> getJsonFileContentFromClassPath(String fileName) {
+  private static HashMap<String, Object> getJsonFileContentFromClassPath(String fileName) {
     ObjectMapper mapper = new ObjectMapper();
     try (InputStream inputStream = AliasUtil.class.getClassLoader().getResourceAsStream(fileName)) {
       return mapper.readValue(inputStream, new TypeReference<HashMap<String, Object>>() {});

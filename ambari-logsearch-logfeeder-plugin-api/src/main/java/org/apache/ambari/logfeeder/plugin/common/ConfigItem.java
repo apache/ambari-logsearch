@@ -30,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is used to gather json configs for Log Feeder shipper configurations. Get specific properties with specific types (key/values pairs)
+ * @param <PROP_TYPE> Log Feeder configuration holder object
+ */
 public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implements Cloneable, Serializable {
 
   private static final Logger logger = LogManager.getLogger(ConfigItem.class);
@@ -49,7 +53,8 @@ public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implemen
   public abstract void init(PROP_TYPE logFeederProperties) throws Exception;
 
   /**
-   * Used while logging. Keep it short and meaningful
+   * Get description of config item (input / output / filter)
+   * @return String value used while logging. Keep it short and meaningful
    */
   public abstract String getShortDescription();
 
@@ -59,11 +64,6 @@ public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implemen
 
   public void loadConfig(Map<String, Object> map) {
     configs = cloneObject(map);
-
-    Map<String, String> nvList = getNVList("add_fields");
-    if (nvList != null) {
-      contextFields.putAll(nvList);
-    }
   }
 
   @SuppressWarnings("unchecked")
@@ -91,7 +91,7 @@ public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implemen
     logStatForMetric(statMetric, "Stat");
   }
 
-  public void logStatForMetric(MetricData metric, String prefixStr) {
+  protected void logStatForMetric(MetricData metric, String prefixStr) {
     long currStat = metric.value;
     long currMS = System.currentTimeMillis();
     String postFix = ", key=" + getShortDescription();
@@ -192,14 +192,6 @@ public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implemen
     String jsonStr = gson.toJson(map);
     Type type = new TypeToken<Map<String, Object>>() {}.getType();
     return gson.fromJson(jsonStr, type);
-  }
-
-  private Object getValue(String property) {
-    return configs.get(property);
-  }
-
-  private Object getValue(String property, Object defaultValue) {
-    return configs.getOrDefault(property, defaultValue);
   }
 
 }

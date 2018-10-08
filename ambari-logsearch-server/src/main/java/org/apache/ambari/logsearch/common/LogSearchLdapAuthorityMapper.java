@@ -31,10 +31,9 @@ import java.util.Map;
 /**
  * Class to map multiple LDAP groups to Log Search authorities. (definied in a map)
  * Examples:
- * LDAP person -> ROLE_USER
- * LDAP user -> ROLE_USER
- * LDAP admin -> ROLE_ADMIN
- * ROLE_LDAP_ADMIN -> ROLE_ADMIN
+ * person - ROLE_USER
+ * user - ROLE_USER
+ * admin - ROLE_ADMIN
  */
 public class LogSearchLdapAuthorityMapper implements GrantedAuthoritiesMapper {
 

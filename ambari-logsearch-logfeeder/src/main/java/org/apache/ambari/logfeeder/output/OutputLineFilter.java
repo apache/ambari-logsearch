@@ -36,6 +36,9 @@ public class OutputLineFilter {
   /**
    * Applies filter based on input cache (on service log only).
    * Get the message and in-memory timestamp for log line. If both are not empty, evaluate that log line needs to be filtered out or not.
+   * @param lineMap holds output fields and values (as key/value pairs)
+   * @param input holds input object
+   * @return log filtered out or not
    */
   public Boolean apply(Map<String, Object> lineMap, Input input) {
     boolean isLogFilteredOut = false;
@@ -56,9 +59,7 @@ public class OutputLineFilter {
         }
       }
     }
-    if (lineMap.containsKey(LogFeederConstants.IN_MEMORY_TIMESTAMP)) {
-      lineMap.remove(LogFeederConstants.IN_MEMORY_TIMESTAMP);
-    }
+    lineMap.remove(LogFeederConstants.IN_MEMORY_TIMESTAMP);
     return isLogFilteredOut;
   }
 }

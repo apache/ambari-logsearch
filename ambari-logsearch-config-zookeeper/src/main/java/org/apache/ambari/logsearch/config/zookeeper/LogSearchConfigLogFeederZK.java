@@ -44,6 +44,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
+/**
+ * ZooKeeper related shipper configuration manager/listener for Log Feeder. On input changes, operations are passed to a monitor interface.
+ */
 public class LogSearchConfigLogFeederZK extends LogSearchConfigZK implements LogSearchConfigLogFeeder {
   private static final Logger logger = LogManager.getLogger(LogSearchConfigLogFeederZK.class);
 

@@ -31,6 +31,9 @@ import java.io.RandomAccessFile;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Utility class to save input details in a checkpoint file
+ */
 public class FileCheckInHelper {
 
   private static final Logger logger = LogManager.getLogger(FileCheckInHelper.class);
@@ -38,6 +41,11 @@ public class FileCheckInHelper {
   private FileCheckInHelper() {
   }
 
+  /**
+   * Save input details to a checkpoint files
+   * @param inputFile input file object that is processed
+   * @param inputMarker input file details holder object
+   */
   public static void checkIn(InputFile inputFile, InputFileMarker inputMarker) {
     try {
       Map<String, Object> jsonCheckPoint = inputFile.getJsonCheckPoints().get(inputMarker.getBase64FileKey());

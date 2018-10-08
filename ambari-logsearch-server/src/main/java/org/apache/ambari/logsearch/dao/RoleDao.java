@@ -109,6 +109,7 @@ public class RoleDao {
 
   /**
    * Helper function to create a simple default role details
+   * @return list of authorities
    */
   public static List<GrantedAuthority> createDefaultAuthorities() {
     Role r = createRoleWithReadPrivilage("ROLE_USER");

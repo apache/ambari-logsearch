@@ -37,40 +37,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents the filter in Log Feeder shipper input configurations.
+ * At least 1 filter is required for a valid input config.
+ * Can transform inputs (adding/removing/create fields), those will be shipped to outputs or other filters (in chain)
+ * @param <PROP_TYPE> Log Feeder configuration holder object
+ */
 public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends ConfigItem<PROP_TYPE> {
 
   private static final Logger logger = LogManager.getLogger(Filter.class);
 
   private final Map<String, List<Mapper>> postFieldValueMappers = new HashMap<>();
   private FilterDescriptor filterDescriptor;
-  private PROP_TYPE logFeederProperties;
   private Filter nextFilter = null;
   private Input input;
   private OutputManager outputManager;
-
-  public void loadConfigs(FilterDescriptor filterDescriptor, PROP_TYPE logFeederProperties, OutputManager outputManager) {
-    this.filterDescriptor = filterDescriptor;
-    this.logFeederProperties = logFeederProperties;
-    this.outputManager = outputManager;
-  }
 
   public FilterDescriptor getFilterDescriptor() {
     return filterDescriptor;
   }
 
-  public PROP_TYPE getLogFeederProperties() {
-    return logFeederProperties;
-  }
-
+  @SuppressWarnings("unchecked")
   @Override
   public void init(PROP_TYPE logFeederProperties) throws Exception {
-    initializePostMapValues();
+    initializePostMapValues(logFeederProperties);
     if (nextFilter != null) {
       nextFilter.init(logFeederProperties);
     }
   }
 
-  private void initializePostMapValues() {
+  private void initializePostMapValues(PROP_TYPE logFeederProperties) {
     Map<String, ? extends List<? extends PostMapValues>> postMapValues = filterDescriptor.getPostMapValues();
     if (postMapValues == null) {
       return;
@@ -85,7 +81,7 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
             logger.warn("Unknown mapper type: " + mapClassCode);
             continue;
           }
-          if (mapper.init(getInput().getShortDescription(), fieldName, mapClassCode, mapFieldDescriptor)) {
+          if (mapper.init(logFeederProperties, getInput().getShortDescription(), fieldName, mapClassCode, mapFieldDescriptor)) {
             List<Mapper> fieldMapList = postFieldValueMappers.computeIfAbsent(fieldName, k -> new ArrayList<>());
             fieldMapList.add(mapper);
           }
@@ -95,7 +91,10 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
   }
 
   /**
-   * Deriving classes should implement this at the minimum
+   * Apply a filter on an input (input can be an output of an another filter). Deriving classes should implement this at the minimum.
+   * @param inputStr Incoming input as a string
+   * @param inputMarker Marker which can identify a specific input (like line number + input details)
+   * @throws Exception Any error which happens during applying the filter
    */
   public void apply(String inputStr, InputMarker inputMarker) throws Exception {
     // TODO: There is no transformation for string types.
@@ -106,6 +105,12 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
     }
   }
 
+  /**
+   * Apply a filter on an input (input can be an output of an another filter).
+   * @param jsonObj Key/value pairs of incoming inputs - mostly fields and values
+   * @param inputMarker Marker which can identify a specific input (like line number + input details)
+   * @throws Exception Any error which happens during applying the filter
+   */
   public void apply(Map<String, Object> jsonObj, InputMarker inputMarker) throws Exception {
     for (String fieldName : postFieldValueMappers.keySet()) {
       Object value = jsonObj.get(fieldName);
@@ -122,6 +127,10 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
     }
   }
 
+  /**
+   * Set filter descriptor shipper configuration object for the filter
+   * @param filterDescriptor Filter descriptor, stores filter configurations
+   */
   public void loadConfig(FilterDescriptor filterDescriptor) {
     this.filterDescriptor = filterDescriptor;
   }
@@ -142,18 +151,21 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
     this.input = input;
   }
 
-  public OutputManager getOutputManager() {
-    return outputManager;
-  }
-
   public void setOutputManager(OutputManager outputManager) {
     this.outputManager = outputManager;
   }
 
+  /**
+   * Call flush on a filter - implement only if any kind of flush is required for the resources of a filter, which is different from the close operation.
+   */
   public void flush() {
     // empty
   }
 
+  /**
+   * Implement this for specific filter if it is required to close resources properly. By default it tries to close the next chained filter.
+   * (you can keep this behaviour if you are using with super.close() )
+   */
   public void close() {
     if (nextFilter != null) {
       nextFilter.close();

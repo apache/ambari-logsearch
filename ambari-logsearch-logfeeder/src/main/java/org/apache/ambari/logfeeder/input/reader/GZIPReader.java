@@ -28,6 +28,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * Reader class that can read gzip input streams.
+ */
 class GZIPReader extends InputStreamReader {
 
   private static final Logger logger = LogManager.getLogger(GZIPReader.class);

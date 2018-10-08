@@ -30,17 +30,32 @@ import java.io.RandomAccessFile;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+/**
+ * Utility class for reading checkpoint JSON files
+ */
 public class CheckpointFileReader {
 
   private CheckpointFileReader() {
   }
 
+  /**
+   * Get all checkpoint files
+   * @param checkPointFolderFile folder where
+   * @param checkPointExtension checkpoint file extension, e.g.: .cp
+   * @return array of checkpoint files
+   */
   public static File[] getFiles(File checkPointFolderFile, String checkPointExtension) {
     String searchPath = "*" + checkPointExtension;
     FileFilter fileFilter = new WildcardFileFilter(searchPath);
     return checkPointFolderFile.listFiles(fileFilter);
   }
 
+  /**
+   * Obtain checkpoint file object from a file
+   * @param checkPointFile checkpoint file object
+   * @return checkpoint file object details as key / value pairs
+   * @throws IOException error during gather checkpoint file object from a file
+   */
   public static Map<String, String> getCheckpointObject(File checkPointFile) throws IOException {
     final Map<String, String> jsonCheckPoint;
     try (RandomAccessFile checkPointReader = new RandomAccessFile(checkPointFile, "r")) {

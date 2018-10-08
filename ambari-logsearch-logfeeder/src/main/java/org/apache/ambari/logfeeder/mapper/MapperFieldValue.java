@@ -33,6 +33,17 @@ import java.util.Map;
 
 /**
  * Overrides the value for the field
+ * <pre>
+ *   "post_map_values": {
+ *         "Result": [
+ *           {
+ *               'map_field_value': {
+ *                 'pre_value': 'true',
+ *                 'post_value': '1'
+ *               }
+ *           }
+ *       }
+ * </pre>
  */
 public class MapperFieldValue extends Mapper<LogFeederProps> {
   private static final Logger logger = LogManager.getLogger(MapperFieldValue.class);
@@ -41,7 +52,7 @@ public class MapperFieldValue extends Mapper<LogFeederProps> {
   private String newValue = null;
 
   @Override
-  public boolean init(String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
+  public boolean init(LogFeederProps logFeederProps, String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
     init(inputDesc, fieldName, mapClassCode);
     
     prevValue = ((MapFieldValueDescriptor)mapFieldDescriptor).getPreValue();

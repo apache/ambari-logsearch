@@ -522,10 +522,6 @@ public class LogsearchKrbFilter implements Filter {
     }
   }
 
-  /**
-   * Delegates call to the servlet filter chain. Sub-classes my override this
-   * method to perform pre and post tasks.
-   */
   protected void doFilter(FilterChain filterChain, HttpServletRequest request,
       HttpServletResponse response) throws IOException, ServletException {
     filterChain.doFilter(request, response);

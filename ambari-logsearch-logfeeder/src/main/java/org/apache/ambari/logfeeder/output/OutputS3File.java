@@ -189,10 +189,9 @@ public class OutputS3File extends OutputFile implements RolloverCondition, Rollo
 
    * @param block The log event to upload
    * @param inputMarker Contains information about the log file feeding the lines.
-   * @throws Exception
    */
   @Override
-  public void write(String block, InputFileMarker inputMarker) throws Exception {
+  public void write(String block, InputFileMarker inputMarker) {
     if (logSpooler == null) {
       if (inputMarker.getInput().getClass().isAssignableFrom(InputFile.class)) {
         InputFile input = (InputFile) inputMarker.getInput();

@@ -30,6 +30,25 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
+/**
+ * Filter lines in JSON format, if the logs are produced with a Log Search JSON layout appender, Log Feeder won't need
+ * to parse and split lines, that would mean better performance on Log Feeder side.
+ * Example configuration:
+ * <pre>
+ *   "filter": [
+ *     {
+ *       "filter": "json",
+ *       "conditions": {
+ *         "fields": {
+ *           "type": [
+ *             "logsearch_app"
+ *           ]
+ *         }
+ *       }
+ *     }
+ *   ]
+ * </pre>
+ */
 public class FilterJSON extends Filter<LogFeederProps> {
 
   private static final Logger logger = LogManager.getLogger(FilterJSON.class);

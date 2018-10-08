@@ -45,6 +45,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Input type for simulating inputs for Log Feeder
+ */
 public class InputSimulate extends InputFile {
   private static final Logger logger = LogManager.getLogger(InputSimulate.class);
   private static final String LOG_TEXT_PATTERN = "{ logtime=\"%d\", level=\"%s\", log_message=\"%s\", host=\"%s\"}";

@@ -29,6 +29,9 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class to get last processed line number from a checkpoint file.
+ */
 public class ResumeLineNumberHelper {
 
   private static final Logger logger = LogManager.getLogger(ResumeLineNumberHelper.class);
@@ -36,6 +39,12 @@ public class ResumeLineNumberHelper {
   private ResumeLineNumberHelper() {
   }
 
+  /**
+   * Get last processed line number from a checkpoint file for an input
+   * @param inputFile input file object
+   * @param checkPointFolder checkpoint folder that contains
+   * @return last processed line number of an input file
+   */
   public static int getResumeFromLineNumber(InputFile inputFile, File checkPointFolder) {
     int resumeFromLineNumber = 0;
 

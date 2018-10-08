@@ -64,6 +64,9 @@ rpm-jdk8:
 deb-jdk8:
 	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=1.8
 
+javadoc:
+	$(MAVEN_BINARY) javadoc:javadoc
+
 docker-build:
 	$(MAVEN_BINARY) clean package docker:build -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG)
 

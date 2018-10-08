@@ -33,6 +33,22 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
+/**
+ * Field mapper to anonymize fields if it has match with on a specific pattern.
+ * Example:
+ * <pre>
+ *   "post_map_values": {
+ *           "message_field_with_password": [
+ *             {
+ *               "map_anonymize": {
+ *                 "pattern": "password: *."
+ *                 "hide_char: "*"
+ *               }
+ *             }
+ *           ]
+ *         }
+ * </pre>
+ */
 public class MapperAnonymize extends Mapper<LogFeederProps> {
   private static final Logger logger = LogManager.getLogger(MapperAnonymize.class);
   
@@ -43,7 +59,7 @@ public class MapperAnonymize extends Mapper<LogFeederProps> {
   private char hideChar;
 
   @Override
-  public boolean init(String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
+  public boolean init(LogFeederProps logFeederProps, String inputDesc, String fieldName, String mapClassCode, MapFieldDescriptor mapFieldDescriptor) {
     init(inputDesc, fieldName, mapClassCode);
     
     pattern = ((MapAnonymizeDescriptor)mapFieldDescriptor).getPattern();

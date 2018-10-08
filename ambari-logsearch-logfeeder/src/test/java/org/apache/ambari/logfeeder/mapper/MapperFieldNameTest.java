@@ -37,7 +37,7 @@ public class MapperFieldNameTest {
     mapFieldNameDescriptor.setNewFieldName("someOtherField");
 
     MapperFieldName mapperFieldName = new MapperFieldName();
-    assertTrue("Could not initialize!", mapperFieldName.init(null, "someField", null, mapFieldNameDescriptor));
+    assertTrue("Could not initialize!", mapperFieldName.init(null, null, "someField", null, mapFieldNameDescriptor));
 
     Map<String, Object> jsonObj = new HashMap<>();
     jsonObj.put("someField", "someValue");
@@ -55,6 +55,6 @@ public class MapperFieldNameTest {
     MapFieldNameDescriptorImpl mapFieldNameDescriptor = new MapFieldNameDescriptorImpl();
 
     MapperFieldName mapperFieldName = new MapperFieldName();
-    assertFalse("Was able to initialize!", mapperFieldName.init(null, "someField", null, mapFieldNameDescriptor));
+    assertFalse("Was able to initialize!", mapperFieldName.init(null, null, "someField", null, mapFieldNameDescriptor));
   }
 }
