@@ -228,7 +228,7 @@ public class LogSearchConfigZKHelper {
    * @param nodeName name of the znode
    * @param nodeData znode data
    * @param gson object that can serialize inputs
-   * @param logLevelFilterMonitor monitor object that can pass buisness logic that should happen during znode events
+   * @param logLevelFilterMonitor monitor object that can pass business logic that should happen during znode events
    */
   static void handleLogLevelFilterChange(final TreeCacheEvent.Type eventType, final String nodeName, final String nodeData,
                                                 final Gson gson, final LogLevelFilterMonitor logLevelFilterMonitor) {

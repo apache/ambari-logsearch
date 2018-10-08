@@ -36,9 +36,9 @@ import java.util.Map;
  * - input has not monitored yet - found new container: start monitoring it
  * - input has not monitored yet - found new stopped container: start monitoring it
  * - input has not monitored yet - found new stopped container but log is too old: do not monitoring it
- * - input has monitored already - container stopped - if it's stopped for too long time : remove it from the monitoed list
+ * - input has monitored already - container stopped - if it's stopped for too long time : remove it from the monitored list
  * - input has monitored already - container stopped - log is not too old: keep in the monitored list
- * - input has monitored already - container does not exist - remove it from the monitoed list (and all other input with the same log type)
+ * - input has monitored already - container does not exist - remove it from the monitored list (and all other input with the same log type)
  * </pre>
  */
 public class DockerLogFileUpdateMonitor extends AbstractLogFileMonitor {

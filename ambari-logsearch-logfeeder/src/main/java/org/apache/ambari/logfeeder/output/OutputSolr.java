@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
 
 /**
  * Ship (transformed) input data to solr destination. Works with both solr cloud mode or providing static solr url(s).
- * In Solr cloud mode Log Feeder will manage and listen a ZooKeeper connection. If tthere are too many Log Feeder nodes that can mean
+ * In Solr cloud mode Log Feeder will manage and listen a ZooKeeper connection. If there are too many Log Feeder nodes that can mean
  * it requires a lot of client connections. (for static urls, use "solr_urls" field, for Solr cloud mode use "zk_connect_string")
  * Example configuration (using JSON config api):
  * <pre>
