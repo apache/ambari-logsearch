@@ -292,19 +292,12 @@ export class HistoryManagerService {
    * @param {object} value
    */
   private handleUndoOrRedo(value: object): void {
-    const filtersForm = this.logsContainerService.filtersForm;
     this.hasNoPendingUndoOrRedo = false;
-    this.logsContainerService.filtersFormSyncInProgress.next(true);
-    this.filterParameters.filter(controlName => this.ignoredParameters.indexOf(controlName) === -1)
-      .forEach((controlName: string): void => {
-        filtersForm.controls[controlName].setValue(value[controlName], {
-          emitEvent: false,
-          onlySelf: true
-        });
-      });
-    this.logsContainerService.filtersFormSyncInProgress.next(false);
+    this.logsContainerService.resetFiltersForms({
+      ...value,
+      isUndoOrRedo: true
+    });
     this.hasNoPendingUndoOrRedo = true;
-    filtersForm.controls.isUndoOrRedo.setValue(true);
   }
 
   undo(item: ListItem): void {
