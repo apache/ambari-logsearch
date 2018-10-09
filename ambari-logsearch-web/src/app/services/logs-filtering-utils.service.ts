@@ -270,8 +270,7 @@ export class LogsFilteringUtilsService {
     }],
     page: 0,
     query: [],
-    users: [],
-    isUndoOrRedo: false
+    users: []
   };
 
   constructor(
@@ -395,7 +394,6 @@ export class LogsFilteringUtilsService {
 
   getParamsFromActiveFilter(activeFilter: any, activeLogsType: LogsType): {[key: string]: string} {
     const {...filters} = activeFilter;
-    delete filters.isUndoOrRedo;
     return Object.keys(filters).reduce((currentParams, key) => {
       const newParams = {
         ...currentParams

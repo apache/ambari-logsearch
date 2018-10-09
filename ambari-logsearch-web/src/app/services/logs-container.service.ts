@@ -217,9 +217,6 @@ export class LogsContainerService {
       options: [],
       defaultSelection: this.logsFilteringUtilsService.defaultFilterSelections.users,
       fieldName: 'reqUser'
-    },
-    isUndoOrRedo: {
-      defaultSelection: this.logsFilteringUtilsService.defaultFilterSelections.isUndoOrRedo
     }
   };
 
