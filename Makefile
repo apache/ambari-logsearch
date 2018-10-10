@@ -43,29 +43,26 @@ deb:
 update-version:
 	$(MAVEN_BINARY) versions:set -DnewVersion=$(new-version) -DgenerateBackupPoms=false
 
-package-jdk8:
-	$(MAVEN_BINARY) clean package -Djdk.version=1.8
+package-jdk11:
+	$(MAVEN_BINARY) clean package -Djdk.version=11
 
-install-jdk8:
-	$(MAVEN_BINARY) clean install -DskipTests -Djdk.version=1.8
+install-jdk11:
+	$(MAVEN_BINARY) clean install -DskipTests -Djdk.version=11
 
-be-jdk8:
-	$(MAVEN_BINARY) clean package -Pbe -Djdk.version=1.8
+be-jdk11:
+	$(MAVEN_BINARY) clean package -Pbe -Djdk.version=11
 
-fe-jdk8:
-	$(MAVEN_BINARY) clean package -Pfe -Djdk.version=1.8
+fe-jdk11:
+	$(MAVEN_BINARY) clean package -Pfe -Djdk.version=11
 
-test-jdk8:
-	$(MAVEN_BINARY) clean test -Djdk.version=1.8
+test-jdk11:
+	$(MAVEN_BINARY) clean test -Djdk.version=11
 
-rpm-jdk8:
-	$(MAVEN_BINARY) clean package -Dbuild-rpm -DskipTests -Djdk.version=1.8
+rpm-jdk11:
+	$(MAVEN_BINARY) clean package -Dbuild-rpm -DskipTests -Djdk.version=11
 
-deb-jdk8:
-	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=1.8
-
-javadoc:
-	$(MAVEN_BINARY) javadoc:javadoc
+deb-jdk11:
+	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=11
 
 docker-build:
 	$(MAVEN_BINARY) clean package docker:build -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG)
