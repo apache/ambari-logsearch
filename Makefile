@@ -19,56 +19,41 @@ else
   LOGSEARCH_BUILD_DOCKER_TAG = "latest"
 endif
 
+ifeq ("$(LOGSEARCH_JDK_11)", "true")
+  LOGSEARCH_JAVA_VERSION = "11"
+else
+  LOGSEARCH_JAVA_VERSION = "1.8"
+endif
+
 package:
-	$(MAVEN_BINARY) clean package
+	$(MAVEN_BINARY) clean package -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 install:
-	$(MAVEN_BINARY) clean install -DskipTests
+	$(MAVEN_BINARY) clean install -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 be:
-	$(MAVEN_BINARY) clean package -Pbe
+	$(MAVEN_BINARY) clean package -Pbe -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 fe:
-	$(MAVEN_BINARY) clean package -Pfe
+	$(MAVEN_BINARY) clean package -Pfe -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 test:
-	$(MAVEN_BINARY) clean test
+	$(MAVEN_BINARY) clean test -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 rpm:
-	$(MAVEN_BINARY) clean package -Dbuild-rpm -DskipTests
+	$(MAVEN_BINARY) clean package -Dbuild-rpm -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 deb:
-	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests
+	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 update-version:
 	$(MAVEN_BINARY) versions:set -DnewVersion=$(new-version) -DgenerateBackupPoms=false
 
-package-jdk11:
-	$(MAVEN_BINARY) clean package -Djdk.version=11
-
-install-jdk11:
-	$(MAVEN_BINARY) clean install -DskipTests -Djdk.version=11
-
-be-jdk11:
-	$(MAVEN_BINARY) clean package -Pbe -Djdk.version=11
-
-fe-jdk11:
-	$(MAVEN_BINARY) clean package -Pfe -Djdk.version=11
-
-test-jdk11:
-	$(MAVEN_BINARY) clean test -Djdk.version=11
-
-rpm-jdk11:
-	$(MAVEN_BINARY) clean package -Dbuild-rpm -DskipTests -Djdk.version=11
-
-deb-jdk11:
-	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=11
-
 docker-build:
-	$(MAVEN_BINARY) clean package docker:build -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG)
+	$(MAVEN_BINARY) clean package docker:build -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG) -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 docker-push:
-	$(MAVEN_BINARY) clean package docker:build docker:push -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG)
+	$(MAVEN_BINARY) clean package docker:build docker:push -DskipTests -Dlogsearch.docker.tag=$(LOGSEARCH_BUILD_DOCKER_TAG) -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 docker-dev-start:
 	cd docker && docker-compose up -d
