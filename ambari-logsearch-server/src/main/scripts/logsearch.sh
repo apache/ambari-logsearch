@@ -78,7 +78,12 @@ else
   LOGSEARCH_GC_LOGFILE="$LOG_PATH_WITHOUT_SLASH/$LOGSEARCH_GC_LOGFILE"
 fi
 
-LOGSEARCH_GC_OPTS="-Xlog:gc*:file=$LOGSEARCH_GC_LOGFILE:time"
+java_version=$($JVM -version 2>&1 | grep 'java version' | cut -d'"' -f2 | cut -d'.' -f2)
+if [ $java_version == "8" ]; then
+  LOGSEARCH_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$LOGSEARCH_GC_LOGFILE"
+else
+  LOGSEARCH_GC_OPTS="-Xlog:gc*:file=$LOGSEARCH_GC_LOGFILE:time"
+fi
 
 function print_usage() {
   cat << EOF

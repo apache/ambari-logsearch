@@ -80,7 +80,12 @@ else
   LOGFEEDER_GC_LOGFILE="$LOG_PATH_WITHOUT_SLASH/$LOGFEEDER_GC_LOGFILE"
 fi
 
-LOGFEEDER_GC_OPTS="-Xlog:gc*:file=$LOGFEEDER_GC_LOGFILE:time"
+java_version=$($JVM -version 2>&1 | grep 'java version' | cut -d'"' -f2 | cut -d'.' -f2)
+if [ $java_version == "8" ]; then
+  LOGFEEDER_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$LOGFEEDER_GC_LOGFILE"
+else
+  LOGFEEDER_GC_OPTS="-Xlog:gc*:file=$LOGFEEDER_GC_LOGFILE:time"
+fi
 
 function print_usage() {
   cat << EOF
