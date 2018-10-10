@@ -78,7 +78,8 @@ else
   LOGSEARCH_GC_LOGFILE="$LOG_PATH_WITHOUT_SLASH/$LOGSEARCH_GC_LOGFILE"
 fi
 
-LOGSEARCH_GC_OPTS="-Xlog:gc*:file=$LOGSEARCH_GC_LOGFILE:time"
+LOGSEARCH_GC_OPTS="-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$LOGSEARCH_GC_LOGFILE"
+# LOGSEARCH_GC_OPTS="-Xlog:gc*:file=$LOGSEARCH_GC_LOGFILE:time" #TODO: check java version, use this if not JDK8 is used
 
 function print_usage() {
   cat << EOF
