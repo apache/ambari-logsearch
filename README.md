@@ -51,14 +51,16 @@ In case if you started the containers separately and if you would like to access
 2. On the logsearch root folder (ambari/ambari-logsearch), please execute the following make command to build RPM/DPKG:
 ```bash
 make rpm
-# or for jdk8
-make rpm-jdk8
+# or for jdk11
+export LOGSEARCH_JDK_11=true
+make rpm
 ```
   or
 ```bash
 make deb
-# or for jdk8
-make deb-jdk8
+# or for jdk11
+export LOGSEARCH_JDK_11=true
+make deb
 ```
 3. Generated RPM/DPKG files will be found in ambari-logsearch-assembly/target folder
 
