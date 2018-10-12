@@ -93,6 +93,7 @@
     <compiler.version>3.8.0</compiler.version>
     <ambari-metrics.version>2.7.0.0.0</ambari-metrics.version>
     <logsearch.docker.tag>latest</logsearch.docker.tag>
+    <fasterxml-jackson.version>2.9.5</fasterxml-jackson.version>
   </properties>
 
   <licenses>
@@ -389,22 +390,22 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.9.4</version>
+        <version>${fasterxml-jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>2.9.4</version>
+        <version>${fasterxml-jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-yaml</artifactId>
-        <version>2.9.4</version>
+        <version>${fasterxml-jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-xml</artifactId>
-        <version>2.9.4</version>
+        <version>${fasterxml-jackson.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.fasterxml.woodstox</groupId>
