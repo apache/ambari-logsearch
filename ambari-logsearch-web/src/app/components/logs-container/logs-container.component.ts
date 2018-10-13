@@ -16,29 +16,31 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, ElementRef, ViewChild, HostListener, Input, OnDestroy, ChangeDetectorRef} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {Observable} from 'rxjs/Observable';
+import { Component, OnInit, ElementRef, ViewChild, HostListener, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
-import {LogsContainerService} from '@app/services/logs-container.service';
-import {ServiceLogsHistogramDataService} from '@app/services/storage/service-logs-histogram-data.service';
-import {AuditLogsGraphDataService} from '@app/services/storage/audit-logs-graph-data.service';
-import {AppStateService} from '@app/services/storage/app-state.service';
-import {TabsService} from '@app/services/storage/tabs.service';
-import {AuditLog} from '@app/classes/models/audit-log';
-import {ServiceLog} from '@app/classes/models/service-log';
-import {LogTypeTab} from '@app/classes/models/log-type-tab';
-import {BarGraph} from '@app/classes/models/bar-graph';
-import {ActiveServiceLogEntry} from '@app/classes/active-service-log-entry';
-import {ListItem} from '@app/classes/list-item';
-import {HomogeneousObject, LogLevelObject} from '@app/classes/object';
-import {LogsType, LogLevel} from '@app/classes/string';
-import {FiltersPanelComponent} from '@app/components/filters-panel/filters-panel.component';
-import {Subscription} from 'rxjs/Subscription';
-import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {LogsStateService} from '@app/services/storage/logs-state.service';
+import { LogsContainerService } from '@app/services/logs-container.service';
+import { ServiceLogsHistogramDataService } from '@app/services/storage/service-logs-histogram-data.service';
+import { AuditLogsGraphDataService } from '@app/services/storage/audit-logs-graph-data.service';
+import { AppStateService } from '@app/services/storage/app-state.service';
+import { TabsService } from '@app/services/storage/tabs.service';
+import { AuditLog } from '@app/classes/models/audit-log';
+import { ServiceLog } from '@app/classes/models/service-log';
+import { LogTypeTab } from '@app/classes/models/log-type-tab';
+import { BarGraph } from '@app/classes/models/bar-graph';
+import { ActiveServiceLogEntry } from '@app/classes/active-service-log-entry';
+import { ListItem } from '@app/classes/list-item';
+import { HomogeneousObject, LogLevelObject } from '@app/classes/object';
+import { LogsType, LogLevel } from '@app/classes/string';
+import { FiltersPanelComponent } from '@app/components/filters-panel/filters-panel.component';
+import { Subscription } from 'rxjs/Subscription';
+import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { NavigationService } from '@modules/shared/services/navigation.service';
+import { Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'logs-container',
@@ -98,7 +100,9 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     private auditLogsGraphStorage: AuditLogsGraphDataService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private logsStateService: LogsStateService
+    private navigationService: NavigationService,
+    private titleService: Title,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit() {
@@ -262,13 +266,31 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
    * @param filters
    */
   private syncFiltersToParams(filters): void {
-    const params = this.logsFilteringUtilsService.getParamsFromActiveFilter(
-      filters, this.logsContainerService.activeLogsType
-    );
-    this.paramsSyncStart(); // turn on the 'sync in progress' flag
-    this.router.navigate([params], { relativeTo: this.activatedRoute })
-      .then(this.paramsSyncStop, this.paramsSyncStop) // turn off the 'sync in progress' flag
-      .catch(this.paramsSyncStop); // turn off the 'sync in progress' flag
+    this.activatedRoute.params.first().subscribe((routeParams) => {
+      const params = this.logsFilteringUtilsService.getParamsFromActiveFilter(
+        filters, this.logsContainerService.activeLogsType
+      );
+      this.getUrlParamsDifferencies(
+        Object.keys(filters).reduce((filterParams, key) => {
+          if (routeParams[key] !== undefined) {
+            return {
+              ...filterParams,
+              [key]: routeParams[key]
+            };
+          }
+          return {...filterParams};
+        }, {}),
+        params
+      );
+      const newRouteParams = {
+        ...routeParams,
+        ...params
+      };
+      this.paramsSyncStart(); // turn on the 'sync in progress' flag
+      this.navigationService.navigate([newRouteParams], { relativeTo: this.activatedRoute })
+        .then(this.paramsSyncStop, this.paramsSyncStop) // turn off the 'sync in progress' flag
+        .catch(this.paramsSyncStop); // turn off the 'sync in progress' flag
+    });
   }
 
   /**
@@ -313,15 +335,36 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
             filtersParams,
             tab.appState.activeLogsType
           );
-          // we don't have to reset the form with the new values when there is tab changes
-          // because the onActiveTabIdChange will call the setActiveTabById on LogsContainerService
-          // which will reset the form to the tab's activeFilters prop.
-          // If we do reset wvery time then the form will be reseted twice with every tab changes... not a big deal anyway
-          if (this.activeTabId$.getValue() === activeTab) {
-            this.resetFiltersForm(filtersFromParams);
+          const currentFormParams = this.logsFilteringUtilsService.getParamsFromActiveFilter(
+            this.filtersForm.value, this.logsContainerService.activeLogsType
+          );
+          const filtersFormControlNames = Object.keys(this.filtersForm.controls);
+          const hasChange = filtersFormControlNames.reduce(
+            (changed, key) => {
+              if (currentFormParams[key] === undefined && filtersParams[key] === undefined) {
+                return changed;
+              }
+              return (
+                changed
+                || (currentFormParams[key] === undefined && filtersParams[key] !== undefined)
+                || (currentFormParams[key] !== undefined && filtersParams[key] === undefined)
+                || currentFormParams[key].toString() !== filtersParams[key].toString()
+              );
+            },
+            false
+          );
+          if (hasChange) {
+            this.titleService.setTitle(JSON.stringify(filtersParams));
+            // we don't have to reset the form with the new values when there is tab changes
+            // because the onActiveTabIdChange will call the setActiveTabById on LogsContainerService
+            // which will reset the form to the tab's activeFilters prop.
+            // If we do reset wvery time then the form will be reseted twice with every tab changes... not a big deal anyway
+            if (this.activeTabId$.getValue() === activeTab) {
+              this.resetFiltersForm(filtersFromParams);
+            }
+            this.syncFilterToTabStore(filtersFromParams, activeTab);
+            this.activeTabId$.next(activeTab);
           }
-          this.syncFilterToTabStore(filtersFromParams, activeTab);
-          this.activeTabId$.next(activeTab);
         }
       });
   }
@@ -364,7 +407,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     const activateNewTab: boolean = activeTab.isActive;
     this.tabsStorage.deleteObjectInstance(activeTab);
     if (activateNewTab && newActiveTab) {
-      this.router.navigate(['/logs', ...this.logsFilteringUtilsService.getNavigationForTab(newActiveTab)]);
+      this.navigationService.navigate(['/logs', ...this.logsFilteringUtilsService.getNavigationForTab(newActiveTab)]);
     }
   }
   //
@@ -379,6 +422,37 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
       this.filtersForm.controls.timeRange.setValue(this.captureTimeRangeCache);
       this.logsContainerService.captureTimeRangeCache = null;
     }
+  }
+
+  getUrlParamsDifferencies(previousParams, currentParams) {
+    const allKeys = [
+      ...Object.keys(previousParams),
+      ...Object.keys(currentParams)
+    ].reduce((uniques: string[], key: string) => {
+      return uniques.indexOf(key) === -1 ? [...uniques, key] : uniques;
+    }, []);
+    const differencies = allKeys.reduce((changes: {[key: string]: any}[], key: string) => {
+      const change: {[key: string]: any} = {};
+      if (previousParams[key] === undefined && currentParams[key] !== undefined) {
+        change.type = 'add';
+      } else if (previousParams[key] !== undefined && currentParams[key] === undefined) {
+        change.type = 'remove';
+      } else if (previousParams[key].toString() !== currentParams[key].toString()) {
+        change.type = 'change';
+      }
+      if (change.type) {
+        change.name = key;
+        change.from = previousParams[key];
+        change.to = currentParams[key];
+        return [...changes, change];
+      }
+      return [...changes];
+    }, []);
+    console.info(differencies);
+  }
+
+  getLabelForUrlParamName(name) {
+
   }
 
 }

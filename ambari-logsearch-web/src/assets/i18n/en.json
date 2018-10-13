@@ -279,6 +279,20 @@
   "dataAvaibilityState.clustersDataState.label": "Loading clusters",
   "dataAvaibilityState.hostsDataState.label": "Loading hosts",
   "dataAvaibilityState.componentsDataState.label": "Loading components",
-  "dataAvaibilityState.hasError.message": "We were not able to load the data. Please check your internet connection and reload the page!"
+  "dataAvaibilityState.hasError.message": "We were not able to load the data. Please check your internet connection and reload the page!",
+
+  "urlParamsLabels": {
+    "clusters": "Clusters",
+    "timeRange": "Time range",
+    "components": "Components",
+    "levels": "Levels",
+    "hosts": "Hosts",
+    "auditLogsSorting": "Sort by",
+    "serviceLogsSorting": "Sort by",
+    "pageSize": "# of logs",
+    "page": "Page",
+    "query": "Query",
+    "users": "Users"
+  }
 
 }

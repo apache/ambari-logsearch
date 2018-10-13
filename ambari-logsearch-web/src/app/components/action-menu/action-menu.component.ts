@@ -30,6 +30,7 @@ import { UserSettingsService } from '@app/services/user-settings.service';
 import { ListItem } from '@app/classes/list-item';
 import { ClustersService } from '@app/services/storage/clusters.service';
 import { UtilsService } from '@app/services/utils.service';
+import { NavigationService } from '@app/modules/shared/services/navigation.service';
 
 @Component({
   selector: 'action-menu',
@@ -69,7 +70,8 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private clustersService: ClustersService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private navigationService: NavigationService
   ) {
   }
 
@@ -134,7 +136,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   openLogIndexFilter(): void {
-    this.router.navigate(['.'], {
+    this.navigationService.navigate(['.'], {
       queryParamsHandling: 'merge',
       queryParams: {logIndexFilterSettings: 'show'},
       relativeTo: this.route.root.firstChild
@@ -144,7 +146,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   closeLogIndexFilter(): void {
     this.route.queryParams.first().subscribe((queryParams) => {
       const {logIndexFilterSettings, ...params} = queryParams;
-      this.router.navigate(['.'], {
+      this.navigationService.navigate(['.'], {
         queryParams: params,
         relativeTo: this.route.root.firstChild
       });

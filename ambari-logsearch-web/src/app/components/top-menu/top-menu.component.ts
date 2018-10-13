@@ -27,6 +27,7 @@ import {Router} from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { LogOutAction } from '@app/store/actions/auth.actions';
+import { NavigationService } from '@app/modules/shared/services/navigation.service';
 
 @Component({
   selector: 'top-menu',
@@ -38,7 +39,8 @@ export class TopMenuComponent {
   constructor(
     private logsContainer: LogsContainerService,
     private router: Router,
-    private store: Store<AppStore>
+    private store: Store<AppStore>,
+    private navigationService: NavigationService
   ) {}
 
   get filtersForm(): FormGroup {
@@ -59,7 +61,7 @@ export class TopMenuComponent {
   }
 
   navigateToShipperConfig = (): void => {
-    this.router.navigate(['/shipper']);
+    this.navigationService.navigate(['/shipper']);
   }
 
   readonly items = [

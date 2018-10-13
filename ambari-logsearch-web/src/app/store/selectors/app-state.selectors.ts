@@ -15,19 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {DataAvailabilityValues} from 'app/classes/string';
 
-export interface DataAvaibilityStatesModel {
-  clustersDataState: DataAvailabilityValues;
-  hostsDataState: DataAvailabilityValues;
-  componentsDataState: DataAvailabilityValues;
-  logFieldsDataState: DataAvailabilityValues;
-  [key: string]: DataAvailabilityValues;
-}
+import { createSelector } from 'reselect';
 
-export const initialDataAvaibilityStates: DataAvaibilityStatesModel = {
-  clustersDataState: DataAvailabilityValues.NOT_AVAILABLE,
-  hostsDataState: DataAvailabilityValues.NOT_AVAILABLE,
-  componentsDataState: DataAvailabilityValues.NOT_AVAILABLE,
-  logFieldsDataState: DataAvailabilityValues.NOT_AVAILABLE
-};
+import { AppStore } from '@app/classes/models/store';
+import { AppState } from '@app/classes/models/app-state';
+import { LogsType } from '@app/classes/string';
+
+export const getAppState = (state: AppStore): AppState => state.appState;
+
+export const activeLogsType = createSelector(
+  getAppState,
+  (appState: AppState): LogsType => appState.activeLogsType
+);
