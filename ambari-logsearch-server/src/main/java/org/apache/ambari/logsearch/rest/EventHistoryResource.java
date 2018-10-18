@@ -19,6 +19,13 @@
 
 package org.apache.ambari.logsearch.rest;
 
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.DELETE_EVENT_HISTORY_DATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.GET_ALL_USER_NAMES_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.GET_EVENT_HISTORY_DATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.SAVE_EVENT_HISTORY_DATA_OD;
+
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.BeanParam;
@@ -29,19 +36,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.apache.ambari.logsearch.manager.EventHistoryManager;
 import org.apache.ambari.logsearch.model.request.impl.query.EventHistoryQueryRequest;
 import org.apache.ambari.logsearch.model.response.EventHistoryData;
 import org.apache.ambari.logsearch.model.response.EventHistoryDataListResponse;
 import org.springframework.context.annotation.Scope;
 
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.*;
-
-@Api(value = "history", description = "Event history operations")
+@Api(value = "history", description = "Event history operations", authorizations = {@Authorization(value = "basicAuth")})
 @Path("history")
 @Named
 @Scope("request")

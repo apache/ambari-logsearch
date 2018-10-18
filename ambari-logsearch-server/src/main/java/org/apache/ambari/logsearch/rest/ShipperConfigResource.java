@@ -49,8 +49,9 @@ import org.springframework.context.annotation.Scope;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
-@Api(value = "shipper", description = "Shipper config operations")
+@Api(value = "shipper", description = "Shipper config operations", authorizations = {@Authorization(value = "basicAuth")})
 @Path("shipper")
 @Named
 @Scope("request")
