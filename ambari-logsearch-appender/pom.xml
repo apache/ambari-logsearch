@@ -21,7 +21,7 @@
   <parent>
     <artifactId>ambari-logsearch</artifactId>
     <groupId>org.apache.ambari</groupId>
-    <version>2.0.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   
   <artifactId>ambari-logsearch-appender</artifactId>

@@ -8,7 +8,7 @@ Log Search is a sub-project of [Apache Ambari](https://github.com/apache/ambari)
 
 ## Development
 
-Requires JDK 8 (JDK 11 is recommended)
+Requires JDK 8 (JDK 11 is recommended) and Maven 3.5.x
 
 ### Prerequisites
 
