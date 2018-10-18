@@ -18,17 +18,20 @@
  */
 package org.apache.ambari.logsearch.common;
 
-import io.swagger.jaxrs.config.BeanConfig;
-import io.swagger.models.Swagger;
-import io.swagger.util.Yaml;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.models.Swagger;
+import io.swagger.models.auth.BasicAuthDefinition;
+import io.swagger.util.Yaml;
 
 @Named
 public class ApiDocStorage {
@@ -47,20 +50,19 @@ public class ApiDocStorage {
       public void run() {
         logger.info("Start thread to scan REST API doc from endpoints.");
         Swagger swagger = beanConfig.getSwagger();
+        swagger.addSecurityDefinition("basicAuth", new BasicAuthDefinition());
         beanConfig.configure(swagger);
         beanConfig.scanAndRead();
         setSwagger(swagger);
         try {
-          if (swagger != null) {
-            String yaml = Yaml.mapper().writeValueAsString(swagger);
-            StringBuilder b = new StringBuilder();
-            String[] parts = yaml.split("\n");
-            for (String part : parts) {
-              b.append(part);
-              b.append("\n");
-            }
-            setSwaggerYaml(b.toString());
+          String yaml = Yaml.mapper().writeValueAsString(swagger);
+          StringBuilder b = new StringBuilder();
+          String[] parts = yaml.split("\n");
+          for (String part : parts) {
+            b.append(part);
+            b.append("\n");
           }
+          setSwaggerYaml(b.toString());
         } catch (Exception e) {
           e.printStackTrace();
         }
