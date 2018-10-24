@@ -19,9 +19,9 @@
   <groupId>org.apache.ambari</groupId>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>ambari-logsearch</artifactId>
-  <version>2.0.0.0-SNAPSHOT</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
-
+  <name>Ambari Logsearch Parent</name>
   <url>http://maven.apache.org</url>
   <profiles>
     <profile>
@@ -76,6 +76,7 @@
     </profile>
   </profiles>
   <properties>
+    <revision>3.0.0.0-SNAPSHOT</revision>
     <jdk.version>1.8</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <python.ver>python &gt;= 2.6</python.ver>
