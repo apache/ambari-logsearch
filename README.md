@@ -83,7 +83,7 @@ Also you can run from the IDE, but make sure all of the ambari logsearch modules
 ## Update version (for release or specific builds)
 
 ```bash
-make set-version new-version="2.8.0.0-11"
+make update-version new-version="2.8.0.0-11"
 ```
 
 ## Contributing
