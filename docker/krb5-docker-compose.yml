@@ -1,0 +1,161 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
+version: '3.3'
+services:
+  krb5:
+    image: elek/krb5
+    container_name: krb5
+    restart: always
+    hostname: krb5.example.com
+    networks:
+      logsearch-network:
+        aliases:
+        - krb5.example.com
+    volumes:
+    - "/tmp/kerberos:/data"
+    - "./kerberos/generate-keytabs.sh:/root/keytab.generate"
+  zookeeper:
+    image: zookeeper:${ZOOKEEPER_VERSION:-3.4.10}
+    restart: always
+    container_name: zookeeper
+    hostname: zookeeper.example.com
+    networks:
+      logsearch-network:
+        aliases:
+          - zookeeper.example.com
+    ports:
+    - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper:2888:3888
+    volumes:
+      - "/tmp/kerberos:/data"
+      - "./kerberos/krb5.conf:/etc/krb5.conf"
+  solr:
+    image: solr:${SOLR_VERSION:-7.5.0}
+    restart: always
+    container_name: solr
+    hostname: solr.example.com
+    ports:
+    - "8983:8983"
+    networks:
+      logsearch-network:
+        aliases:
+        - solr.example.com
+    env_file:
+    - Profile
+    entrypoint:
+    - docker-entrypoint.sh
+    - solr
+    - start
+    - "-f"
+    - "-c"
+    - "-z"
+    - zookeeper.example.com:2181
+    volumes:
+      - "/tmp/kerberos:/data"
+      - "./kerberos/krb5.conf:/etc/krb5.conf"
+  logsearch:
+    image: ambari-logsearch:v1.0
+    restart: always
+    hostname: logsearch.apache.org
+    container_name: logsearch
+    labels:
+      logfeeder.log.type: "logsearch_server"
+    networks:
+      logsearch-network:
+        aliases:
+        - logsearch.example.com
+    env_file:
+    - Profile
+    ports:
+    - 61888:61888
+    - 4444:4444
+    - 5005:5005
+    environment:
+      COMPONENT: logsearch
+      COMPONENT_LOG: logsearch
+      ZK_CONNECT_STRING: zookeeper.example.com:2181
+      DISPLAY: $DISPLAY_MAC
+    volumes:
+    - $AMBARI_LOCATION:/root/ambari
+    - $AMBARI_LOCATION/ambari-logsearch/docker/test-logs:/root/test-logs
+    - $AMBARI_LOCATION/ambari-logsearch/docker/test-config:/root/test-config
+    - "/tmp/kerberos:/data"
+    - "./kerberos/krb5.conf:/etc/krb5.conf"
+  logfeeder:
+    image: ambari-logsearch:v1.0
+    restart: always
+    hostname: logfeeder.example.com
+    container_name: logfeeder
+    privileged: true
+    labels:
+      logfeeder.log.type: "logfeeder"
+    networks:
+      logsearch-network:
+        aliases:
+        - logfeeder.example.com
+    env_file:
+    - Profile
+    ports:
+    - 5006:5006
+    environment:
+      COMPONENT: logfeeder
+      COMPONENT_LOG: logfeeder
+      ZK_CONNECT_STRING: zookeeper.example.com:2181
+    volumes:
+    - $AMBARI_LOCATION:/root/ambari
+    - $AMBARI_LOCATION/ambari-logsearch/docker/test-logs:/root/test-logs
+    - $AMBARI_LOCATION/ambari-logsearch/docker/test-config:/root/test-config
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/local/bin/docker:/usr/local/bin/docker
+    - /var/lib/docker:/var/lib/docker
+    - "/tmp/kerberos:/data"
+    - "./kerberos/krb5.conf:/etc/krb5.conf"
+  namenode:
+    image: flokkr/hadoop-hdfs-namenode:${HADOOP_VERSION:-3.0.0}
+    hostname: namenode.example.com
+    container_name: namenode
+    ports:
+    - 9870:9870
+    - 9000:9000
+    env_file:
+    - Profile
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-hdfs/dfs/name"
+    networks:
+      logsearch-network:
+        aliases:
+        - namenode.example.com
+    volumes:
+    - "/tmp/kerberos:/data"
+    - "./kerberos/krb5.conf:/etc/krb5.conf"
+  datanode:
+    image: flokkr/hadoop-hdfs-datanode:${HADOOP_VERSION:-3.0.0}
+    container_name: datanode
+    links:
+    - namenode
+    env_file:
+    - Profile
+    networks:
+      logsearch-network:
+        aliases:
+        - datanode.example.com
+    volumes:
+    - "/tmp/kerberos:/data"
+    - "./kerberos/krb5.conf:/etc/krb5.conf"
+networks:
+  logsearch-network:
+    driver: bridge

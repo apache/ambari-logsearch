@@ -85,6 +85,12 @@ LOGSEARCH_SOLR_SSL_ENABLED=false
 GENERATE_KEYSTORE_AT_START=false
 SOLR_HOST=solr
 KNOX=false
+
+HADOOP_USER_NAME=root
+CORE-SITE.XML_fs.default.name=hdfs://namenode:9000
+CORE-SITE.XML_fs.defaultFS=hdfs://namenode:9000
+HDFS-SITE.XML_dfs.namenode.rpc-address=namenode:9000
+HDFS-SITE.XML_dfs.replication=1
 EOF
     echo "'Profile' file has been created. Check it out before starting Log Search. ($sdir/Profile)"
     exit
