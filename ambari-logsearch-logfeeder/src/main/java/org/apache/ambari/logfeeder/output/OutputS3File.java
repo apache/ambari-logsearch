@@ -192,12 +192,22 @@ public class OutputS3File extends OutputFile implements RolloverCondition, Rollo
    */
   @Override
   public void write(String block, InputFileMarker inputMarker) {
+    createLogSpoolerIfRequired(inputMarker);
+    logSpooler.add(block);
+  }
+
+  @Override
+  public void write(Map<String, Object> jsonObj, InputFileMarker inputMarker) throws Exception {
+    String block = LogFeederUtil.getGson().toJson(jsonObj);
+    write(block, inputMarker);
+  }
+
+  private void createLogSpoolerIfRequired(InputFileMarker inputMarker) {
     if (logSpooler == null) {
       if (inputMarker.getInput().getClass().isAssignableFrom(InputFile.class)) {
         InputFile input = (InputFile) inputMarker.getInput();
         logSpooler = createSpooler(input.getFilePath());
         s3Uploader = createUploader(input.getInputDescriptor().getType());
-        logSpooler.add(block);
       } else {
         logger.error("Cannot write from non local file...");
       }
@@ -260,5 +270,10 @@ public class OutputS3File extends OutputFile implements RolloverCondition, Rollo
   @Override
   public void handleRollover(File rolloverFile) {
     s3Uploader.addFileForUpload(rolloverFile.getAbsolutePath());
+  }
+
+  @Override
+  public String getShortDescription() {
+    return "output:destination=s3,bucket=" + s3OutputConfiguration.getS3BucketName();
   }
 }

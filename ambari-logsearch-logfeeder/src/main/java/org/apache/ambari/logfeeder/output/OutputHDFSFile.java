@@ -39,6 +39,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -112,6 +113,12 @@ public class OutputHDFSFile extends Output<LogFeederProps, InputFileMarker> impl
       logSpooler.add(block);
       statMetric.value++;
     }
+  }
+
+  @Override
+  public void write(Map<String, Object> jsonObj, InputFileMarker inputMarker) throws Exception {
+    String block = LogFeederUtil.getGson().toJson(jsonObj);
+    write(block, inputMarker);
   }
 
   

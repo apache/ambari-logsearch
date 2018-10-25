@@ -31,6 +31,44 @@
           ]
         }
       }
+    },
+    {
+      "comment": "S3 file output",
+      "is_enabled": "true",
+      "destination": "s3_file",
+      "type": "s3",
+      "s3_access_key" : "accessKey",
+      "s3_secret_key" : "secretKey",
+      "s3_bucket" : "docker-logsearch",
+      "s3_endpoint" : "http://fakes3:4569",
+      "s3_log_dir" : "/tmp",
+      "skip_logtime": "true",
+      "conditions": {
+        "fields": {
+          "rowtype": [
+            "s3"
+          ]
+        }
+      }
+    },
+    {
+      "comment": "HDFS file output",
+      "is_enabled": "true",
+      "destination": "hdfs",
+      "type": "hdfs",
+      "file_name_prefix":"service-logs-",
+      "hdfs_out_dir": "/logfeeder/$HOST/service",
+      "hdfs_host": "namenode",
+      "hdfs_port": "9000",
+      "rollover_sec":"10",
+      "skip_logtime": "true",
+      "conditions": {
+        "fields": {
+          "rowtype": [
+            "hdfs"
+          ]
+        }
+      }
     }
   ]
 }

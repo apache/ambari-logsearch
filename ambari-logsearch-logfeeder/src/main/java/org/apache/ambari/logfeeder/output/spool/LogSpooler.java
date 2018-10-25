@@ -45,8 +45,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LogSpooler {
   
   private static final Logger logger = LogManager.getLogger(LogSpooler.class);
-  public static final long TIME_BASED_ROLLOVER_DISABLED_THRESHOLD = 0;
-  static final String fileDateFormat = "yyyy-MM-dd-HH-mm-ss";
+
+  private static final String fileDateFormat = "yyyy-MM-dd-HH-mm-ss";
+  private static final long TIME_BASED_ROLLOVER_DISABLED_THRESHOLD = 0;
 
   private String spoolDirectory;
   private String sourceFileNamePrefix;

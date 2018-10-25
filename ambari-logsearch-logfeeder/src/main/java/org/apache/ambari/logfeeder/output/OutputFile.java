@@ -98,7 +98,7 @@ public class OutputFile extends Output<LogFeederProps, InputFileMarker> {
     String outStr = null;
     CSVPrinter csvPrinter = null;
     try {
-      if (codec.equals("csv")) {
+      if ("csv".equals(codec)) {
         csvPrinter = new CSVPrinter(outWriter, CSVFormat.RFC4180);
         //TODO:
       } else {
