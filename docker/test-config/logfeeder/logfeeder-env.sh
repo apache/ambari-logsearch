@@ -43,3 +43,8 @@ export LOGFEEDER_TRUSTSTORE_LOCATION=/root/config/ssl/logsearch.trustStore.jks
 export LOGFEEDER_TRUSTSTORE_PASSWORD=bigdata
 export LOGFEEDER_TRUSTSTORE_TYPE=jks
 
+if [ "$LOGFEEDER_KERBEROS_ENABLED" == "true" ]
+then
+  export LOGFEEDER_JAVA_OPTS="$LOGFEEDER_JAVA_OPTS -Djava.security.auth.login.config=/root/config/logfeeder/logfeeder_jaas.conf -Dsolr.httpclient.builder.factory=org.apache.solr.client.solrj.impl.Krb5HttpClientBuilder"
+fi
+

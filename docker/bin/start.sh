@@ -41,6 +41,10 @@ function set_custom_zookeeper_address() {
 function create_logfeeder_configs() {
   mkdir /root/config/logfeeder
   cp -r /root/test-config/logfeeder/* /root/config/logfeeder/
+  if [ "$LOGFEEDER_KERBEROS_ENABLED" == "true" ]
+  then
+    cp /root/test-config/logfeeder/logfeeder-kerberos.properties /root/config/logfeeder/logfeeder.properties
+  fi
   set_custom_zookeeper_address /root/config/logfeeder/logfeeder.properties
   set_custom_zookeeper_address /root/config/logfeeder/shipper-conf/output.config.json
 }
@@ -49,11 +53,15 @@ function create_logsearch_configs() {
   mkdir -p /root/config/logsearch
   cp /root/test-config/logsearch/log4j2.yml /root/config/logsearch/
   cp /root/test-config/logsearch/logsearch-env.sh /root/config/logsearch/
+  cp /root/test-config/logsearch/logsearch_jaas.conf /root/config/logsearch/
   cp $LOGSEARCH_SERVER_PATH/conf/user_pass.json /root/config/logsearch/user_pass.json
   cp $LOGSEARCH_SERVER_PATH/conf/roles.json /root/config/logsearch/roles.json
   if [ "$LOGSEARCH_HTTPS_ENABLED" == "true" ]
   then
     cp /root/test-config/logsearch/logsearch-https.properties /root/config/logsearch/logsearch.properties
+  elif [ "$LOGSEARCH_KERBEROS_ENABLED" == "true" ]
+  then
+    cp /root/test-config/logsearch/logsearch-kerberos.properties /root/config/logsearch/logsearch.properties
   else
     cp /root/test-config/logsearch/logsearch.properties /root/config/logsearch/logsearch.properties
   fi

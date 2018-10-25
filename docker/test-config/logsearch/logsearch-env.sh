@@ -38,3 +38,8 @@ export LOGSEARCH_KEYSTORE_LOCATION=/etc/ambari-logsearch-portal/conf/keys/logsea
 export LOGSEARCH_KEYSTORE_TYPE=jks
 export LOGSEARCH_TRUSTSTORE_LOCATION=/etc/ambari-logsearch-portal/conf/keys/logsearch.jks
 export LOGSEARCH_TRUSTSTORE_TYPE=jks
+
+if [ "$LOGSEARCH_KERBEROS_ENABLED" == "true" ]
+then
+  export LOGSEARCH_JAVA_OPTS="$LOGSEARCH_JAVA_OPTS -Djava.security.auth.login.config=/root/config/logsearch/logsearch_jaas.conf -Dsolr.httpclient.builder.factory=org.apache.solr.client.solrj.impl.Krb5HttpClientBuilder"
+fi

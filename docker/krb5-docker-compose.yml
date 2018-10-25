@@ -26,6 +26,9 @@ services:
     volumes:
     - "/tmp/kerberos:/data"
     - "./kerberos/generate-keytabs.sh:/root/keytab.generate"
+    ports:
+    - 11749:749
+    - 1188:88
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION:-3.4.10}
     restart: always
@@ -41,7 +44,7 @@ services:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=zookeeper:2888:3888
     volumes:
-      - "/tmp/kerberos:/data"
+      - "/tmp/kerberos:/krb5-data"
       - "./kerberos/krb5.conf:/etc/krb5.conf"
   solr:
     image: solr:${SOLR_VERSION:-7.5.0}
@@ -64,9 +67,14 @@ services:
     - "-c"
     - "-z"
     - zookeeper.example.com:2181
+    environment:
+      SOLR_HOST: solr.example.com
+      SOLR_AUTH_TYPE: "kerberos"
+      SOLR_AUTHENTICATION_OPTS: "-DauthenticationPlugin=org.apache.solr.security.KerberosPlugin -Djava.security.auth.login.config=/solr_jaas.conf -Dsolr.kerberos.principal=HTTP/krb5.example.com@EXAMPLE.COM -Dsolr.kerberos.keytab=/krb5-data/http.service.keytab -Dsolr.kerberos.cookie.domain=example.com "
     volumes:
-      - "/tmp/kerberos:/data"
+      - "/tmp/kerberos:/krb5-data"
       - "./kerberos/krb5.conf:/etc/krb5.conf"
+      - "./test-config/solr/solr_jaas.conf:/solr_jaas.conf"
   logsearch:
     image: ambari-logsearch:v1.0
     restart: always
@@ -85,6 +93,7 @@ services:
     - 4444:4444
     - 5005:5005
     environment:
+      LOGSEARCH_KERBEROS_ENABLED: "true"
       COMPONENT: logsearch
       COMPONENT_LOG: logsearch
       ZK_CONNECT_STRING: zookeeper.example.com:2181
@@ -93,7 +102,7 @@ services:
     - $AMBARI_LOCATION:/root/ambari
     - $AMBARI_LOCATION/ambari-logsearch/docker/test-logs:/root/test-logs
     - $AMBARI_LOCATION/ambari-logsearch/docker/test-config:/root/test-config
-    - "/tmp/kerberos:/data"
+    - "/tmp/kerberos:/krb5-data"
     - "./kerberos/krb5.conf:/etc/krb5.conf"
   logfeeder:
     image: ambari-logsearch:v1.0
@@ -115,6 +124,7 @@ services:
       COMPONENT: logfeeder
       COMPONENT_LOG: logfeeder
       ZK_CONNECT_STRING: zookeeper.example.com:2181
+      LOGFEEDER_KERBEROS_ENABLED: "true"
     volumes:
     - $AMBARI_LOCATION:/root/ambari
     - $AMBARI_LOCATION/ambari-logsearch/docker/test-logs:/root/test-logs
@@ -122,7 +132,7 @@ services:
     - /var/run/docker.sock:/var/run/docker.sock
     - /usr/local/bin/docker:/usr/local/bin/docker
     - /var/lib/docker:/var/lib/docker
-    - "/tmp/kerberos:/data"
+    - "/tmp/kerberos:/krb5-data"
     - "./kerberos/krb5.conf:/etc/krb5.conf"
   namenode:
     image: flokkr/hadoop-hdfs-namenode:${HADOOP_VERSION:-3.0.0}
@@ -140,7 +150,7 @@ services:
         aliases:
         - namenode.example.com
     volumes:
-    - "/tmp/kerberos:/data"
+    - "/tmp/kerberos:/krb5-data"
     - "./kerberos/krb5.conf:/etc/krb5.conf"
   datanode:
     image: flokkr/hadoop-hdfs-datanode:${HADOOP_VERSION:-3.0.0}
@@ -154,7 +164,7 @@ services:
         aliases:
         - datanode.example.com
     volumes:
-    - "/tmp/kerberos:/data"
+    - "/tmp/kerberos:/krb5-data"
     - "./kerberos/krb5.conf:/etc/krb5.conf"
 networks:
   logsearch-network:
