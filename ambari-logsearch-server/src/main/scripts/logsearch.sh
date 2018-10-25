@@ -149,7 +149,7 @@ function start() {
   LOGSEARCH_DEBUG_PORT=${LOGSEARCH_DEBUG_PORT:-"5005"}
 
   if [ "$LOGSEARCH_DEBUG" = "true" ]; then
-    LOGSEARCH_JAVA_OPTS="$LOGSEARCH_JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$LOGSEARCH_DEBUG_PORT,server=y,suspend=$LOGSEARCH_DEBUG_SUSPEND "
+    LOGSEARCH_JAVA_OPTS="$LOGSEARCH_JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=*:$LOGSEARCH_DEBUG_PORT,server=y,suspend=$LOGSEARCH_DEBUG_SUSPEND "
   fi
 
   if [ "$LOGSEARCH_SSL" = "true" ]; then

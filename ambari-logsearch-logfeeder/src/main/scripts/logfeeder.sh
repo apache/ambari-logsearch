@@ -168,7 +168,7 @@ function start() {
   LOGFEEDER_DEBUG_PORT=${LOGFEEDER_DEBUG_PORT:-"5006"}
 
   if [ "$LOGFEEDER_DEBUG" = "true" ]; then
-    LOGFEEDER_JAVA_OPTS="$LOGFEEDER_JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$LOGFEEDER_DEBUG_PORT,server=y,suspend=$LOGFEEDER_DEBUG_SUSPEND "
+    LOGFEEDER_JAVA_OPTS="$LOGFEEDER_JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=*:$LOGFEEDER_DEBUG_PORT,server=y,suspend=$LOGFEEDER_DEBUG_SUSPEND "
   fi
 
   if [ "$LOGFEEDER_SSL" = "true" ]; then
