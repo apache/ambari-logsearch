@@ -22,7 +22,7 @@ import { LogsContainerComponent } from '@app/components/logs-container/logs-cont
 import { LoginFormComponent } from '@app/components/login-form/login-form.component';
 import { AuthGuardService } from '@app/services/auth-guard.service';
 import { TabGuard } from '@app/services/tab.guard';
-import { FilterHistoryGuard } from '@app/services/filter-history.guard';
+import { FilterHistoryIndexGuard } from '@app/services/filter-history.guard';
 import { LogsBreadcrumbsResolverService } from '@app/services/logs-breadcrumbs-resolver.service';
 import { LoginScreenGuardService } from '@app/services/login-screen-guard.service';
 
@@ -44,7 +44,7 @@ const appRoutes: Routes = [{
     resolve: {
       breadcrumbs: LogsBreadcrumbsResolverService
     },
-    canActivate: [AuthGuardService, TabGuard, FilterHistoryGuard]
+    canActivate: [AuthGuardService, TabGuard, FilterHistoryIndexGuard]
   }, {
     path: 'logs',
     redirectTo: '/logs/serviceLogs',

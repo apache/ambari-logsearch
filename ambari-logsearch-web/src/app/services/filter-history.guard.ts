@@ -27,14 +27,15 @@ import * as dataAvailabilitySelectors from '@app/store/selectors/data-availabili
 import * as fromFilterHistoryReducers from '@app/store/reducers/filter-history.reducers';
 import * as filterHistorySelectors from '@app/store/selectors/filter-history.selectors';
 import { AddFilterHistoryAction, SetCurrentFilterHistoryByIndexAction } from '@app/store/actions/filter-history.actions';
-import { DataAvailabilityValues } from '@app/classes/string';
 
 @Injectable()
-export class FilterHistoryGuard implements CanActivate {
+export class FilterHistoryIndexGuard implements CanActivate {
 
   private currentUrl: string;
 
-  currentFilterHistory$: Observable<fromFilterHistoryReducers.State> = this.store.select(filterHistorySelectors.getFilterHistoryState);
+  currentFilterHistory$: Observable<fromFilterHistoryReducers.FilterHistoryState> = this.store.select(
+    filterHistorySelectors.selectFilterHistoryState
+  );
 
   filterHistoryIndexUrlParamName = '_fhi';
   logsTypeUrlParamName = 'activeTab';
@@ -62,7 +63,7 @@ export class FilterHistoryGuard implements CanActivate {
     return  Observable.combineLatest(
       this.currentFilterHistory$,
       this.store.select(dataAvailabilitySelectors.isBaseDataAvailable)
-    ).first().map(([historyState, isBaseDataAvailable]: [fromFilterHistoryReducers.State, boolean]): boolean => {
+    ).first().map(([historyState, isBaseDataAvailable]: [fromFilterHistoryReducers.FilterHistoryState, boolean]): boolean => {
       const history = historyState[logsType];
       let canActivate = true;
       const requestedUrlWithoutFilterHistoryIndex = this.removeFilterHistoryIndexFromUrl(state.url);

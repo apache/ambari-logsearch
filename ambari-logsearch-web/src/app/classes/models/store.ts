@@ -72,7 +72,7 @@ export interface AppStore {
   logsState: LogsState;
   dataAvailabilityStates: DataAvaibilityStatesModel;
   auth: auth.State;
-  filterHistory: filterHistory.State;
+  filterHistory: filterHistory.FilterHistoryState;
 }
 
 export class ModelService {

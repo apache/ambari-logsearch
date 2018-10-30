@@ -23,10 +23,10 @@ import { DataAvaibilityStatesModel } from '@modules/app-load/models/data-availab
 import { DataAvailabilityValues } from '@app/classes/string';
 import { DataStateStoreKeys, baseDataKeys } from '@app/modules/app-load/services/app-load.service';
 
-export const getDataAvailabilityState = (state: AppStore): DataAvaibilityStatesModel => state.dataAvailabilityStates;
+export const selectDataAvailabilityState = (state: AppStore): DataAvaibilityStatesModel => state.dataAvailabilityStates;
 
-export const baseDataAvailability = createSelector(
-  getDataAvailabilityState,
+export const selectBaseDataAvailability = createSelector(
+  selectDataAvailabilityState,
   (dataAvailabilityState: DataAvaibilityStatesModel): DataAvailabilityValues => {
     const values: DataAvailabilityValues[] = Object.keys(dataAvailabilityState)
           .filter((key: DataStateStoreKeys): boolean => baseDataKeys.indexOf(key) > -1)
@@ -44,6 +44,6 @@ export const baseDataAvailability = createSelector(
 );
 
 export const isBaseDataAvailable = createSelector(
-  baseDataAvailability,
+  selectBaseDataAvailability,
   (baseDataAvailabilityState: DataAvailabilityValues) => baseDataAvailabilityState === DataAvailabilityValues.AVAILABLE
 );

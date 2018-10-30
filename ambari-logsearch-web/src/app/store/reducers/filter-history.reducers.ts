@@ -25,17 +25,17 @@ export interface LogTypeFilterHistory {
   currentChangeIndex: number;
 };
 
-export interface State {
+export interface FilterHistoryState {
   [key: string]: LogTypeFilterHistory;
 }
 
-export const initialState: State = {};
+export const initialState: FilterHistoryState = {};
 
-export function reducer(state = initialState, action: FilterHistoryActions): State {
+export function reducer(state = initialState, action: FilterHistoryActions): FilterHistoryState {
   switch (action.type) {
       case FilterHistoryActionTypes.ADD_FILTER_HISTORY: {
         const payload = action.payload;
-        const history: LogTypeFilterHistory = state[payload.logType] || {
+        const history: LogTypeFilterHistory = state[payload.logType] ? {...state[payload.logType]} : {
           changes: [],
           currentChangeIndex: -1
         };
@@ -60,11 +60,12 @@ export function reducer(state = initialState, action: FilterHistoryActions): Sta
             ...history,
             currentChangeIndex: payload.index
           };
+          return {
+            ...state,
+            ...subState
+          };
         }
-        return {
-          ...state,
-          ...subState
-        };
+        return state;
       }
       case FilterHistoryActionTypes.SET_CURRENT_FILTER_HISTORY_BY_URL_PARAM: {
         const payload = action.payload;
@@ -77,14 +78,34 @@ export function reducer(state = initialState, action: FilterHistoryActions): Sta
             ...history,
             currentChangeIndex: index > -1 ? index : history.currentChangeIndex
           };
+          return {
+            ...state,
+            ...subState
+          };
         }
-        return {
-          ...state,
-          ...subState
-        };
+        return state;
       }
       default: {
-        return {...state};
+        return state;
       }
   };
 }
+
+export const createFilterHistoryGetterById = (id: string): (state: FilterHistoryState) => LogTypeFilterHistory => {
+  return (state: FilterHistoryState): LogTypeFilterHistory => state[id];
+};
+export const getServiceLogsFilterHistory = createFilterHistoryGetterById('serviceLogs');
+export const getAuditLogsFilterHistory = createFilterHistoryGetterById('auditLogs');
+
+export const getFilterHistoryList = (filterHistory: LogTypeFilterHistory): FilterUrlParamChange[] => filterHistory.changes;
+export const getFilterHistoryCurrentChangeIndex = (filterHistory: LogTypeFilterHistory): number => filterHistory.currentChangeIndex;
+
+export const getUndoHistoryList = (filterHistory: LogTypeFilterHistory): FilterUrlParamChange[] => (
+  getFilterHistoryList(filterHistory).slice(0, getFilterHistoryCurrentChangeIndex(filterHistory))
+);
+export const getRedoHistoryList = (filterHistory: LogTypeFilterHistory): FilterUrlParamChange[] => (
+  getFilterHistoryList(filterHistory).slice(getFilterHistoryCurrentChangeIndex(filterHistory) + 1)
+);
+export const getCurrentFilterUrlParamChange = (filterHistory: LogTypeFilterHistory): FilterUrlParamChange => (
+  getFilterHistoryList(filterHistory)[getFilterHistoryCurrentChangeIndex(filterHistory)]
+);

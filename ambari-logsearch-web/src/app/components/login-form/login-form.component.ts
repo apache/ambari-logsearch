@@ -26,7 +26,7 @@ import { AppStore } from '@app/classes/models/store';
 import {
   isLoginInProgressSelector,
   isCheckingAuthStatusInProgressSelector,
-  authMessageSelector
+  selectAuthMessage
 } from '@app/store/selectors/auth.selectors';
 import { LogInAction } from '@app/store/actions/auth.actions';
 
@@ -45,7 +45,7 @@ export class LoginFormComponent {
 
   password: string;
 
-  authorizationMessage$: Observable<string> = this.store.select(authMessageSelector);
+  authorizationMessage$: Observable<string> = this.store.select(selectAuthMessage);
   isLoginInProgress$: Observable<boolean> = this.store.select(isLoginInProgressSelector);
   isCheckingAuthStatusInProgress$: Observable<boolean> = this.store.select(isCheckingAuthStatusInProgressSelector);
 

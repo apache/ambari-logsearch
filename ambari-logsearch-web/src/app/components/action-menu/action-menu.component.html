@@ -14,19 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-
-<!-- TODO use listClass="history-dropdown" for custom styling -->
-<menu-button label="{{'topMenu.undo' | translate}}" [subItems]="undoItems" iconClass="fa fa-arrow-left"
-             class="history-menu" [class.disabled]="!undoItems.length" [isDisabled]="!undoItems.length"
-             listClass="history-dropdown" (buttonClick)="undoLatest()" (selectItem)="undo($event)">
-</menu-button>
-<menu-button label="{{'topMenu.redo' | translate}}" [subItems]="redoItems" iconClass="fa fa-arrow-right"
-             class="history-menu" [class.disabled]="!redoItems.length" [isDisabled]="!redoItems.length"
-             listClass="history-dropdown" (buttonClick)="redoLatest()" (selectItem)="redo($event)">
-</menu-button>
-<menu-button label="{{'topMenu.history' | translate}}" [subItems]="historyItems" iconClass="fa fa-history"
-             class="history-menu" [class.disabled]="!historyItems.length" [isDisabled]="!historyItems.length"
-             listClass="history-dropdown" [isRightAlign]="true"></menu-button>
+<filter-history-manager></filter-history-manager>
 <menu-button label="{{'topMenu.filter' | translate}}" iconClass="fa fa-filter"
              (buttonClick)="openLogIndexFilter()"></menu-button>
 <menu-button *ngIf="!captureSeconds" label="{{'filter.capture' | translate}}" iconClass="fa fa-caret-right"
@@ -35,7 +23,6 @@
              (buttonClick)="stopCapture()"></menu-button>
 <menu-button label="{{'topMenu.refresh' | translate}}" iconClass="fa fa-refresh"
              (buttonClick)="refresh()"></menu-button>
-<filter-history-manager></filter-history-manager>
 <modal-dialog *ngIf="isLogIndexFilterDisplayed$ | async"
   class="log-index-filter"
   [visible]="isLogIndexFilterDisplayed$ | async"

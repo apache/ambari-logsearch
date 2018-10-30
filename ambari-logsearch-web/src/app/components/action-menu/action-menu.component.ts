@@ -25,7 +25,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 
 import { LogsContainerService } from '@app/services/logs-container.service';
-import { HistoryManagerService } from '@app/services/history-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { ListItem } from '@app/classes/list-item';
 import { ClustersService } from '@app/services/storage/clusters.service';
@@ -65,7 +64,6 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   constructor(
     private logsContainerService: LogsContainerService,
-    private historyManager: HistoryManagerService,
     private settings: UserSettingsService,
     private route: ActivatedRoute,
     private router: Router,
@@ -87,44 +85,12 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 
-  get undoItems(): ListItem[] {
-    return this.historyManager.undoItems;
-  }
-
-  get redoItems(): ListItem[] {
-    return this.historyManager.redoItems;
-  }
-
-  get historyItems(): ListItem[] {
-    return this.historyManager.activeHistory;
-  }
-
   get captureSeconds(): number {
     return this.logsContainerService.captureSeconds;
   }
 
   setModalSubmitDisabled(isDisabled: boolean): void {
     this.isModalSubmitDisabled = isDisabled;
-  }
-
-  undoLatest(): void {
-    if (this.undoItems.length) {
-      this.historyManager.undo(this.undoItems[0]);
-    }
-  }
-
-  redoLatest(): void {
-    if (this.redoItems.length) {
-      this.historyManager.redo(this.redoItems[0]);
-    }
-  }
-
-  undo(item: ListItem): void {
-    this.historyManager.undo(item);
-  }
-
-  redo(item: ListItem): void {
-    this.historyManager.redo(item);
   }
 
   refresh(): void {

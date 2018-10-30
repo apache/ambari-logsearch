@@ -1,1 +1,13 @@
-...
+<menu-button label="{{'topMenu.undo' | translate}}" [subItems]="activeUndoHistoryItems$ | async" iconClass="fa fa-arrow-left"
+  class="history-menu" [class.disabled]="!(hasActiveUndoHistoryItems$ | async)" [isDisabled]="!(hasActiveUndoHistoryItems$ | async)"
+  listClass="history-dropdown" (buttonClick)="undo()" (selectItem)="undo($event)">
+</menu-button>
+
+<menu-button label="{{'topMenu.redo' | translate}}" [subItems]="activeRedoHistoryItems$ | async" iconClass="fa fa-arrow-right"
+  class="history-menu" [class.disabled]="!(hasActiveRedoHistoryItems$ | async)" [isDisabled]="!(hasActiveRedoHistoryItems$ | async)"
+  listClass="history-dropdown" (buttonClick)="redo()" (selectItem)="redo($event)">
+</menu-button>
+
+<menu-button label="{{'topMenu.history' | translate}}" [subItems]="activeHistoryItems$ | async" iconClass="fa fa-history"
+  class="history-menu" [class.disabled]="!(hasActiveHistoryItems$ | async)" [isDisabled]="!(hasActiveHistoryItems$ | async)"
+  listClass="history-dropdown" [isRightAlign]="true" (selectItem)="navigateToFilterUrlParamChangeItem($event)"></menu-button>

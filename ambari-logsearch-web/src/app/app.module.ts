@@ -109,7 +109,7 @@ import {ClusterSelectionService} from '@app/services/storage/cluster-selection.s
 import {TranslateService as AppTranslateService} from '@app/services/translate.service';
 import {RoutingUtilsService} from '@app/services/routing-utils.service';
 import {TabGuard} from '@app/services/tab.guard';
-import {FilterHistoryGuard} from '@app/services/filter-history.guard';
+import {FilterHistoryIndexGuard} from '@app/services/filter-history.guard';
 import {LogsBreadcrumbsResolverService} from '@app/services/logs-breadcrumbs-resolver.service';
 import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.service';
 import {LogsStateService} from '@app/services/storage/logs-state.service';
@@ -220,11 +220,10 @@ import { FilterHistoryManagerComponent } from './components/filter-history-manag
     AuditLogsFieldsService,
     TabsService,
     TabGuard,
-    FilterHistoryGuard,
+    FilterHistoryIndexGuard,
     LogsBreadcrumbsResolverService,
     AuthService,
     AuthGuardService,
-    HistoryManagerService,
     ClusterSelectionService,
     LogsFilteringUtilsService,
     LogsStateService,

@@ -21,27 +21,27 @@ import { createSelector } from 'reselect';
 import * as fromAuth from '@app/store/reducers/auth.reducers';
 import { AppStore } from '@app/classes/models/store';
 
-export const getAuthState = (state: AppStore): fromAuth.State => state.auth;
+export const selectAuthState = (state: AppStore): fromAuth.State => state.auth;
 
-export const authStatusSelector = createSelector( getAuthState, fromAuth.getStatus );
-export const authMessageSelector = createSelector( getAuthState, fromAuth.getMessage );
+export const selectAuthStatus = createSelector( selectAuthState, fromAuth.getStatus );
+export const selectAuthMessage = createSelector( selectAuthState, fromAuth.getMessage );
 
 export const isAuthorizedSelector = createSelector(
-  authStatusSelector,
+  selectAuthStatus,
   fromAuth.isAuthorized
 );
 
 export const isLoginInProgressSelector = createSelector(
-  authStatusSelector,
+  selectAuthStatus,
   fromAuth.isLoginInProgress
 );
 
 export const isLoggedOutSelector = createSelector(
-  authStatusSelector,
+  selectAuthStatus,
   fromAuth.isLoggedOut
 );
 
 export const isCheckingAuthStatusInProgressSelector = createSelector(
-  authStatusSelector,
+  selectAuthStatus,
   fromAuth.isCheckingAuthInProgress
 );

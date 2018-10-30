@@ -16,10 +16,40 @@
  * limitations under the License.
  */
 
-import { createSelector } from 'reselect';
+import { createSelector, Selector } from 'reselect';
 
 import { AppStore } from '@app/classes/models/store';
 import * as fromFilterHistoryReducers from '@app/store/reducers/filter-history.reducers';
+import { FilterUrlParamChange } from '@app/classes/models/filter-url-param-change.interface';
+import * as fromAppStateSelector from '@app/store/selectors/app-state.selectors';
 
-export const getFilterHistoryState = (state: AppStore): fromFilterHistoryReducers.State => state.filterHistory;
 
+export const selectFilterHistoryState = (state: AppStore): fromFilterHistoryReducers.FilterHistoryState => state.filterHistory;
+
+export const selectActiveFilterHistory = createSelector(
+  selectFilterHistoryState,
+  fromAppStateSelector.selectActiveLogsType,
+  (filterHistoryState, activeLogsType): fromFilterHistoryReducers.LogTypeFilterHistory => filterHistoryState[activeLogsType]
+);
+
+export const selectActiveFilterHistoryChangeIndex = createSelector(
+  selectActiveFilterHistory,
+  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): number => logTypeFilterHistory.currentChangeIndex
+);
+
+export const selectActiveFilterHistoryChanges = createSelector(
+  selectActiveFilterHistory,
+  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): FilterUrlParamChange[] => logTypeFilterHistory.changes
+);
+
+export const selectActiveFilterHistoryChangesUndoItems = createSelector(
+  selectActiveFilterHistoryChanges,
+  selectActiveFilterHistoryChangeIndex,
+  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items.slice(0, changeIndex)
+);
+
+export const selectActiveFilterHistoryChangesRedoItems = createSelector(
+  selectActiveFilterHistoryChanges,
+  selectActiveFilterHistoryChangeIndex,
+  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items.slice(changeIndex + 1)
+);

@@ -25,7 +25,7 @@ import { DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-a
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { CheckAuthorizationStatusAction } from '@app/store/actions/auth.actions';
-import { authStatusSelector } from '@app/store/selectors/auth.selectors';
+import { selectAuthStatus } from '@app/store/selectors/auth.selectors';
 import { AuthorizationStatuses } from '@app/store/reducers/auth.reducers';
 
 export function set_translation_service(appLoadService: AppLoadService) {
@@ -34,7 +34,7 @@ export function set_translation_service(appLoadService: AppLoadService) {
 
 export function check_auth_status(store: Store<AppStore>) {
   return () => new Promise((resolve) => {
-    store.select(authStatusSelector)
+    store.select(selectAuthStatus)
       .filter(
         (status: AuthorizationStatuses): boolean => (status !== null && AuthorizationStatuses.CHEKCING_AUTHORIZATION_STATUS !== status)
       ).first().subscribe(resolve);

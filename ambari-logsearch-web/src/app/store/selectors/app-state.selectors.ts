@@ -22,9 +22,9 @@ import { AppStore } from '@app/classes/models/store';
 import { AppState } from '@app/classes/models/app-state';
 import { LogsType } from '@app/classes/string';
 
-export const getAppState = (state: AppStore): AppState => state.appState;
+export const selectAppState = (state: AppStore): AppState => state.appState;
 
-export const activeLogsType = createSelector(
-  getAppState,
+export const selectActiveLogsType = createSelector(
+  selectAppState,
   (appState: AppState): LogsType => appState.activeLogsType
 );
