@@ -299,12 +299,9 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
    * @param values {[key: string]: any} The new values for the filter form
    */
   private resetFiltersForm(values: {[key: string]: any}): void {
-    if (Object.keys(values).length) {
-      this.logsContainerService.resetFiltersForms({
-        ...this.logsFilteringUtilsService.defaultFilterSelections,
-        ...values
-      });
-    }
+    this.logsContainerService.resetFiltersForms({
+      ...values
+    });
   }
 
   /**
@@ -448,7 +445,6 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
       }
       return [...changes];
     }, []);
-    console.info(differencies);
   }
 
   getLabelForUrlParamName(name) {

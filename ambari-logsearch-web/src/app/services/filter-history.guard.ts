@@ -70,58 +70,56 @@ export class FilterHistoryGuard implements CanActivate {
         this.removeFilterHistoryIndexFromUrl(history.changes[ history.changes.length - 1].currentPath)
       );
       const isUrlChanged = lastChangeUrlWithoutFilterHistoryIndex !== requestedUrlWithoutFilterHistoryIndex;
-      if (isBaseDataAvailable) {
-        // check if the filter history index is correct
-        if (isUrlChanged && filterHistoryIndex !== undefined) {
-          const currentUrlAtIndex = (
-            history
-            && history.changes[filterHistoryIndex]
-            && this.removeFilterHistoryIndexFromUrl(history.changes[filterHistoryIndex].currentPath)
-          );
-          if (requestedUrlWithoutFilterHistoryIndex !== currentUrlAtIndex) {
-            filterHistoryIndex = undefined;
-            // correct the filter history index if we already have history and the URL exists in the list
-            if (history && history.changes.length) {
-              const existingIndex = history.changes.findIndex(
-                (change) => this.removeFilterHistoryIndexFromUrl(change.currentPath) ===  requestedUrlWithoutFilterHistoryIndex
-              );
-              if (existingIndex > -1) {
-                filterHistoryIndex = existingIndex;
-              }
+      // check if the filter history index is correct
+      if (isUrlChanged && filterHistoryIndex !== undefined) {
+        const currentUrlAtIndex = (
+          history
+          && history.changes[filterHistoryIndex]
+          && this.removeFilterHistoryIndexFromUrl(history.changes[filterHistoryIndex].currentPath)
+        );
+        if (requestedUrlWithoutFilterHistoryIndex !== currentUrlAtIndex) {
+          filterHistoryIndex = undefined;
+          // correct the filter history index if we already have history and the URL exists in the list
+          if (history && history.changes.length) {
+            const existingIndex = history.changes.findIndex(
+              (change) => this.removeFilterHistoryIndexFromUrl(change.currentPath) ===  requestedUrlWithoutFilterHistoryIndex
+            );
+            if (existingIndex > -1) {
+              filterHistoryIndex = existingIndex;
             }
           }
         }
-        if (!history || filterHistoryIndex === undefined) { // new URL
-          const nextFilterHistoryIndex: number = history ? history.currentChangeIndex + 1 : 0;
-          const indexedUrl = this.addFilterHistoryIndexToUrl(requestedUrlWithoutFilterHistoryIndex, nextFilterHistoryIndex);
-          if (isUrlChanged) {
-            this.store.dispatch( new AddFilterHistoryAction({
-              logType: logsType,
-              change: {
-                previousPath: this.currentUrl,
-                currentPath: indexedUrl,
-                time: new Date()
-              }
-            }));
-            this.currentUrl = indexedUrl;
-          }
-          this.router.navigateByUrl(indexedUrl);
-          canActivate = false;
-        } else if (history.currentChangeIndex !== filterHistoryIndex) {
-          // set the current index in the store
-          this.store.dispatch(
-            new SetCurrentFilterHistoryByIndexAction({
-              logType: logsType,
-              index: filterHistoryIndex
-            })
-          );
+      }
+      if (!history || filterHistoryIndex === undefined) { // new History URL
+        const nextFilterHistoryIndex: number = history ? history.currentChangeIndex + 1 : 0;
+        const indexedUrl = this.addFilterHistoryIndexToUrl(requestedUrlWithoutFilterHistoryIndex, nextFilterHistoryIndex);
+        if (isUrlChanged) {
+          this.store.dispatch( new AddFilterHistoryAction({
+            logType: logsType,
+            change: {
+              previousPath: this.currentUrl,
+              currentPath: indexedUrl,
+              time: new Date()
+            }
+          }));
+          this.currentUrl = indexedUrl;
         }
-        // if we found the requested URL in the history but the recorded index is not the same as it is in the URL
-        // we add it and navigate to the indexed URL
-        if (filterHistoryIndex !== undefined && next.params[this.filterHistoryIndexUrlParamName] !== filterHistoryIndex.toString()) {
-          this.router.navigateByUrl( this.addFilterHistoryIndexToUrl(state.url, filterHistoryIndex) );
-          canActivate = false;
-        }
+        this.router.navigateByUrl(indexedUrl);
+        canActivate = false;
+      } else if (history.currentChangeIndex !== filterHistoryIndex) {
+        // set the current index in the store
+        this.store.dispatch(
+          new SetCurrentFilterHistoryByIndexAction({
+            logType: logsType,
+            index: filterHistoryIndex
+          })
+        );
+      }
+      // if we found the requested URL in the history but the recorded index is not the same as it is in the URL
+      // we add it and navigate to the indexed URL
+      if (filterHistoryIndex !== undefined && next.params[this.filterHistoryIndexUrlParamName] !== filterHistoryIndex.toString()) {
+        this.router.navigateByUrl( this.addFilterHistoryIndexToUrl(state.url, filterHistoryIndex) );
+        canActivate = false;
       }
       return canActivate;
     });

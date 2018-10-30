@@ -138,7 +138,6 @@ export class HistoryManagerService {
   }
 
   onFormValueChanges = (value): void => {
-    console.info('onFormValueChanges');
     const defaultState = this.logsContainerService.getFiltersData(this.logsContainerService.activeLogsType);
     const currentHistory = this.activeHistory;
     const previousValue = this.activeHistory.length ? this.activeHistory[0].value.currentValue : defaultState;
