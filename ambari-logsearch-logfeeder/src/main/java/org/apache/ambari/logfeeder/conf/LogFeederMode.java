@@ -45,14 +45,14 @@ public enum LogFeederMode {
         return mode;
       }
     }
-    return LogFeederMode.DEFAULT;
+    throw new IllegalArgumentException(String.format("String '%s' cannot be converted to LogFeederMode enum", text));
   }
 
   public static boolean isCloudStorage(LogFeederMode mode) {
-    return mode.equals(LogFeederMode.HYBRID) || mode.equals(LogFeederMode.CLOUD);
+    return LogFeederMode.HYBRID.equals(mode) || LogFeederMode.CLOUD.equals(mode);
   }
 
   public static boolean isNonCloudStorage(LogFeederMode mode) {
-    return mode.equals(LogFeederMode.HYBRID) || mode.equals(LogFeederMode.DEFAULT);
+    return LogFeederMode.HYBRID.equals(mode) || LogFeederMode.DEFAULT.equals(mode);
   }
 }

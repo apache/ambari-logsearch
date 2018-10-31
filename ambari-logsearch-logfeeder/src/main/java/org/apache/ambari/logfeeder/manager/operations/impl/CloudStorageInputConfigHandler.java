@@ -53,7 +53,7 @@ public class CloudStorageInputConfigHandler implements InputConfigHandler {
       if (inputDescriptor == null) {
         continue;
       }
-      LogFeederMode mode = LogFeederMode.fromString(inputConfigHolder.getLogFeederProps().getCloudStorageMode());
+      LogFeederMode mode = inputConfigHolder.getLogFeederProps().getCloudStorageMode();
       if (inputDescriptor instanceof InputSocketDescriptor && LogFeederMode.HYBRID.equals(mode)) {
         logger.info("Socket input is skipped (won't be sent to cloud storage) in hybrid mode");
         continue;
