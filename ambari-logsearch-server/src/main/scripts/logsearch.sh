@@ -150,10 +150,11 @@ function start() {
 
   if [ "$LOGSEARCH_DEBUG" = "true" ]; then
     if [ $java_version == "8" ]; then
-      LOGSEARCH_JAVA_OPTS="$LOGSEARCH_JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$LOGSEARCH_DEBUG_PORT,server=y,suspend=$LOGSEARCH_DEBUG_SUSPEND "
+      LOGSEARCH_DEBUG_ADDRESS=$LOGSEARCH_DEBUG_PORT
     else
-      LOGSEARCH_JAVA_OPTS="$LOGSEARCH_JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=*:$LOGSEARCH_DEBUG_PORT,server=y,suspend=$LOGSEARCH_DEBUG_SUSPEND "
+      LOGSEARCH_DEBUG_ADDRESS="*:$LOGSEARCH_DEBUG_PORT"
     fi
+    LOGSEARCH_JAVA_OPTS="$LOGSEARCH_JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,address=$LOGSEARCH_DEBUG_ADDRESS,server=y,suspend=$LOGSEARCH_DEBUG_SUSPEND "
   fi
 
   if [ "$LOGSEARCH_SSL" = "true" ]; then
