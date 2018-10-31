@@ -238,6 +238,7 @@ public class InputConfigManager implements InputConfigMonitor {
   private void loadOutputs() {
     for (Map<String, Object> map : inputConfigHolder.getOutputConfigList()) {
       if (map == null) {
+        logger.warn("Output map is empty. Skipping...");
         continue;
       }
       BlockMerger.mergeBlocks(globalConfigs, map);

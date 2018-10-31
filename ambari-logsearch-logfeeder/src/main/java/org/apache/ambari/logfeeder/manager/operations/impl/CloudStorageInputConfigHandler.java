@@ -51,6 +51,7 @@ public class CloudStorageInputConfigHandler implements InputConfigHandler {
   public void loadInputs(String serviceName, InputConfigHolder inputConfigHolder, InputConfig inputConfig) {
     for (InputDescriptor inputDescriptor : inputConfigHolder.getInputConfigList()) {
       if (inputDescriptor == null) {
+        logger.warn("Input descriptor is smpty. Skipping...");
         continue;
       }
       LogFeederMode mode = inputConfigHolder.getLogFeederProps().getCloudStorageMode();

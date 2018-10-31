@@ -74,6 +74,7 @@ public class DefaultInputConfigHandler implements InputConfigHandler {
   private void loadInputs(String serviceName, InputConfigHolder inputConfigHolder) {
     for (InputDescriptor inputDescriptor : inputConfigHolder.getInputConfigList()) {
       if (inputDescriptor == null) {
+        logger.warn("Input descriptor is smpty. Skipping...");
         continue;
       }
 
@@ -110,6 +111,7 @@ public class DefaultInputConfigHandler implements InputConfigHandler {
     for (Input input : inputConfigHolder.getInputManager().getInputList(serviceName)) {
       for (FilterDescriptor filterDescriptor : inputConfigHolder.getFilterConfigList()) {
         if (filterDescriptor == null) {
+          logger.warn("Filter descriptor is smpty. Skipping...");
           continue;
         }
         if (BooleanUtils.isFalse(filterDescriptor.isEnabled())) {
