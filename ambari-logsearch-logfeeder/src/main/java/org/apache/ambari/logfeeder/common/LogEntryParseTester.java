@@ -27,9 +27,11 @@ import java.util.Map;
 
 import org.apache.ambari.logfeeder.conf.LogEntryCacheConfig;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
+import org.apache.ambari.logfeeder.manager.operations.impl.DefaultInputConfigHandler;
 import org.apache.ambari.logfeeder.input.InputFileMarker;
 import org.apache.ambari.logfeeder.input.InputManagerImpl;
 import org.apache.ambari.logfeeder.loglevelfilter.LogLevelFilterHandler;
+import org.apache.ambari.logfeeder.manager.InputConfigManager;
 import org.apache.ambari.logfeeder.output.OutputManagerImpl;
 import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
@@ -89,8 +91,6 @@ public class LogEntryParseTester {
   @SuppressWarnings("unchecked")
   public Map<String, Object> parse() throws Exception {
     InputConfig inputConfig = getInputConfig();
-    ConfigHandler configHandler = new ConfigHandler(null);
-    configHandler.setInputManager(new InputManagerImpl());
     OutputManagerImpl outputManager = new OutputManagerImpl();
     LogFeederProps logFeederProps = new LogFeederProps();
     LogEntryCacheConfig logEntryCacheConfig = new LogEntryCacheConfig();
@@ -101,8 +101,11 @@ public class LogEntryParseTester {
     LogLevelFilterHandler logLevelFilterHandler = new LogLevelFilterHandler(null);
     logLevelFilterHandler.setLogFeederProps(logFeederProps);
     outputManager.setLogLevelFilterHandler(logLevelFilterHandler);
-    configHandler.setOutputManager(outputManager);
-    Input input = configHandler.getTestInput(inputConfig, logId);
+    DefaultInputConfigHandler configHandler = new DefaultInputConfigHandler();
+    InputConfigManager inputConfigManager = new InputConfigManager(
+      null, new InputManagerImpl(), outputManager, configHandler,logFeederProps, true
+    );
+    Input input = inputConfigManager.getTestInput(inputConfig, logId);
     input.init(logFeederProps);
     final Map<String, Object> result = new HashMap<>();
     input.getFirstFilter().init(logFeederProps);

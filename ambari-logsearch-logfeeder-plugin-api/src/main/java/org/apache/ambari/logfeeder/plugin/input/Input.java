@@ -71,6 +71,7 @@ public abstract class Input<PROP_TYPE extends LogFeederProperties, INPUT_MARKER 
   private LRUCache cache;
   private String cacheKeyField;
   private boolean initDefaultFields;
+  private boolean cloudInput = false;
   private MetricData readBytesMetric = new MetricData(getReadBytesMetricName(), false);
 
   /**
@@ -399,5 +400,18 @@ public abstract class Input<PROP_TYPE extends LogFeederProperties, INPUT_MARKER 
 
   public void setInitDefaultFields(boolean initDefaultFields) {
     this.initDefaultFields = initDefaultFields;
+  }
+
+  public boolean isCloudInput() {
+    return cloudInput;
+  }
+
+  public void setCloudInput(boolean cloudInput) {
+    this.cloudInput = cloudInput;
+  }
+
+  public String getCloudModeSuffix() {
+    String mode = isCloudInput() ? "cloud": "default";
+    return "mode=" + mode;
   }
 }
