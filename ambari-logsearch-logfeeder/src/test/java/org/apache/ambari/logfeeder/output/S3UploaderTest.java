@@ -37,7 +37,6 @@ public class S3UploaderTest {
   public static final String ACCESS_KEY_VALUE = "accessKeyValue";
   public static final String SECRET_KEY_VALUE = "secretKeyValue";
 
-  @Ignore("Until EasyMock 3.7 upgrade - waiting for release")
   @Test
   public void shouldUploadToS3ToRightBucket() {
     File fileToUpload = mock(File.class);
@@ -66,7 +65,6 @@ public class S3UploaderTest {
     assertEquals("test_path/hdfs_namenode/hdfs_namenode.log.123343493473948.gz", resolvedPath);
   }
 
-  @Ignore("Until EasyMock 3.7 upgrade - waiting for release")
   @Test
   public void shouldCleanupLocalFilesOnSuccessfulUpload() {
     File fileToUpload = mock(File.class);
@@ -96,7 +94,6 @@ public class S3UploaderTest {
     verify(compressedFile);
   }
 
-  @Ignore("Until EasyMock 3.7 upgrade - waiting for release")
   @Test
   public void shouldNotCleanupUncompressedFileIfNotRequired() {
     File fileToUpload = mock(File.class);
@@ -124,7 +121,6 @@ public class S3UploaderTest {
     verify(compressedFile);
   }
 
-  @Ignore("Until EasyMock 3.7 upgrade - waiting for release")
   @Test
   public void shouldExpandVariablesInPath() {
     File fileToUpload = mock(File.class);

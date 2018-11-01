@@ -19,6 +19,7 @@
 package org.apache.ambari.logsearch;
 
 import org.springframework.boot.Banner;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.solr.SolrRepositoriesAutoConfiguration;
@@ -47,7 +48,7 @@ public class LogSearch {
     new SpringApplicationBuilder(LogSearch.class)
       .bannerMode(Banner.Mode.OFF)
       .listeners(new ApplicationPidFileWriter(pidFile))
-      .web(true)
+      .web(WebApplicationType.SERVLET)
       .run(args);
   }
 

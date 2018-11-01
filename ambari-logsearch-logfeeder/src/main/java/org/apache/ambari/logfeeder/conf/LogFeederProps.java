@@ -199,6 +199,16 @@ public class LogFeederProps implements LogFeederProperties {
   @Value("${" + LogFeederConstants.SOLR_URLS + ":}")
   private String solrUrlsStr;
 
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_MODE,
+    description = "Option to support sending logs to cloud storage. You can choose between supporting only cloud storage, non-cloud storage or both",
+    examples = {"default", "cloud", "hybrid"},
+    defaultValue = "default",
+    sources = {LogFeederConstants.CLOUD_STORAGE_MODE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_MODE + ":default}")
+  public LogFeederMode cloudStorageMode;
+
   @Inject
   private LogEntryCacheConfig logEntryCacheConfig;
 
@@ -350,6 +360,14 @@ public class LogFeederProps implements LogFeederProperties {
 
   public void setZkFilterStorage(boolean zkFilterStorage) {
     this.zkFilterStorage = zkFilterStorage;
+  }
+
+  public LogFeederMode getCloudStorageMode() {
+    return cloudStorageMode;
+  }
+
+  public void setCloudStorageMode(LogFeederMode cloudStorageMode) {
+    this.cloudStorageMode = cloudStorageMode;
   }
 
   public String[] getSolrUrls() {

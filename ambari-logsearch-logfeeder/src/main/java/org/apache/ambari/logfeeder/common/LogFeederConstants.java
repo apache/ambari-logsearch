@@ -23,7 +23,9 @@ public class LogFeederConstants {
   public static final String ALL = "all";
   public static final String LOGFEEDER_FILTER_NAME = "log_feeder_config";
   public static final String LOG_LEVEL_UNKNOWN = "UNKNOWN";
-  
+
+  public static final String CLOUD_PREFIX = "cl-";
+
   // solr fields
   public static final String SOLR_LEVEL = "level";
   public static final String SOLR_COMPONENT = "type";
@@ -106,5 +108,7 @@ public class LogFeederConstants {
 
   public static final String SOLR_ZK_CONNECTION_STRING = "logfeeder.solr.zk_connect_string";
   public static final String SOLR_URLS = "logfeeder.solr.urls";
+
+  public static final String CLOUD_STORAGE_MODE = "logfeeder.cloud.storage.mode";
 
 }

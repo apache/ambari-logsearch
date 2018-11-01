@@ -62,6 +62,16 @@ public class InputManagerImpl extends InputManager {
     return inputs.get(serviceName);
   }
 
+  private final String notReadyThreadName;
+
+  public InputManagerImpl() {
+    this.notReadyThreadName = "InputIsNotReadyMonitor";
+  }
+
+  public InputManagerImpl(String notReadyThreadName) {
+    this.notReadyThreadName = notReadyThreadName;
+  }
+
   @Override
   public void add(String serviceName, Input input) {
     List<Input> inputList = inputs.computeIfAbsent(serviceName, k -> new ArrayList<>());
@@ -130,7 +140,7 @@ public class InputManagerImpl extends InputManager {
   }
 
   private void startMonitorThread() {
-    Thread inputIsReadyMonitor = new Thread("InputIsReadyMonitor") {
+    Thread inputIsReadyMonitor = new Thread(notReadyThreadName) {
       @Override
       public void run() {
         logger.info("Going to monitor for these missing files: " + notReadyList.toString());

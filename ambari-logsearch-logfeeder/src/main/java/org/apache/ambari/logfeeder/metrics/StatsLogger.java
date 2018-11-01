@@ -18,7 +18,7 @@
  */
 package org.apache.ambari.logfeeder.metrics;
 
-import org.apache.ambari.logfeeder.common.ConfigHandler;
+import org.apache.ambari.logfeeder.manager.InputConfigManager;
 import org.apache.ambari.logfeeder.plugin.common.MetricData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,15 +36,15 @@ public class StatsLogger extends Thread {
 
   private long lastCheckPointCleanedMS = 0;
 
-  @Inject
-  private ConfigHandler configHandler;
+  private final InputConfigManager inputConfigManager;
 
   @Inject
   private MetricsManager metricsManager;
 
-  public StatsLogger() {
-    super("statLogger");
+  public StatsLogger(String name, InputConfigManager inputConfigManager) {
+    super(name);
     setDaemon(true);
+    this.inputConfigManager = inputConfigManager;
   }
 
   @PostConstruct
@@ -68,16 +68,16 @@ public class StatsLogger extends Thread {
 
       if (System.currentTimeMillis() > (lastCheckPointCleanedMS + CHECKPOINT_CLEAN_INTERVAL_MS)) {
         lastCheckPointCleanedMS = System.currentTimeMillis();
-        configHandler.cleanCheckPointFiles();
+        inputConfigManager.cleanCheckPointFiles();
       }
     }
   }
 
   private void logStats() {
-    configHandler.logStats();
+    inputConfigManager.logStats();
     if (metricsManager.isMetricsEnabled()) {
       List<MetricData> metricsList = new ArrayList<MetricData>();
-      configHandler.addMetrics(metricsList);
+      inputConfigManager.addMetrics(metricsList);
       metricsManager.useMetrics(metricsList);
     }
   }

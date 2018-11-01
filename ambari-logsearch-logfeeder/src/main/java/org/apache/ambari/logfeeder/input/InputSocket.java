@@ -123,7 +123,7 @@ public class InputSocket extends Input<LogFeederProps, InputSocketMarker, InputS
 
   @Override
   public String getNameForThread() {
-    return String.format("socket=%s-%s-%s", getLogType(), this.protocol, this.port);
+    return String.format("socket=%s-%s-%s;%s", getLogType(), this.protocol, this.port, getCloudModeSuffix());
   }
 
   @Override

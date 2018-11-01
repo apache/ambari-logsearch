@@ -72,6 +72,7 @@ public class OutputManagerImpl extends OutputManager {
   @SuppressWarnings("unchecked")
   @Override
   public void init() throws Exception {
+    logger.info("Called init with default output manager.");
     for (Output output : outputs) {
       output.init(logFeederProps);
     }

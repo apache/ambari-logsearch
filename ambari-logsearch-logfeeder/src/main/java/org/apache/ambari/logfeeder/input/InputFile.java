@@ -18,6 +18,7 @@
  */
 package org.apache.ambari.logfeeder.input;
 
+import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.conf.LogEntryCacheConfig;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.container.docker.DockerContainerRegistry;
@@ -106,7 +107,7 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
         if (dockerContainerRegistry != null) {
           Map<String, Map<String, DockerMetadata>> metadataMap = dockerContainerRegistry.getContainerMetadataMap();
           String logType = getLogType();
-          if (metadataMap.containsKey(logType)) {
+          if (metadataMap.containsKey(StringUtils.removeStart(logType, LogFeederConstants.CLOUD_PREFIX))) {
             isReady = true;
           }
         } else {
@@ -140,12 +141,12 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
   public String getNameForThread() {
     if (filePath != null) {
       try {
-        return (getType() + "=" + (new File(filePath)).getName());
+        return (getType() + "=" + (new File(filePath)).getName() + ";" + getCloudModeSuffix());
       } catch (Throwable ex) {
         logger.warn("Couldn't get basename for filePath=" + filePath, ex);
       }
     }
-    return super.getNameForThread() + ":" + getType();
+    return super.getNameForThread() + ":" + getType() + ";" + getCloudModeSuffix();
   }
 
   @Override
@@ -177,8 +178,9 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
         Map<String, Map<String, DockerMetadata>> metadataMap = dockerContainerRegistry.getContainerMetadataMap();
         String logType = getLogType();
         threadGroup = new ThreadGroup("docker-parent-" + logType);
-        if (metadataMap.containsKey(logType)) {
-          Map<String, DockerMetadata> dockerMetadataMap = metadataMap.get(logType);
+        String replacedLogType = StringUtils.removeStart(logType, LogFeederConstants.CLOUD_PREFIX);
+        if (metadataMap.containsKey(replacedLogType)) {
+          Map<String, DockerMetadata> dockerMetadataMap = metadataMap.get(replacedLogType);
           for (Map.Entry<String, DockerMetadata> dockerMetadataEntry : dockerMetadataMap.entrySet()) {
             try {
               startNewChildDockerInputFileThread(dockerMetadataEntry.getValue());
@@ -198,9 +200,9 @@ public class InputFile extends Input<LogFeederProps, InputFileMarker, InputFileB
             for (Map.Entry<String, List<File>> folderFileEntry : getFolderMap().entrySet()) {
               startNewChildInputFileThread(folderFileEntry);
             }
-            logFilePathUpdaterThread = new Thread(new LogFilePathUpdateMonitor((InputFile) this, pathUpdateIntervalMin, detachTimeMin), "logfile_path_updater=" + filePath);
+            logFilePathUpdaterThread = new Thread(new LogFilePathUpdateMonitor((InputFile) this, pathUpdateIntervalMin, detachTimeMin), String.format("logfile_path_updater=%s;%s", filePath, getCloudModeSuffix()));
             logFilePathUpdaterThread.setDaemon(true);
-            logFileDetacherThread = new Thread(new LogFileDetachMonitor((InputFile) this, detachIntervalMin, detachTimeMin), "logfile_detacher=" + filePath);
+            logFileDetacherThread = new Thread(new LogFileDetachMonitor((InputFile) this, detachIntervalMin, detachTimeMin), String.format("logfile_detacher=%s;%s", filePath, getCloudModeSuffix()));
             logFileDetacherThread.setDaemon(true);
 
             logFilePathUpdaterThread.start();
