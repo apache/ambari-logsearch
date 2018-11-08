@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import { createSelector } from 'reselect';
+import { createSelector, Selector } from 'reselect';
 
 import { AppStore } from '@app/classes/models/store';
 import { AppState } from '@app/classes/models/app-state';
@@ -24,7 +24,7 @@ import { LogsType } from '@app/classes/string';
 
 export const selectAppState = (state: AppStore): AppState => state.appState;
 
-export const selectActiveLogsType = createSelector(
+export const selectActiveLogsType: Selector<AppStore, LogsType> = createSelector(
   selectAppState,
   (appState: AppState): LogsType => appState.activeLogsType
 );

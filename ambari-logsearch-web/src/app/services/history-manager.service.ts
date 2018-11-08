@@ -117,7 +117,7 @@ export class HistoryManagerService {
     });
 
     this.logsContainerService.filtersForm.valueChanges
-      .filter(() => !this.logsContainerService.filtersFormSyncInProgress.getValue())
+      .filter(() => !this.logsContainerService.filtersFormSyncInProgress$.getValue())
       .distinctUntilChanged(this.isHistoryUnchanged)
       .subscribe(this.onFormValueChanges);
   }

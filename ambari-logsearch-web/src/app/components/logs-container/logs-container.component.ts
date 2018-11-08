@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ElementRef, ViewChild, HostListener, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, OnInit, ElementRef, ViewChild, Input, OnDestroy } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 import { LogsContainerService } from '@app/services/logs-container.service';
@@ -39,8 +39,6 @@ import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.se
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { NavigationService } from '@modules/shared/services/navigation.service';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'logs-container',
@@ -100,9 +98,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     private auditLogsGraphStorage: AuditLogsGraphDataService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private navigationService: NavigationService,
-    private titleService: Title,
-    private translateService: TranslateService
+    private navigationService: NavigationService
   ) {}
 
   ngOnInit() {
@@ -147,7 +143,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     // Sync from form to params on form values change
     this.subscriptions.push(
       this.filtersForm.valueChanges
-        .filter(() => !this.logsContainerService.filtersFormSyncInProgress.getValue())
+        .filter(() => !this.logsContainerService.filtersFormSyncInProgress$.getValue())
         .subscribe(this.onFiltersFormChange)
     );
     //// SYNC BETWEEN PARAMS AND FORM END
@@ -270,24 +266,8 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
       const params = this.logsFilteringUtilsService.getParamsFromActiveFilter(
         filters, this.logsContainerService.activeLogsType
       );
-      this.getUrlParamsDifferencies(
-        Object.keys(filters).reduce((filterParams, key) => {
-          if (routeParams[key] !== undefined) {
-            return {
-              ...filterParams,
-              [key]: routeParams[key]
-            };
-          }
-          return {...filterParams};
-        }, {}),
-        params
-      );
-      const newRouteParams = {
-        ...routeParams,
-        ...params
-      };
       this.paramsSyncStart(); // turn on the 'sync in progress' flag
-      this.navigationService.navigate([newRouteParams], { relativeTo: this.activatedRoute })
+      this.navigationService.navigate([params], { relativeTo: this.activatedRoute })
         .then(this.paramsSyncStop, this.paramsSyncStop) // turn off the 'sync in progress' flag
         .catch(this.paramsSyncStop); // turn off the 'sync in progress' flag
     });
@@ -351,7 +331,6 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
             false
           );
           if (hasChange) {
-            this.titleService.setTitle(JSON.stringify(filtersParams));
             // we don't have to reset the form with the new values when there is tab changes
             // because the onActiveTabIdChange will call the setActiveTabById on LogsContainerService
             // which will reset the form to the tab's activeFilters prop.
@@ -421,34 +400,8 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getUrlParamsDifferencies(previousParams, currentParams) {
-    const allKeys = [
-      ...Object.keys(previousParams),
-      ...Object.keys(currentParams)
-    ].reduce((uniques: string[], key: string) => {
-      return uniques.indexOf(key) === -1 ? [...uniques, key] : uniques;
-    }, []);
-    const differencies = allKeys.reduce((changes: {[key: string]: any}[], key: string) => {
-      const change: {[key: string]: any} = {};
-      if (previousParams[key] === undefined && currentParams[key] !== undefined) {
-        change.type = 'add';
-      } else if (previousParams[key] !== undefined && currentParams[key] === undefined) {
-        change.type = 'remove';
-      } else if (previousParams[key].toString() !== currentParams[key].toString()) {
-        change.type = 'change';
-      }
-      if (change.type) {
-        change.name = key;
-        change.from = previousParams[key];
-        change.to = currentParams[key];
-        return [...changes, change];
-      }
-      return [...changes];
-    }, []);
-  }
-
-  getLabelForUrlParamName(name) {
-
+  onFilterPanelClear() {
+    this.syncFiltersToParams(this.filtersForm.getRawValue());
   }
 
 }

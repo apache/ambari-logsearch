@@ -101,6 +101,75 @@
 
   "filter.timeRange.error.tooShort": "The selected time range is too short.",
 
+  "filterHistory": {
+    "initialState": "Initial filter values",
+    "paramNames": {
+      "clusters": "cluster",
+      "timeRange": "time range",
+      "components": "component",
+      "levels": "level",
+      "hosts": "host",
+      "auditLogsSorting": "sort by",
+      "serviceLogsSorting": "sort by",
+      "pageSize": "page size",
+      "page": "page",
+      "query": "query",
+      "users": "user"
+    },
+    "multiple": {
+      "actionLabel": {
+        "add": "selected",
+        "change": "changed",
+        "remove": "unselected",
+        "clear": "selection cleared"
+      },
+      "changeLabel": {
+        "add": "{{valueLabel}} selected for `{{fieldLabel}}`",
+        "change": "{{fieldLabel}} selection changed to `{{valueLabel}}`",
+        "remove": "{{valueLabel}} removed from {{fieldLabel}} selection",
+        "clear": "{{fieldLabel}} selection cleared"
+      }
+    },
+    "query": {
+      "type": {
+        "include": "include",
+        "exclude": "exclude"
+      },
+      "changeLabel": {
+        "add": "{{queryType}} query added: {{fieldLabel}} - {{valueLabel}}",
+        "remove": "{{queryType}} query removed: {{fieldLabel}} - {{valueLabel}}",
+        "clear": "Query cleared"
+      }
+    },
+    "timeRange": {
+      "type": {
+        "last": "last",
+        "past": "previous",
+        "current": "this",
+        "today": "today",
+        "custom": ""
+      },
+      "unit": {
+        "d": ["day", "days"],
+        "M": ["month", "months"],
+        "y": ["year", "years"],
+        "w": ["week", "weeks"],
+        "m": ["minute", "minutes"],
+        "h": ["hour", "hours"]
+      },
+      "valueLabel": {
+        "last": "{{typeLabel}} {{value}} {{unitLabel}}",
+        "past": "{{typeLabel}} {{value}} {{unitLabel}}",
+        "yesterday": "yesterday",
+        "current": "{{typeLabel}} {{value}} {{unitLabel}}",
+        "today": "today",
+        "custom": "`{{valueStart}} - {{valueEnd}}`"
+      },
+      "changeLabel": "Time range changed to {{valueLabel}}",
+      "dateTimeFormat": "YYYY-MM-DD hh:mm A zz"
+    }
+  },
+
   "levels.fatal": "Fatal",
   "levels.error": "Error",
   "levels.warn": "Warn",

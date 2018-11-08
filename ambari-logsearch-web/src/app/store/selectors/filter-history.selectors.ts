@@ -53,3 +53,36 @@ export const selectActiveFilterHistoryChangesRedoItems = createSelector(
   selectActiveFilterHistoryChangeIndex,
   (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items.slice(changeIndex + 1)
 );
+
+export const createFilterHistorySelectorById = (id: string): Selector<AppStore, fromFilterHistoryReducers.LogTypeFilterHistory> => (
+  createSelector(
+    selectFilterHistoryState,
+    (filterHistoryState): fromFilterHistoryReducers.LogTypeFilterHistory => filterHistoryState[id]
+  )
+);
+
+export const createFilterHistoryChangeIndexSelectorById = (id: string): Selector<AppStore, number> => createSelector(
+  createFilterHistorySelectorById(id),
+  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): number => (
+    logTypeFilterHistory && logTypeFilterHistory.currentChangeIndex
+  )
+);
+
+export const createFilterHistoryChangesSelectorById = (id: string): Selector<AppStore, FilterUrlParamChange[]> => createSelector(
+  createFilterHistorySelectorById(id),
+  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): FilterUrlParamChange[] => (
+    logTypeFilterHistory && logTypeFilterHistory.changes
+  )
+);
+
+export const createFilterHistoryChangesUndoItemsSelectorById = (id: string): Selector<AppStore, FilterUrlParamChange[]> => createSelector(
+  createFilterHistoryChangesSelectorById(id),
+  createFilterHistoryChangeIndexSelectorById(id),
+  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items && items.slice(0, changeIndex)
+);
+
+export const createFilterHistoryChangesRedoItemsSelectorById = (id: string): Selector<AppStore, FilterUrlParamChange[]> => createSelector(
+  createFilterHistoryChangesSelectorById(id),
+  createFilterHistoryChangeIndexSelectorById(id),
+  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items && items.slice(changeIndex + 1)
+);

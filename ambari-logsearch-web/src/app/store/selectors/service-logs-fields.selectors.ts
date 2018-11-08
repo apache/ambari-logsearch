@@ -16,8 +16,16 @@
  * limitations under the License.
  */
 
-export interface FilterUrlParamChange {
-  previousPath?: string | null;
-  currentPath: string;
-  time?: Date;
-}
+import { createSelector, Selector } from 'reselect';
+import { AppStore } from '@app/classes/models/store';
+import { LogField } from '@app/classes/object';
+
+export const selectServiceLogsFieldState = (state: AppStore): LogField[] => state.serviceLogsFields;
+
+export const createServiceLogsFieldLabelSelectorByFieldName = (fieldName: string): Selector<AppStore, string> => createSelector(
+  selectServiceLogsFieldState,
+  (fields: LogField[]): string => {
+    const field: LogField = fields.find((nextField: LogField) => nextField.name === fieldName);
+    return field ? field.label : fieldName;
+  }
+);

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import {Component, OnDestroy, Input, ViewContainerRef, OnInit} from '@angular/core';
+import {Component, OnDestroy, Input, ViewContainerRef, OnInit, Output, EventEmitter} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
@@ -40,6 +40,12 @@ export class FiltersPanelComponent implements OnDestroy, OnInit {
 
   @Input()
   filtersForm: FormGroup;
+
+  @Output()
+  submit = new EventEmitter();
+
+  @Output()
+  clear = new EventEmitter();
 
   private subscriptions: Subscription[] = [];
 
@@ -133,12 +139,18 @@ export class FiltersPanelComponent implements OnDestroy, OnInit {
     });
   }
 
-  private onClearBtnClick = (): void => {
+  onClearBtnClick = (): void => {
     const defaults = this.logsContainerService.isServiceLogsFileView ? {
-      components: this.logsContainerService.filtersForm.controls['components'].value,
-      hosts: this.logsContainerService.filtersForm.controls['hosts'].value
+      components: this.filtersForm.controls['components'].value,
+      hosts: this.filtersForm.controls['hosts'].value
     } : {};
     this.logsContainerService.resetFiltersForms(defaults);
+    this.clear.emit();
+  }
+
+  onSearchBtnClick(): void {
+    this.updateSearchBoxValue();
+    this.submit.emit(this.filtersForm.getRawValue());
   }
 
 }

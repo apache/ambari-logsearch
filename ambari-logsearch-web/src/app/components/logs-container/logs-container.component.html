@@ -27,7 +27,7 @@
 </div>
 <div #container
   [ngClass]="{'container-fluid': true, 'logs-container': true, 'fixed-filterbar': isFilterPanelFixedPostioned}">
-  <filters-panel class="row" [filtersForm]="filtersForm" #filtersPanel></filters-panel>
+  <filters-panel class="row" [filtersForm]="filtersForm" #filtersPanel (clear)="onFilterPanelClear()"></filters-panel>
   <div class="row events-count">
     <div *ngIf="captureTimeRangeCache" class="panel panel-default panel-capture-view col-md-2 col-md-offset-5">
       <i class="fa fa-play"></i>

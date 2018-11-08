@@ -16,8 +16,19 @@
  * limitations under the License.
  */
 
-export interface FilterUrlParamChange {
-  previousPath?: string | null;
-  currentPath: string;
-  time?: Date;
-}
+import { createSelector, Selector } from 'reselect';
+
+import { AppStore } from '@app/classes/models/store';
+import { NodeItem } from '@app/classes/models/node-item';
+
+export const selectComponentsList = (state: AppStore): NodeItem[] => state.components;
+
+export const selectComponentsLabels = createSelector(
+  selectComponentsList,
+  (components: NodeItem[]) => components.reduce((labels: {[key: string]: string}, component: NodeItem) => (
+    {
+      ...labels,
+      [component.name]: component.label || component.name
+    }
+  ), {})
+);

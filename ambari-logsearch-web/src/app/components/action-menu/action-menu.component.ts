@@ -18,11 +18,10 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
 
 import { LogsContainerService } from '@app/services/logs-container.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -30,6 +29,7 @@ import { ListItem } from '@app/classes/list-item';
 import { ClustersService } from '@app/services/storage/clusters.service';
 import { UtilsService } from '@app/services/utils.service';
 import { NavigationService } from '@app/modules/shared/services/navigation.service';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'action-menu',
@@ -60,13 +60,12 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   selectedClusterName$: BehaviorSubject<string> = new BehaviorSubject('');
 
-  subscriptions: Subscription[] = [];
+  destroyed$ = new Subject();
 
   constructor(
     private logsContainerService: LogsContainerService,
     private settings: UserSettingsService,
     private route: ActivatedRoute,
-    private router: Router,
     private clustersService: ClustersService,
     private utilsService: UtilsService,
     private navigationService: NavigationService
@@ -74,15 +73,13 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.selectedClusterName$.subscribe(
-        (clusterName: string) => this.setModalSubmitDisabled(!(!!clusterName))
-      )
+    this.selectedClusterName$.takeUntil(this.destroyed$).subscribe(
+      (clusterName: string) => this.setModalSubmitDisabled(!(!!clusterName))
     );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    this.destroyed$.next(true);
   }
 
   get captureSeconds(): number {
