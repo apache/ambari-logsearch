@@ -115,7 +115,6 @@ public class CloudStorageOutput extends Output<LogFeederProps, InputMarker> {
 
   void removeWorker(Input input) {
     String uniqueName = input.getThread().getName();
-    logger.info(cloudOutputLoggers.size());
     if (rolloverConfig.isRolloverOnShutdown() && cloudOutputLoggers.containsKey(uniqueName)) {
       rollover(cloudOutputLoggers.get(uniqueName));
     }
