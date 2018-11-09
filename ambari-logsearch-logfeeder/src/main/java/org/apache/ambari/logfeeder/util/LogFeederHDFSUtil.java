@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +35,7 @@ public class LogFeederHDFSUtil {
   }
   
   public static boolean copyFromLocal(String sourceFilepath, String destFilePath, FileSystem fileSystem, boolean overwrite,
-      boolean delSrc) {
+                                      boolean delSrc, FsPermission fsPermission) {
     Path src = new Path(sourceFilepath);
     Path dst = new Path(destFilePath);
     boolean isCopied = false;
@@ -42,6 +43,9 @@ public class LogFeederHDFSUtil {
       logger.info("copying localfile := " + sourceFilepath + " to hdfsPath := " + destFilePath);
       fileSystem.copyFromLocalFile(delSrc, overwrite, src, dst);
       isCopied = true;
+      if (fsPermission != null) {
+        fileSystem.setPermission(dst, fsPermission);
+      }
     } catch (Exception e) {
       logger.error("Error copying local file :" + sourceFilepath + " to hdfs location : " + destFilePath, e);
     }
@@ -49,20 +53,31 @@ public class LogFeederHDFSUtil {
   }
 
   public static FileSystem buildFileSystem(String hdfsHost, String hdfsPort) {
+    return buildFileSystem(hdfsHost, hdfsPort, "hdfs");
+  }
+
+  public static FileSystem buildFileSystem(String hdfsHost, String hdfsPort, String scheme) {
+    Configuration configuration = buildHdfsConfiguration(hdfsHost, hdfsPort, scheme);
+    return buildFileSystem(configuration);
+  }
+
+  public static FileSystem buildFileSystem(Configuration configuration) {
     try {
-      Configuration configuration = buildHdfsConfiguration(hdfsHost, hdfsPort);
-      FileSystem fs = FileSystem.get(configuration);
-      return fs;
+      return FileSystem.get(configuration);
     } catch (Exception e) {
-      logger.error("Exception is buildFileSystem :", e);
+      logger.error("Exception during buildFileSystem call:", e);
     }
     return null;
   }
 
-  private static Configuration buildHdfsConfiguration(String hdfsHost, String hdfsPort) {
-    String url = "hdfs://" + hdfsHost + ":" + hdfsPort + "/";
+  public static Configuration buildHdfsConfiguration(String hdfsHost, String hdfsPort, String scheme) {
+    return buildHdfsConfiguration(String.format("%s:%s", hdfsHost, hdfsPort), scheme);
+  }
+
+  public static Configuration buildHdfsConfiguration(String address, String scheme) {
+    String url = String.format("%s://%s/", scheme, address);
     Configuration configuration = new Configuration();
-    configuration.set("fs.default.name", url);
+    configuration.set("fs.defaultFS", url);
     return configuration;
   }
 

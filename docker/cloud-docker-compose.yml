@@ -120,6 +120,9 @@ services:
     image: flokkr/hadoop-hdfs-datanode:${HADOOP_VERSION:-3.0.0}
     links:
       - namenode
+    ports:
+      - 61890:61890
+      - 5007:5007
     env_file:
       - Profile
     networks:

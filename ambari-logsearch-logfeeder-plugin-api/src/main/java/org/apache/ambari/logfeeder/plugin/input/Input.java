@@ -232,6 +232,9 @@ public abstract class Input<PROP_TYPE extends LogFeederProperties, INPUT_MARKER 
    */
   public void close() {
     logger.info("Close called. " + getShortDescription());
+    if (getOutputManager() != null) {
+      getOutputManager().release(this);
+    }
     try {
       if (firstFilter != null) {
         firstFilter.close();

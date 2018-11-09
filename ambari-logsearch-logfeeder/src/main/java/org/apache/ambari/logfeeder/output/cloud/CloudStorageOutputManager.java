@@ -20,9 +20,11 @@ package org.apache.ambari.logfeeder.output.cloud;
 
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.plugin.common.MetricData;
+import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
 import org.apache.ambari.logfeeder.plugin.manager.OutputManager;
 import org.apache.ambari.logfeeder.plugin.output.Output;
+import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +36,6 @@ import java.util.Map;
 
 /**
  * Handle output operations for sending cloud inputs to a cloud storage destination
- * TODO !!!
  */
 public class CloudStorageOutputManager extends OutputManager {
 
@@ -49,22 +50,20 @@ public class CloudStorageOutputManager extends OutputManager {
 
   @Override
   public void write(Map<String, Object> jsonObj, InputMarker marker) {
-    // TODO: make sense to implement this if we will support filters before calling cloud outputs
+    write(LogFeederUtil.getGson().toJson(jsonObj), marker);
   }
 
   @Override
   public void write(String line, InputMarker marker) {
-    logger.info("Output: {}", line);
     try {
       storageOutput.write(line, marker);
     } catch (Exception e) {
-
+      logger.error("Error during cloud output write.", e);
     }
   }
 
   @Override
   public void copyFile(File file, InputMarker marker) {
-
   }
 
   @Override
@@ -80,23 +79,29 @@ public class CloudStorageOutputManager extends OutputManager {
   @Override
   public void init() throws Exception {
     logger.info("Called init with cloud storage output manager.");
-    storageOutput = CloudStorageFactory.createCloudStorageOutput(logFeederProps);
+    storageOutput = new CloudStorageOutput(logFeederProps);
     storageOutput.init(logFeederProps);
     add(storageOutput);
   }
 
   @Override
   public void close() {
-
+    logger.info("Close called for cloud outputs.");
+    storageOutput.stopUploader();
+    storageOutput.setDrain(true);
+    storageOutput.close();
   }
 
   @Override
   public void logStats() {
-
   }
 
   @Override
   public void addMetricsContainers(List<MetricData> metricsList) {
+  }
 
+  @Override
+  public void release(Input input) {
+    storageOutput.removeWorker(input);
   }
 }
