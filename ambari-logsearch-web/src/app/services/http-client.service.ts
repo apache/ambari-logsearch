@@ -37,6 +37,8 @@ import { AppStore } from '@app/classes/models/store';
 import { HttpAuthorizationErrorResponseAction } from '@app/store/actions/auth.actions';
 import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
 
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
 @Injectable()
 export class HttpClientService extends Http {
 
@@ -104,6 +106,9 @@ export class HttpClientService extends Http {
   };
 
   private readonly unauthorizedStatuses = [401, 403, 419];
+
+  requestsPending: BehaviorSubject<number> = new BehaviorSubject(0);
+  requestInProgress: Observable<boolean> = this.requestsPending.map((totalRequest: number) => totalRequest > 0);
 
   constructor(
     backend: XHRBackend,
@@ -185,11 +190,14 @@ export class HttpClientService extends Http {
       }
       return handled;
     };
-    return super.request(this.generateUrl(url), options).first().share()
+    const req = super.request(this.generateUrl(url), options).first().share()
       .map(response => response)
       .catch((error: any) => {
         return handleResponseError(error) ? Observable.of(error) : Observable.throw(error);
       });
+    req.subscribe(() => this.requestsPending.next(this.requestsPending.getValue() - 1));
+    this.requestsPending.next(this.requestsPending.getValue() + 1);
+    return req;
   }
 
   get(url: string, params?: HomogeneousObject<string>, urlVariables?: HomogeneousObject<string>): Observable<Response> {

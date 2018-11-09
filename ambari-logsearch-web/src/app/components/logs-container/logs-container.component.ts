@@ -92,7 +92,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
   constructor(
     private appState: AppStateService,
     private tabsStorage: TabsService,
-    private logsContainerService: LogsContainerService,
+    public logsContainerService: LogsContainerService,
     private logsFilteringUtilsService: LogsFilteringUtilsService,
     private serviceLogsHistogramStorage: ServiceLogsHistogramDataService,
     private auditLogsGraphStorage: AuditLogsGraphDataService,
@@ -304,45 +304,49 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
 
   private onParamsChange = (params: {[key: string]: any}) => {
     const {activeTab, ...filtersParams} = params;
-    this.tabsStorage.findInCollection((tab: LogTypeTab) => tab.id === params.activeTab)
+
+    if (activeTab !== this.activeTabId$.getValue()) { // tab change
+      this.tabsStorage.findInCollection((tab: LogTypeTab) => tab.id === params.activeTab)
       .first()
       .subscribe((tab) => {
         if (tab) {
-          const filtersFromParams: {[key: string]: any} = this.logsFilteringUtilsService.getFilterFromParams(
-            filtersParams,
-            tab.appState.activeLogsType
-          );
-          const currentFormParams = this.logsFilteringUtilsService.getParamsFromActiveFilter(
-            this.filtersForm.value, this.logsContainerService.activeLogsType
-          );
-          const filtersFormControlNames = Object.keys(this.filtersForm.controls);
-          const hasChange = filtersFormControlNames.reduce(
-            (changed, key) => {
-              if (currentFormParams[key] === undefined && filtersParams[key] === undefined) {
-                return changed;
-              }
-              return (
-                changed
-                || (currentFormParams[key] === undefined && filtersParams[key] !== undefined)
-                || (currentFormParams[key] !== undefined && filtersParams[key] === undefined)
-                || currentFormParams[key].toString() !== filtersParams[key].toString()
-              );
-            },
-            false
-          );
-          if (hasChange) {
-            // we don't have to reset the form with the new values when there is tab changes
-            // because the onActiveTabIdChange will call the setActiveTabById on LogsContainerService
-            // which will reset the form to the tab's activeFilters prop.
-            // If we do reset wvery time then the form will be reseted twice with every tab changes... not a big deal anyway
-            if (this.activeTabId$.getValue() === activeTab) {
-              this.resetFiltersForm(filtersFromParams);
-            }
-            this.syncFilterToTabStore(filtersFromParams, activeTab);
-            this.activeTabId$.next(activeTab);
-          }
+          this.activeTabId$.next(activeTab);
         }
       });
+    } else { // filter change
+      const filtersFromParams: {[key: string]: any} = this.logsFilteringUtilsService.getFilterFromParams(
+        filtersParams,
+        this.logsContainerService.activeLogsType
+      );
+      const currentFormParams = this.logsFilteringUtilsService.getParamsFromActiveFilter(
+        this.filtersForm.value, this.logsContainerService.activeLogsType
+      );
+      const filtersFormControlNames = Object.keys(this.filtersForm.controls);
+      const hasChange = filtersFormControlNames.reduce(
+        (changed, key) => {
+          if (currentFormParams[key] === undefined && filtersParams[key] === undefined) {
+            return changed;
+          }
+          return (
+            changed
+            || (currentFormParams[key] === undefined && filtersParams[key] !== undefined)
+            || (currentFormParams[key] !== undefined && filtersParams[key] === undefined)
+            || currentFormParams[key].toString() !== filtersParams[key].toString()
+          );
+        },
+        false
+      );
+      if (hasChange) {
+        // we don't have to reset the form with the new values when there is tab changes
+        // because the onActiveTabIdChange will call the setActiveTabById on LogsContainerService
+        // which will reset the form to the tab's activeFilters prop.
+        // If we do reset wvery time then the form will be reseted twice with every tab changes... not a big deal anyway
+        if (this.activeTabId$.getValue() === activeTab) {
+          this.resetFiltersForm(filtersFromParams);
+        }
+        this.syncFilterToTabStore(filtersFromParams, activeTab);
+      }
+    }
   }
 
   //

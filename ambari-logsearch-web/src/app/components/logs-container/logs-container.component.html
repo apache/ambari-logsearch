@@ -45,23 +45,23 @@
             (totalEventsFoundMessageParams.totalCount === 1 ? 'logs.oneEventFound' : 'logs.totalEventFound')) | translate: totalEventsFoundMessageParams}}</header>
         <time-histogram (selectArea)="setCustomTimeRange($event[0], $event[1])" [data]="serviceLogsHistogramData"
                         [colors]="serviceLogsHistogramColors" [allowFractionalYTicks]="false"
-                        svgId="service-logs-histogram"></time-histogram>
+                        svgId="service-logs-histogram" [class.loading]="logsContainerService.isGraphRequestInProgress$ | async"></time-histogram>
       </collapsible-panel>
       <service-logs-table [totalCount]="totalCount" [logs]="serviceLogs | async" [columns]="serviceLogsColumns | async"
-                          [filtersForm]="filtersForm"></service-logs-table>
+                          [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async"></service-logs-table>
     </ng-container>
     <ng-container *ngSwitchCase="'auditLogs'">
       <collapsible-panel commonTitle="logs.duration">
         <time-line-graph (selectArea)="setCustomTimeRange($event[0], $event[1])" [data]="auditLogsGraphData"
-                         [allowFractionalYTicks]="false" [skipZeroValuesInTooltip]="false"
-                         svgId="audit-logs-graph"></time-line-graph>
+          [allowFractionalYTicks]="false" [skipZeroValuesInTooltip]="false" svgId="audit-logs-graph"
+          [class.loading]="logsContainerService.isGraphRequestInProgress$ | async"></time-line-graph>
       </collapsible-panel>
       <audit-logs-entries [totalCount]="totalCount" [logs]="auditLogs | async" [columns]="auditLogsColumns | async"
-                          [filtersForm]="filtersForm"></audit-logs-entries>
+          [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async"></audit-logs-entries>
     </ng-container>
   </ng-container>
   <log-context *ngIf="isServiceLogContextView" [id]="activeLog.id" [hostName]="activeLog.host_name"
-               [componentName]="activeLog.component_name"></log-context>
+    [componentName]="activeLog.component_name"></log-context>
 </div>
 <modal-dialog
   title="{{'filter.capture' | translate}}"

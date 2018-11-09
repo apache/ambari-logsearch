@@ -69,6 +69,8 @@ import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
 
+import { Subscription } from 'rxjs/Subscription';
+
 @Injectable()
 export class LogsContainerService {
 
@@ -368,6 +370,10 @@ export class LogsContainerService {
 
   filtersFormSyncInProgress$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  private pendingLogRequests: {[key: string]: Subscription[]} = {};
+  isLogsRequestInProgress$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isGraphRequestInProgress$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   constructor(
     private httpClient: HttpClientService, private utils: UtilsService,
     private tabsStorage: TabsService, private componentsStorage: ComponentsService, private hostsStorage: HostsService,
@@ -398,9 +404,9 @@ export class LogsContainerService {
     this.clustersStorage.getAll().subscribe(this.setClustersFilters);
     this.hostsStorage.getAll().subscribe(this.setHostsFilters);
 
-    appState.getParameter('activeLog').subscribe((value: ActiveServiceLogEntry | null) => this.activeLog = value);
-    appState.getParameter('isServiceLogsFileView').subscribe((value: boolean) => this.isServiceLogsFileView = value);
-    appState.getParameter('activeLogsType').subscribe((value: LogsType) => {
+    appState.getParameter('activeLog').distinctUntilChanged().subscribe((value: ActiveServiceLogEntry | null) => this.activeLog = value);
+    appState.getParameter('isServiceLogsFileView').distinctUntilChanged().subscribe((value: boolean) => this.isServiceLogsFileView = value);
+    appState.getParameter('activeLogsType').distinctUntilChanged().subscribe((value: LogsType) => {
       if (this.isLogsTypeSupported(value)) {
         this.activeLogsType = value;
       }
@@ -586,59 +592,76 @@ export class LogsContainerService {
 
   loadLogs = (logsType: LogsType = this.activeLogsType): void => {
     if (this.isLogsTypeSupported(logsType)) {
-      this.httpClient.get(logsType, this.getParams('listFilters', {}, logsType)).subscribe((response: Response): void => {
-        const jsonResponse = response.json(),
-          model = this.logsTypeMap[logsType].logsModel;
-        model.clear();
-        if (jsonResponse) {
-          const logs = jsonResponse.logList,
-            count = jsonResponse.totalCount || 0;
-          if (logs) {
-            model.addInstances(logs);
-          }
-          this.totalCount = count;
-        }
-      });
-      this.httpClient.get(this.logsTypeMap[logsType].graphRequestName, this.getParams('graphFilters', {}, logsType))
-        .subscribe((response: Response): void => {
+      let pendingLogRequests = this.pendingLogRequests[logsType] || [];
+      pendingLogRequests.forEach((subscription: Subscription) => subscription.unsubscribe());
+      pendingLogRequests = [];
+
+      this.isLogsRequestInProgress$.next(true);
+      pendingLogRequests.push(
+        this.httpClient.get(logsType, this.getParams('listFilters', {}, logsType)).subscribe((response: Response): void => {
           const jsonResponse = response.json(),
-            model = this.logsTypeMap[logsType].graphModel;
+            model = this.logsTypeMap[logsType].logsModel;
           model.clear();
           if (jsonResponse) {
-            const graphData = jsonResponse.graphData;
-            if (graphData) {
-              model.addInstances(graphData);
+            const logs = jsonResponse.logList,
+              count = jsonResponse.totalCount || 0;
+            if (logs) {
+              model.addInstances(logs);
             }
+            this.totalCount = count;
           }
-        });
+          this.isLogsRequestInProgress$.next(false);
+        })
+      );
+      this.isGraphRequestInProgress$.next(true);
+      pendingLogRequests.push(
+        this.httpClient.get(this.logsTypeMap[logsType].graphRequestName, this.getParams('graphFilters', {}, logsType))
+          .subscribe((response: Response): void => {
+            const jsonResponse = response.json(),
+              model = this.logsTypeMap[logsType].graphModel;
+            model.clear();
+            if (jsonResponse) {
+              const graphData = jsonResponse.graphData;
+              if (graphData) {
+                model.addInstances(graphData);
+              }
+            }
+            this.isGraphRequestInProgress$.next(false);
+          })
+      );
       if (logsType === 'auditLogs') {
-        this.httpClient.get('topAuditLogsResources', this.getParams('topResourcesFilters', {
-          field: 'resource'
-        }, logsType), {
-          number: this.topResourcesCount
-        }).subscribe((response: Response): void => {
-          const jsonResponse = response.json();
-          if (jsonResponse) {
-            const data = jsonResponse.graphData;
-            if (data) {
-              this.topResourcesGraphData = this.parseAuditLogsTopData(data);
+        pendingLogRequests.push(
+          this.httpClient.get('topAuditLogsResources', this.getParams('topResourcesFilters', {
+            field: 'resource'
+          }, logsType), {
+            number: this.topResourcesCount
+          }).subscribe((response: Response): void => {
+            const jsonResponse = response.json();
+            if (jsonResponse) {
+              const data = jsonResponse.graphData;
+              if (data) {
+                this.topResourcesGraphData = this.parseAuditLogsTopData(data);
+              }
             }
-          }
-        });
-        this.httpClient.get('topAuditLogsResources', this.getParams('topResourcesFilters', {
-          field: 'reqUser'
-        }, logsType), {
-          number: this.topUsersCount
-        }).subscribe((response: Response): void => {
-          const jsonResponse = response.json();
-          if (jsonResponse) {
-            const data = jsonResponse.graphData;
-            if (data) {
-              this.topUsersGraphData = this.parseAuditLogsTopData(data);
+          })
+        );
+        pendingLogRequests.push(
+          this.httpClient.get('topAuditLogsResources', this.getParams('topResourcesFilters', {
+            field: 'reqUser'
+          }, logsType), {
+            number: this.topUsersCount
+          }).subscribe((response: Response): void => {
+            const jsonResponse = response.json();
+            if (jsonResponse) {
+              const data = jsonResponse.graphData;
+              if (data) {
+                this.topUsersGraphData = this.parseAuditLogsTopData(data);
+              }
             }
-          }
-        });
+          })
+        );
       }
+      this.pendingLogRequests[logsType] = pendingLogRequests;
     } else {
       console.error(`Logs Type does not supported: ${logsType}`);
     }
@@ -906,6 +929,7 @@ export class LogsContainerService {
       .subscribe((componentName) => {
         const tab = {
           id: log.id || `${log.host}-${log.type}`,
+          logsType: <LogsType>'serviceLogs',
           isCloseable: true,
           isActive: false,
           label: `${log.host} >> ${componentName || log.type}`,

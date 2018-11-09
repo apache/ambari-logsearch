@@ -31,6 +31,8 @@ import { AppStore } from '@app/classes/models/store';
 import { AuthorizationStatuses } from '@app/store/reducers/auth.reducers';
 import { isAuthorizedSelector, selectAuthStatus, isCheckingAuthStatusInProgressSelector } from '@app/store/selectors/auth.selectors';
 
+import { HttpClientService } from '@app/services/http-client.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -66,6 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private appState: AppStateService,
+    public httpClient: HttpClientService,
     private store: Store<AppStore>
   ) {}
 

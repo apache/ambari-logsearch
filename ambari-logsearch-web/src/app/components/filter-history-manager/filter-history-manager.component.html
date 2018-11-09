@@ -1,11 +1,11 @@
 <menu-button label="{{'topMenu.undo' | translate}}" [subItems]="activeUndoHistoryListItems$ | async" iconClass="fa fa-arrow-left"
   class="history-menu" [class.disabled]="!(hasActiveUndoHistoryItems$ | async)" [isDisabled]="!(hasActiveUndoHistoryItems$ | async)"
-  listClass="history-dropdown" (buttonClick)="undo()" (selectItem)="onListItemClick($event)">
+  listClass="history-dropdown" [isRightAlign]="true" (buttonClick)="undo()" (selectItem)="onListItemClick($event)">
 </menu-button>
 
 <menu-button label="{{'topMenu.redo' | translate}}" [subItems]="activeRedoHistoryListItems$ | async" iconClass="fa fa-arrow-right"
   class="history-menu" [class.disabled]="!(hasActiveRedoHistoryItems$ | async)" [isDisabled]="!(hasActiveRedoHistoryItems$ | async)"
-  listClass="history-dropdown" (buttonClick)="redo()" (selectItem)="onListItemClick($event)">
+  listClass="history-dropdown" [isRightAlign]="true" (buttonClick)="redo()" (selectItem)="onListItemClick($event)">
 </menu-button>
 
 <menu-button label="{{'topMenu.history' | translate}}" [subItems]="activeHistoryListItems$ | async" iconClass="fa fa-history"

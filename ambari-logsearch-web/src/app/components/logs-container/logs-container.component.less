@@ -18,6 +18,7 @@
 
 @import '../../modules/shared/mixins';
 @import '../../modules/shared/variables';
+@import '../../modules/shared/animations';
 
 :host {
   display: block;
@@ -93,6 +94,32 @@
       &.fa-play {
         padding-right: 1rem;
       }
+    }
+  }
+
+  /deep/ time-histogram,
+  /deep/ time-line-graph,
+  /deep/ service-logs-table {
+    display: block;
+    &.loading {
+      opacity: .8;
+      position: relative;
+      &:before {
+        .line-progress(1px);
+        content: ' ';
+        display: block;
+        opacity: .8;
+      }
+    }
+  }
+  /deep/ audit-logs-entries.loading > *:not(tabs) {
+    opacity: .8;
+    position: relative;
+    &:before {
+      .line-progress(1px);
+      content: ' ';
+      display: block;
+      opacity: .8;
     }
   }
 

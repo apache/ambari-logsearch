@@ -7,6 +7,7 @@
   "common.name": "Name",
   "common.value": "Value",
   "common.settings": "Settings",
+  "common.loading": "Loading...",
 
   "common.form.errors.required": "This field is required",
 
@@ -114,7 +115,17 @@
       "pageSize": "page size",
       "page": "page",
       "query": "query",
-      "users": "user"
+      "users": "user",
+      "sortingType": "sorting direction",
+      "sortingKey": "sorting field"
+    },
+    "single": {
+      "actionLabel": {
+        "change": "changed"
+      },
+      "changeLabel": {
+        "change": "{{fieldLabel}} changed to `{{valueLabel}}`"
+      }
     },
     "multiple": {
       "actionLabel": {

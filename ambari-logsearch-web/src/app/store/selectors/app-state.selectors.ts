@@ -21,10 +21,21 @@ import { createSelector, Selector } from 'reselect';
 import { AppStore } from '@app/classes/models/store';
 import { AppState } from '@app/classes/models/app-state';
 import { LogsType } from '@app/classes/string';
+import { ActiveServiceLogEntry } from '@app/classes/active-service-log-entry';
 
 export const selectAppState = (state: AppStore): AppState => state.appState;
 
 export const selectActiveLogsType: Selector<AppStore, LogsType> = createSelector(
   selectAppState,
   (appState: AppState): LogsType => appState.activeLogsType
+);
+
+export const selectActiveLog: Selector<AppStore, ActiveServiceLogEntry> = createSelector(
+  selectAppState,
+  (appState: AppState): ActiveServiceLogEntry => appState.activeLog
+);
+
+export const selectActiveLogId: Selector<AppStore, string> = createSelector(
+  selectActiveLog,
+  (activeLog: ActiveServiceLogEntry): string => activeLog.id
 );
