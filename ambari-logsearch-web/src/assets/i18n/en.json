@@ -105,26 +105,26 @@
   "filterHistory": {
     "initialState": "Initial filter values",
     "paramNames": {
-      "clusters": "cluster",
-      "timeRange": "time range",
-      "components": "component",
-      "levels": "level",
-      "hosts": "host",
-      "auditLogsSorting": "sort by",
-      "serviceLogsSorting": "sort by",
-      "pageSize": "page size",
-      "page": "page",
-      "query": "query",
-      "users": "user",
-      "sortingType": "sorting direction",
-      "sortingKey": "sorting field"
+      "clusters": "Cluster",
+      "timeRange": "Time Range",
+      "components": "Component",
+      "levels": "Level",
+      "hosts": "Host",
+      "auditLogsSorting": "Sort by",
+      "serviceLogsSorting": "Sort by",
+      "pageSize": "Result Per Page",
+      "page": "Page Number",
+      "query": "Query",
+      "users": "User",
+      "sortingType": "Sorting Direction",
+      "sortingKey": "Sorting Field"
     },
     "single": {
       "actionLabel": {
         "change": "changed"
       },
       "changeLabel": {
-        "change": "{{fieldLabel}} changed to `{{valueLabel}}`"
+        "change": "{{fieldLabel}}: {{valueLabel}}"
       }
     },
     "multiple": {
@@ -135,10 +135,10 @@
         "clear": "selection cleared"
       },
       "changeLabel": {
-        "add": "{{valueLabel}} selected for `{{fieldLabel}}`",
-        "change": "{{fieldLabel}} selection changed to `{{valueLabel}}`",
-        "remove": "{{valueLabel}} removed from {{fieldLabel}} selection",
-        "clear": "{{fieldLabel}} selection cleared"
+        "add": "{{fieldLabel}}: {{valueLabel}}",
+        "change": "{{fieldLabel}}: {{valueLabel}}",
+        "remove": "{{fieldLabel}}: {{valueLabel}}",
+        "clear": "{{fieldLabel}}: {{valueLabel}}"
       }
     },
     "query": {
@@ -176,7 +176,7 @@
         "today": "today",
         "custom": "`{{valueStart}} - {{valueEnd}}`"
       },
-      "changeLabel": "Time range changed to {{valueLabel}}",
+      "changeLabel": "{{fieldLabel}}: {{valueLabel}}",
       "dateTimeFormat": "YYYY-MM-DD hh:mm A zz"
     }
   },

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
@@ -10,7 +10,7 @@ import {
   selectActiveFilterHistoryChangeIndex
 } from '@app/store/selectors/filter-history.selectors';
 import { FilterUrlParamChange } from '@app/classes/models/filter-url-param-change.interface';
-import { Router, UrlTree } from '@angular/router';
+import { Router, UrlTree, UrlSegmentGroup } from '@angular/router';
 import {
   LogsFilteringUtilsService,
   defaultUrlParamsForFiltersByLogsType,
@@ -51,6 +51,9 @@ export const urlParamsActionType = {
 })
 export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
 
+  @Input()
+  labelSeparator = ' | ';
+
   activeLogsType$: Observable<LogsType> = this.store.select(selectActiveLogsType);
 
   componentsLabels$: Observable<{[key: string]: string}> = this.store.select(selectComponentsLabels);
@@ -70,7 +73,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
     this.activeHistoryItemLabels$.map(this.mapHistoryItemLabelsToListItems),
     this.store.select(selectActiveFilterHistoryChangeIndex)
   ).map(([listItems, changeIndex]: [ListItem[], number]): ListItem[] => listItems.map((item, index) => {
-    item.cssClass = index === changeIndex ? 'active' : '';
+    item.cssClass = index === changeIndex ? 'active' : (index === 0 ? 'initial' : '');
     return item;
   }));
 
@@ -127,7 +130,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
       return historyLabels.map((historyLabel) => {
         return {
           value: historyLabel.url,
-          label: Object.keys(historyLabel.labels).map((url) => historyLabel.labels[url]).join(' | ')
+          label: Object.keys(historyLabel.labels).map((url) => historyLabel.labels[url]).join(this.labelSeparator)
         };
       });
     });
@@ -163,9 +166,9 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
 
   private _getValueLabel(paramName, value) {
     switch (paramName) {
-      case 'level': // query
+      case 'level':
       case 'levels': {
-        return value.split(',').join(', ').toLowerCase();
+        return value.toLowerCase().split(',').map(level => level[0].toUpperCase() + level.slice(1)).join(', ');
       }
       case 'log_message': {
         return `"${value}"`;
@@ -198,7 +201,8 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
 
   private _getTimeRangeUrlParamDifferenceLabel(
     differences: UrlParamDifferences[],
-    parameters: {[key: string]: any}
+    parameters: {[key: string]: any},
+    dateTimeFormat: string
   ): string | undefined {
 
     let timeRangeTypeValue: string = parameters.timeRangeType.toLowerCase();
@@ -214,16 +218,13 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
     let valueLabel: string;
     const typeLabel = this.translateService.instant(`filterHistory.timeRange.type.${timeRangeTypeValue}`);
     const unitLabel = this.translateService.instant(`filterHistory.timeRange.unit.${timeRangeUnitValue}`);
+    const fieldLabel = this.translateService.instant(`filterHistory.paramNames.timeRange`);
 
     if (timeRangeTypeValue.toLowerCase() === 'custom') {
       const timeRangeStart = differences.find(diff => diff.name === 'timeRangeStart');
-      const timeRangeStartValue: string = timeRangeStart && moment(timeRangeStart.to).format(
-        this.translateService.instant(`filterHistory.timeRange.dateTimeFormat`)
-      );
+      const timeRangeStartValue: string = timeRangeStart && moment(timeRangeStart.to).format(dateTimeFormat);
       const timeRangeEnd = differences.find(diff => diff.name === 'timeRangeEnd');
-      const timeRangeEndValue: string = timeRangeEnd && moment(timeRangeEnd.to).format(
-        this.translateService.instant(`filterHistory.timeRange.dateTimeFormat`)
-      );
+      const timeRangeEndValue: string = timeRangeEnd && moment(timeRangeEnd.to).format(dateTimeFormat);
       valueLabel = this.translateService.instant(`filterHistory.timeRange.valueLabel.${timeRangeTypeValue}`, {
         valueStart: timeRangeStartValue,
         valueEnd: timeRangeEndValue
@@ -242,7 +243,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
       });
     }
 
-    return this.translateService.instant(`filterHistory.timeRange.changeLabel`, { valueLabel });
+    return this.translateService.instant(`filterHistory.timeRange.changeLabel`, { valueLabel, fieldLabel });
   }
 
   private _getQueryUrlParamDifferenceLabel(query): string | undefined {
@@ -281,65 +282,97 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
       return queryLabel ? [...labels, queryLabel] : labels;
     }, []) : [];
 
-    return [...addedLabels, ...removedLabels].join(' | ');
+    return [...addedLabels, ...removedLabels].join(this.labelSeparator);
+  }
+
+  extractParametersFromUrlSegmentGroup(group: UrlSegmentGroup): {[key: string]: string} {
+    return {
+      ...group.segments.reduce((segmentParams, segment) => ({...segmentParams, ...segment.parameters}), {}),
+      ...Object.keys(group.children).reduce(
+        (segmentsParams, key): {[key: string]: string} => {
+          return {
+            ...segmentsParams,
+            ...this.extractParametersFromUrlSegmentGroup(group.children[key])
+          };
+        },
+        {}
+      )
+    };
+  }
+
+  getParametersFromUrl(url: string): {[key: string]: string} {
+    const urlTree: UrlTree = this.router.parseUrl(url);
+    return this.extractParametersFromUrlSegmentGroup(urlTree.root);
+  }
+
+  getParameterDifferencesFromUrls(currentPath: string, previousPath: string, logsType: LogsType): UrlParamDifferences[] {
+    const currentParameters = this.getParametersFromUrl(currentPath);
+    const previousParameters = previousPath ? this.getParametersFromUrl(previousPath) : {};
+    return this.logsFilteringUtilsService.getUrlParamsDifferences(
+      {
+        ...defaultUrlParamsForFiltersByLogsType[logsType],
+        ...previousParameters
+      },
+      {
+        ...defaultUrlParamsForFiltersByLogsType[logsType],
+        ...currentParameters
+      }
+    );
+  }
+
+  getHistoryItemChangeLabels(
+    item: FilterUrlParamChange,
+    logsType:  LogsType,
+    isInitial: boolean
+  ): {url: string, labels: {[key: string]: string}} {
+    if (isInitial) {
+      return {
+        url: item.currentPath,
+        labels: {
+          'initial': this.translateService.instant(`filterHistory.initialState`)
+        }
+      };
+    }
+    const parameterDifferences = this.getParameterDifferencesFromUrls(item.currentPath, item.previousPath, logsType);
+    const differenciesLabels = parameterDifferences.reduce((labels: {[key: string]: string}, change): {[key: string]: string} => {
+      const changeKey = /^timeRange/.test(change.name) ? 'timeRange' : change.name;
+      if (labels[changeKey] !== undefined || urlParamsActionType[changeKey] === undefined) {
+        return labels;
+      }
+      let changeLabel: string;
+      if (/^timeRange/.test(change.name)) { // create time range label
+        changeLabel = this._getTimeRangeUrlParamDifferenceLabel(
+          parameterDifferences,
+          this.getParametersFromUrl(item.currentPath),
+          this.translateService.instant(`filterHistory.timeRange.dateTimeFormat`)
+        );
+      } else if (change.name === 'query') { // create query label
+        changeLabel = this._getQueryUrlParamDifferenceLabel(change);
+      } else {
+        changeLabel = this._getMultipleUrlParamDifferenceLabel(change);
+      }
+      return changeLabel ? {
+        ...labels,
+        [changeKey]: changeLabel
+      } : labels;
+    }, {});
+    return {
+      url: item.currentPath,
+      labels: differenciesLabels
+    };
   }
 
   mapHistoryItemsToHistoryItemLabels(
     [items, activeLogsType, components]: [FilterUrlParamChange[], LogsType, {[key: string]: string}]
   ): {[key: string]: any}[] {
-    return items.map((item, index): {[key: string]: any} => {
-      if (!index) {
-        return {
-          url: item.currentPath,
-          labels: {
-            'initial': this.translateService.instant(`filterHistory.initialState`)
-          }
-        };
-      }
-      const currentUrlTree: UrlTree = this.router.parseUrl(item.currentPath);
-      const previousUrlTree: UrlTree = item.previousPath ? this.router.parseUrl(item.previousPath) : null;
-      const currentParameters = currentUrlTree.root.children.primary.segments[1].parameters;
-      const previousParameters = (previousUrlTree && previousUrlTree.root.children.primary.segments[1].parameters) || {};
-      const differences = this.logsFilteringUtilsService.getUrlParamsDifferences(
-        {
-          ...defaultUrlParamsForFiltersByLogsType[activeLogsType],
-          ...previousParameters
-        },
-        {
-          ...defaultUrlParamsForFiltersByLogsType[activeLogsType],
-          ...currentParameters
-        }
-      );
-      const differenciesLabels = differences.reduce((labels: {[key: string]: string}, change): {[key: string]: string} => {
-        const changeKey = /^timeRange/.test(change.name) ? 'timeRange' : change.name;
-        if (labels[changeKey] !== undefined || urlParamsActionType[changeKey] === undefined) {
-          return labels;
-        }
-        let changeLabel: string;
-        if (/^timeRange/.test(change.name)) { // create timerange label
-          changeLabel = this._getTimeRangeUrlParamDifferenceLabel(differences, currentParameters);
-        } else if (change.name === 'query') { // create query label
-          changeLabel = this._getQueryUrlParamDifferenceLabel(change);
-        } else {
-          changeLabel = this._getMultipleUrlParamDifferenceLabel(change);
-        }
-        return changeLabel ? {
-          ...labels,
-          [changeKey]: changeLabel
-        } : labels;
-      }, {});
-      return {
-        url: item.currentPath,
-        labels: differenciesLabels
-      };
-    });
+    return items.map((item, index): {[key: string]: any} => this.getHistoryItemChangeLabels(item, activeLogsType, index === 0));
   }
 
   mapHistoryItemLabelsToListItems(historyLabels) {
     return historyLabels.map((historyLabel) => {
       return {
         value: historyLabel.url,
-        label: Object.keys(historyLabel.labels).map((url) => historyLabel.labels[url]).join(' | ')
+        label: Object.keys(historyLabel.labels).map((url) => historyLabel.labels[url]).join(this.labelSeparator)
       };
     });
   }

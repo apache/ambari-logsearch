@@ -22,8 +22,14 @@
  @current-history-item-highlight-color: @form-success-color;
 
  :host {
-  /deep/ menu-button .item-label-text:first-letter {
-    text-transform: uppercase;
+  /deep/ menu-button .item-label-text {
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    &:first-letter {
+      text-transform: uppercase;
+    }
   }
 
   .history-menu {
@@ -77,6 +83,9 @@
           .list-item-label.label-container {
             background-color: #f5f5f5;
           }
+        }
+        &.initial {
+          color: @unknown-color;
         }
       }
       li:not(.selection-all):first-child {
