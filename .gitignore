@@ -17,3 +17,4 @@ node/
 .hg
 .hgignore
 .hgtags
+.flattened-pom.xml
