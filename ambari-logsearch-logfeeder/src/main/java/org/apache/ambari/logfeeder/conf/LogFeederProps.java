@@ -19,6 +19,9 @@
 package org.apache.ambari.logfeeder.conf;
 
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
+import org.apache.ambari.logfeeder.conf.output.HdfsOutputConfig;
+import org.apache.ambari.logfeeder.conf.output.RolloverConfig;
+import org.apache.ambari.logfeeder.conf.output.S3OutputConfig;
 import org.apache.ambari.logfeeder.plugin.common.LogFeederProperties;
 import org.apache.ambari.logsearch.config.api.LogSearchPropertyDescription;
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +45,15 @@ public class LogFeederProps implements LogFeederProperties {
 
   @Inject
   private Environment env;
+
+  @Inject
+  private HdfsOutputConfig hdfsOutputConfig;
+
+  @Inject
+  private S3OutputConfig s3OutputConfig;
+
+  @Inject
+  private RolloverConfig rolloverConfig;
 
   private Properties properties;
 
@@ -209,6 +221,45 @@ public class LogFeederProps implements LogFeederProperties {
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_MODE + ":default}")
   public LogFeederMode cloudStorageMode;
 
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_DESTINATION,
+    description = "Type of storage that is the destination for cloud output logs.",
+    examples = {"hdfs", "s3", "gcs", "adls", "none"},
+    sources = {LogFeederConstants.CLOUD_STORAGE_DESTINATION}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_DESTINATION + ":none}")
+  private CloudStorageDestination cloudStorageDestination;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_UPLOAD_ON_SHUTDOWN,
+    description = "Try to upload archived files on shutdown",
+    examples = {"true"},
+    defaultValue = "false",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_UPLOAD_ON_SHUTDOWN + ":false}")
+  public boolean cloudStorageUploadOnShutdown;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_UPLOADER_INTERVAL_SECONDS,
+    description = "Second interval, that is used to check against there are any files to upload to cloud storage or not.",
+    examples = {"10"},
+    defaultValue = "60",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_UPLOADER_INTERVAL_SECONDS + ":60}")
+  public Integer cloudStorageUploaderIntervalSeconds;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_USE_HDFS_CLIENT,
+    description = "Use hdfs client with cloud connectors instead of the core clients for shipping data to cloud storage",
+    examples = {"true"},
+    defaultValue = "false",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_USE_HDFS_CLIENT + ":false}")
+  public boolean useCloudHdfsClient;
+
   @Inject
   private LogEntryCacheConfig logEntryCacheConfig;
 
@@ -370,6 +421,62 @@ public class LogFeederProps implements LogFeederProperties {
     this.cloudStorageMode = cloudStorageMode;
   }
 
+  public HdfsOutputConfig getHdfsOutputConfig() {
+    return hdfsOutputConfig;
+  }
+
+  public S3OutputConfig getS3OutputConfig() {
+    return s3OutputConfig;
+  }
+
+  public void setS3OutputConfig(S3OutputConfig s3OutputConfig) {
+    this.s3OutputConfig = s3OutputConfig;
+  }
+
+  public RolloverConfig getRolloverConfig() {
+    return rolloverConfig;
+  }
+
+  public void setRolloverConfig(RolloverConfig rolloverConfig) {
+    this.rolloverConfig = rolloverConfig;
+  }
+
+  public void setHdfsOutputConfig(HdfsOutputConfig hdfsOutputConfig) {
+    this.hdfsOutputConfig = hdfsOutputConfig;
+  }
+
+  public CloudStorageDestination getCloudStorageDestination() {
+    return cloudStorageDestination;
+  }
+
+  public void setCloudStorageDestination(CloudStorageDestination cloudStorageDestination) {
+    this.cloudStorageDestination = cloudStorageDestination;
+  }
+
+  public boolean isCloudStorageUploadOnShutdown() {
+    return cloudStorageUploadOnShutdown;
+  }
+
+  public void setCloudStorageUploadOnShutdown(boolean cloudStorageUploadOnShutdown) {
+    this.cloudStorageUploadOnShutdown = cloudStorageUploadOnShutdown;
+  }
+
+  public Integer getCloudStorageUploaderIntervalSeconds() {
+    return cloudStorageUploaderIntervalSeconds;
+  }
+
+  public void setCloudStorageUploaderIntervalSeconds(Integer cloudStorageUploaderIntervalSeconds) {
+    this.cloudStorageUploaderIntervalSeconds = cloudStorageUploaderIntervalSeconds;
+  }
+
+  public boolean isUseCloudHdfsClient() {
+    return useCloudHdfsClient;
+  }
+
+  public void setUseCloudHdfsClient(boolean useCloudHdfsClient) {
+    this.useCloudHdfsClient = useCloudHdfsClient;
+  }
+
   public String[] getSolrUrls() {
     if (StringUtils.isNotBlank(this.solrUrlsStr)) {
       return this.solrUrlsStr.split(",");
@@ -392,5 +499,4 @@ public class LogFeederProps implements LogFeederProperties {
       throw new IllegalArgumentException("Cannot find logfeeder.properties on the classpath");
     }
   }
-
 }

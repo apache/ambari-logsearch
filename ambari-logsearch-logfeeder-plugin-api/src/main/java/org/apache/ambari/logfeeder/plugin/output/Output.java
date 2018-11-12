@@ -166,7 +166,7 @@ public abstract class Output<PROP_TYPE extends LogFeederProperties, INPUT_MARKER
   }
 
   public void close() {
-    LOG.info("Calling base close()." + getShortDescription());
+    LOG.info("Calling base close() = " + getShortDescription());
     isClosed = true;
   }
 }

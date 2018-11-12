@@ -84,7 +84,7 @@
     <deb.architecture>amd64</deb.architecture>
     <deb.dependency.list>${deb.python.ver}</deb.dependency.list>
     <solr.version>7.5.0</solr.version>
-    <hadoop.version>3.0.0</hadoop.version>
+    <hadoop.version>3.1.1</hadoop.version>
     <common.io.version>2.5</common.io.version>
     <zookeeper.version>3.4.6.2.3.0.0-2557</zookeeper.version>
     <forkCount>4</forkCount>
@@ -95,6 +95,7 @@
     <ambari-metrics.version>2.7.0.0.0</ambari-metrics.version>
     <logsearch.docker.tag>latest</logsearch.docker.tag>
     <fasterxml-jackson.version>2.9.5</fasterxml-jackson.version>
+    <log4j2.version>2.11.1</log4j2.version>
   </properties>
 
   <licenses>
@@ -395,17 +396,17 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <version>2.10.0</version>
+        <version>${log4j2.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>2.10.0</version>
+        <version>${log4j2.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-jcl</artifactId>
-        <version>2.10.0</version>
+        <version>${log4j2.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-fileupload</groupId>

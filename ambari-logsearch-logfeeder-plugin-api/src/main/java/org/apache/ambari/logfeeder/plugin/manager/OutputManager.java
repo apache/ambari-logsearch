@@ -18,6 +18,7 @@
  */
 package org.apache.ambari.logfeeder.plugin.manager;
 
+import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
 import org.apache.ambari.logfeeder.plugin.output.Output;
 
@@ -63,4 +64,10 @@ public abstract class OutputManager implements BlockManager {
    */
   public abstract List<Output> getOutputs();
 
+  /**
+   * Release an input (can be used for cleanup) - by default it won't do anything, override this if needed
+   * @param input holds input object - in order to gather unique details
+   */
+  public void release(Input input) {
+  }
 }

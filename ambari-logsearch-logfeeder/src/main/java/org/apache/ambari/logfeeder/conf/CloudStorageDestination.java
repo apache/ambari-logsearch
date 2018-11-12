@@ -16,17 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logfeeder.output.cloud;
+package org.apache.ambari.logfeeder.conf;
 
-import org.apache.ambari.logfeeder.conf.LogFeederProps;
+public enum CloudStorageDestination {
+  HDFS("hdfs"), S3("s3"), GCS("gcs"), ADLS("adls"), NONE("none");
 
-/**
- * Class for creating the right cloud storage outputs based on global Log Feeder configurations
- * TODO !!!
- */
-public class CloudStorageFactory {
+  private String text;
 
-  public static CloudStorageOutput createCloudStorageOutput(LogFeederProps properties) {
-    return new HDFSOutput();
+  CloudStorageDestination(String text) {
+    this.text = text;
+  }
+
+  public String getText() {
+    return this.text;
   }
 }
