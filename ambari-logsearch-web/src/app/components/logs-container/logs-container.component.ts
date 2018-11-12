@@ -152,11 +152,6 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
       this.activeTabId$.distinctUntilChanged().subscribe(this.onActiveTabIdChange)
     );
 
-    // set the position of the filter panel depending on the scroll height: so it is fixed when it would be out from the screen
-    this.subscriptions.push(
-      Observable.fromEvent(window, 'scroll').debounceTime(10).subscribe(this.setFixedPositionValue)
-    );
-
   }
 
   ngOnDestroy() {
@@ -350,28 +345,6 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
   //
   // SECTION END: FILTER SYNCHRONIZATION
   //
-
-  /**
-   * The goal is to set the fixed position of the filter panel when it is scrolled to the top. So that the panel
-   * can be always visible for the user.
-   */
-  private setFixedPositionValue = (): void => {
-    const el: Element = this.containerRef.nativeElement;
-    const top: number = el.getBoundingClientRect().top;
-    const valueBefore: boolean = this.isFilterPanelFixedPostioned;
-    if (valueBefore !== (top <= 0)) {
-      const fpEl: Element = this.filtersPanelRef.containerEl;
-      this.isFilterPanelFixedPostioned = top <= 0;
-      const filtersPanelHeight: number = fpEl.getBoundingClientRect().height;
-      const containerPaddingTop: number = parseFloat(window.getComputedStyle(el).paddingTop);
-      const htmlEl: HTMLElement = this.containerRef.nativeElement;
-      if (this.isFilterPanelFixedPostioned) {
-        htmlEl.style.paddingTop = (containerPaddingTop + filtersPanelHeight) + 'px';
-      } else {
-        htmlEl.style.paddingTop = (containerPaddingTop - filtersPanelHeight) + 'px';
-      }
-    }
-  }
 
   setCustomTimeRange(startTime: number, endTime: number): void {
     this.logsContainerService.setCustomTimeRange(startTime, endTime);
