@@ -34,22 +34,15 @@ public class LogFeederHDFSUtil {
     throw new UnsupportedOperationException();
   }
   
-  public static boolean copyFromLocal(String sourceFilepath, String destFilePath, FileSystem fileSystem, boolean overwrite,
-                                      boolean delSrc, FsPermission fsPermission) {
+  public static void copyFromLocal(String sourceFilepath, String destFilePath, FileSystem fileSystem, boolean overwrite,
+                                      boolean delSrc, FsPermission fsPermission) throws Exception {
     Path src = new Path(sourceFilepath);
     Path dst = new Path(destFilePath);
-    boolean isCopied = false;
-    try {
-      logger.info("copying localfile := " + sourceFilepath + " to hdfsPath := " + destFilePath);
-      fileSystem.copyFromLocalFile(delSrc, overwrite, src, dst);
-      isCopied = true;
-      if (fsPermission != null) {
-        fileSystem.setPermission(dst, fsPermission);
-      }
-    } catch (Exception e) {
-      logger.error("Error copying local file :" + sourceFilepath + " to hdfs location : " + destFilePath, e);
+    logger.info("copying localfile := " + sourceFilepath + " to hdfsPath := " + destFilePath);
+    fileSystem.copyFromLocalFile(delSrc, overwrite, src, dst);
+    if (fsPermission != null) {
+      fileSystem.setPermission(dst, fsPermission);
     }
-    return isCopied;
   }
 
   public static FileSystem buildFileSystem(String hdfsHost, String hdfsPort) {

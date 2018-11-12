@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  * Create a custom logger that will be used to ship inputs into specific files
@@ -52,8 +53,8 @@ public class CloudStorageLoggerFactory {
     String uniqueThreadName = input.getThread().getName();
     Configuration config = loggerContext.getConfiguration();
     String destination = logFeederProps.getCloudStorageDestination().getText();
-    String activeLogDir = String.join(File.separator, logFeederProps.getTmpDir(), destination, ACTIVE_FOLDER, type);
-    String archiveLogDir = String.join(File.separator, logFeederProps.getTmpDir(), destination, ARCHIVED_FOLDER, type);
+    String activeLogDir = Paths.get(logFeederProps.getTmpDir(), ACTIVE_FOLDER, type).toFile().getAbsolutePath();
+    String archiveLogDir = Paths.get(logFeederProps.getTmpDir(), destination, ARCHIVED_FOLDER, type).toFile().getAbsolutePath();
 
     boolean useGzip = logFeederProps.getRolloverConfig().isUseGzip();
     String archiveFilePattern = useGzip ? DATE_PATTERN_SUFFIX_GZ : DATE_PATTERN_SUFFIX;

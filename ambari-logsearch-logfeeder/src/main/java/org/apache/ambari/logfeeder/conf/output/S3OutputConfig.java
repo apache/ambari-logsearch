@@ -136,7 +136,7 @@ public class S3OutputConfig implements CloudStorageOutputConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.S3_OBJECT_ACL,
-    description = "Amazon S3 bucket.",
+    description = "Amazon S3 ACLs for new objects.",
     examples = {"logs"},
     defaultValue = "private",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
@@ -174,8 +174,6 @@ public class S3OutputConfig implements CloudStorageOutputConfig {
   public String getOutputBasePath() {
     return this.bucket;
   }
-
-
 
   public String getBucket() {
     return this.bucket;

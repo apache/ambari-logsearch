@@ -21,6 +21,7 @@ package org.apache.ambari.logfeeder.output.cloud.upload;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.conf.output.S3OutputConfig;
 import org.apache.ambari.logfeeder.util.LogFeederHDFSUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider;
@@ -61,8 +62,8 @@ public class HDFSS3UploadClient extends AbstractCloudClient implements UploadCli
   }
 
   @Override
-  public boolean upload(String source, String target, String basePath) {
-    return LogFeederHDFSUtil.copyFromLocal(source, target, this.fs, true, true, null);
+  public void upload(String source, String target, String basePath) throws Exception {
+    LogFeederHDFSUtil.copyFromLocal(source, target, this.fs, true, true, null);
   }
 
   @Override
@@ -72,12 +73,6 @@ public class HDFSS3UploadClient extends AbstractCloudClient implements UploadCli
 
   @Override
   public void close() throws IOException {
-    if (fs != null) {
-      try {
-        fs.close();
-      } catch (IOException e) {
-        logger.error(e.getLocalizedMessage(), e.getCause());
-      }
-    }
+    IOUtils.closeQuietly(fs);
   }
 }

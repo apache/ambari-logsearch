@@ -40,9 +40,9 @@ public interface UploadClient<CONF_TYPE extends OutputConfig> extends Closeable 
    * @param source file that will be uploaded
    * @param target file key/output on cloud storage
    * @param basePath act as a base directory or can be a bucket as well
-   * @return upload result - true if the upload was successful
+   * @throws Exception error during upload
    */
-  boolean upload(String source, String target, String basePath);
+  void upload(String source, String target, String basePath) throws Exception;
 
   /**
    * Obtain cloud specific output configuration

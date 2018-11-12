@@ -56,9 +56,13 @@ public class CloudStorageUploader extends Thread {
     boolean stop = false;
     do {
       try {
-        doUpload();
+        try {
+          doUpload();
+        } catch (Exception e) {
+          logger.error("An error occurred during Uploader operation - " + uploaderType, e);
+        }
         Thread.sleep(1000 * logFeederProps.getCloudStorageUploaderIntervalSeconds());
-      } catch (InterruptedException iex) {
+      } catch (InterruptedException ie) {
         logger.info("Uploader ({}) thread interrupted", uploaderType);
         stop = true;
       }

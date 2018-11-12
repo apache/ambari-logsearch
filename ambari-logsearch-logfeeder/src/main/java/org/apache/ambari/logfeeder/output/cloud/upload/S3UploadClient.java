@@ -65,19 +65,12 @@ public class S3UploadClient extends AbstractCloudClient implements UploadClient<
   }
 
   @Override
-  public boolean upload(String source, String target, String bucket) {
-    boolean result = false;
-    try {
-      File fileToUpload = new File(source);
-      logger.info("Starting S3 upload {} -> bucket: {}, key: {}", source, bucket, target);
-      s3Client.putObject(bucket, target, new File(source));
-      s3Client.setObjectAcl(bucket, target, acl);
-      FileUtils.delete(fileToUpload);
-      result = true;
-    } catch (Exception e) {
-      logger.error("Error during upload file to s3.", e);
-    }
-    return result;
+  public void upload(String source, String target, String bucket) throws Exception {
+    File fileToUpload = new File(source);
+    logger.info("Starting S3 upload {} -> bucket: {}, key: {}", source, bucket, target);
+    s3Client.putObject(bucket, target, new File(source));
+    s3Client.setObjectAcl(bucket, target, acl);
+    FileUtils.delete(fileToUpload);
   }
 
   @Override

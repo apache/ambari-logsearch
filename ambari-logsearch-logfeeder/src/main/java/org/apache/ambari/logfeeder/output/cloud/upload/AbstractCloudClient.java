@@ -68,6 +68,8 @@ abstract class AbstractCloudClient {
             Thread.sleep(5000);
           } catch (InterruptedException e) {
             logger.error("Error during thread sleep (bucket bootstrap)", e);
+            Thread.currentThread().interrupt();
+            ready = true;
           }
         } else {
           logger.warn("Bucket ('{}') creation failed. Retry ...", bucket);

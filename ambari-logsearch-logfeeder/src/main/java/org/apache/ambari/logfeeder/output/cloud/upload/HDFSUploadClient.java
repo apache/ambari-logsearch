@@ -21,14 +21,13 @@ package org.apache.ambari.logfeeder.output.cloud.upload;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.conf.output.HdfsOutputConfig;
 import org.apache.ambari.logfeeder.util.LogFeederHDFSUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 /**
  * HDFS (on-prem) specific uploader client.
@@ -61,9 +60,9 @@ public class HDFSUploadClient implements UploadClient<HdfsOutputConfig> {
   }
 
   @Override
-  public boolean upload(String source, String target, String basePath) {
+  public void upload(String source, String target, String basePath) throws Exception {
     String outputPath = String.format("%s/%s", basePath, target).replaceAll("//", "/");
-    return LogFeederHDFSUtil.copyFromLocal(source, outputPath, fs, true, true, fsPermission);
+    LogFeederHDFSUtil.copyFromLocal(source, outputPath, fs, true, true, fsPermission);
   }
 
   @Override
@@ -73,12 +72,6 @@ public class HDFSUploadClient implements UploadClient<HdfsOutputConfig> {
 
   @Override
   public void close() {
-    if (fs != null) {
-      try {
-        fs.close();
-      } catch (IOException e) {
-        logger.error(e.getLocalizedMessage(), e.getCause());
-      }
-    }
+    IOUtils.closeQuietly(fs);
   }
 }

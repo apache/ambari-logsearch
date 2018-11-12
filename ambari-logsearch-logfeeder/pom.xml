@@ -36,6 +36,7 @@
     <spring.version>5.1.2.RELEASE</spring.version>
     <spring-boot.version>2.1.0.RELEASE</spring-boot.version>
     <aws-sdk.version>1.11.445</aws-sdk.version>
+    <gcs-connector.version>hadoop3-1.9.10</gcs-connector.version>
   </properties>
 
   <dependencies>
@@ -123,7 +124,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>25.0-jre</version>
+      <version>27.0-jre</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -159,6 +160,21 @@
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
       <version>${aws-sdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-azure</artifactId>
+      <version>${hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-azure-datalake</artifactId>
+      <version>${hadoop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.bigdataoss</groupId>
+      <artifactId>gcs-connector</artifactId>
+      <version>${gcs-connector.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
