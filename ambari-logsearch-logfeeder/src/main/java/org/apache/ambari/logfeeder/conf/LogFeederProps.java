@@ -19,7 +19,7 @@
 package org.apache.ambari.logfeeder.conf;
 
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
-import org.apache.ambari.logfeeder.conf.output.HdfsOutputConfig;
+import org.apache.ambari.logfeeder.conf.output.ExternalHdfsOutputConfig;
 import org.apache.ambari.logfeeder.conf.output.RolloverConfig;
 import org.apache.ambari.logfeeder.conf.output.S3OutputConfig;
 import org.apache.ambari.logfeeder.plugin.common.LogFeederProperties;
@@ -47,13 +47,13 @@ public class LogFeederProps implements LogFeederProperties {
   private Environment env;
 
   @Inject
-  private HdfsOutputConfig hdfsOutputConfig;
+  private RolloverConfig rolloverConfig;
 
   @Inject
   private S3OutputConfig s3OutputConfig;
 
   @Inject
-  private RolloverConfig rolloverConfig;
+  private ExternalHdfsOutputConfig hdfsOutputConfig;
 
   private Properties properties;
 
@@ -238,7 +238,7 @@ public class LogFeederProps implements LogFeederProperties {
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_UPLOAD_ON_SHUTDOWN + ":false}")
-  public boolean cloudStorageUploadOnShutdown;
+  private boolean cloudStorageUploadOnShutdown;
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_UPLOADER_INTERVAL_SECONDS,
@@ -248,7 +248,7 @@ public class LogFeederProps implements LogFeederProperties {
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_UPLOADER_INTERVAL_SECONDS + ":60}")
-  public Integer cloudStorageUploaderIntervalSeconds;
+  private Integer cloudStorageUploaderIntervalSeconds;
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_USE_HDFS_CLIENT,
@@ -258,7 +258,26 @@ public class LogFeederProps implements LogFeederProperties {
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_USE_HDFS_CLIENT + ":false}")
-  public boolean useCloudHdfsClient;
+  private boolean useCloudHdfsClient;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_CUSTOM_FS,
+    description = "If it is not empty, override fs.defaultFS for HDFS client. Can be useful to write data to a different bucket (from other services) if the bucket address is read from core-site.xml",
+    examples = {"s3a://anotherbucket"},
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_CUSTOM_FS + ":}")
+  private String customFs;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_BASE_PATH,
+    description = "Base path prefix for storing logs (cloud storage / hdfs)",
+    examples = {"/user/logsearch/mypath"},
+    defaultValue = "/apps/logsearch",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_BASE_PATH + ":}")
+  private String cloudBasePath;
 
   @Inject
   private LogEntryCacheConfig logEntryCacheConfig;
@@ -421,7 +440,7 @@ public class LogFeederProps implements LogFeederProperties {
     this.cloudStorageMode = cloudStorageMode;
   }
 
-  public HdfsOutputConfig getHdfsOutputConfig() {
+  public ExternalHdfsOutputConfig getHdfsOutputConfig() {
     return hdfsOutputConfig;
   }
 
@@ -441,7 +460,7 @@ public class LogFeederProps implements LogFeederProperties {
     this.rolloverConfig = rolloverConfig;
   }
 
-  public void setHdfsOutputConfig(HdfsOutputConfig hdfsOutputConfig) {
+  public void setHdfsOutputConfig(ExternalHdfsOutputConfig hdfsOutputConfig) {
     this.hdfsOutputConfig = hdfsOutputConfig;
   }
 
@@ -475,6 +494,22 @@ public class LogFeederProps implements LogFeederProperties {
 
   public void setUseCloudHdfsClient(boolean useCloudHdfsClient) {
     this.useCloudHdfsClient = useCloudHdfsClient;
+  }
+
+  public String getCustomFs() {
+    return customFs;
+  }
+
+  public void setCustomFs(String customFs) {
+    this.customFs = customFs;
+  }
+
+  public String getCloudBasePath() {
+    return cloudBasePath;
+  }
+
+  public void setCloudBasePath(String cloudBasePath) {
+    this.cloudBasePath = cloudBasePath;
   }
 
   public String[] getSolrUrls() {

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-public class HDFSS3UploadClient extends AbstractCloudClient implements UploadClient<S3OutputConfig> {
+public class HDFSS3UploadClient extends AbstractS3CloudClient implements UploadClient {
 
   private static final Logger logger = LogManager.getLogger(HDFSS3UploadClient.class);
 
@@ -44,14 +44,13 @@ public class HDFSS3UploadClient extends AbstractCloudClient implements UploadCli
 
   @Override
   void createBucketIfNeeded(String bucket) {
-    logger.warn("HDFS based S3 client won't bootstrap default bucket ('{}')", s3OutputConfig.getBucket());
+    logger.warn("HDFS based S3 client won't bootstrap default bucket ('{}')", s3OutputConfig.getBucketConfig().getBucket());
   }
 
   @Override
   public void init(LogFeederProps logFeederProps) {
     SecretKeyPair keyPair = getSecretKeyPair(logFeederProps, s3OutputConfig);
-    // TODO: load configuration from file
-    Configuration conf = LogFeederHDFSUtil.buildHdfsConfiguration(s3OutputConfig.getBucket(), "s3a");
+    Configuration conf = LogFeederHDFSUtil.buildHdfsConfiguration(s3OutputConfig.getBucketConfig().getBucket(), "s3a");
     conf.set("fs.s3a.access.key", new String(keyPair.getAccessKey()));
     conf.set("fs.s3a.secret.key", new String(keyPair.getSecretKey()));
     conf.set("fs.s3a.aws.credentials.provider", SimpleAWSCredentialsProvider.NAME);
@@ -62,17 +61,12 @@ public class HDFSS3UploadClient extends AbstractCloudClient implements UploadCli
   }
 
   @Override
-  public void upload(String source, String target, String basePath) throws Exception {
+  public void upload(String source, String target) throws Exception {
     LogFeederHDFSUtil.copyFromLocal(source, target, this.fs, true, true, null);
   }
 
   @Override
-  public S3OutputConfig getOutputConfig() {
-    return this.s3OutputConfig;
-  }
-
-  @Override
   public void close() throws IOException {
-    IOUtils.closeQuietly(fs);
+    LogFeederHDFSUtil.closeFileSystem(fs);
   }
 }

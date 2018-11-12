@@ -82,11 +82,11 @@ public class CloudStorageUploader extends Thread {
           logger.debug("Not found any files to upload.");
         } else {
           for (File file : filesToUpload) {
-            String basePath = uploadClient.getOutputConfig().getOutputBasePath();
-            String outputPath = String.format("%s/%s/%s/%s", clusterName, hostName, file.getParentFile().getName(), file.getName())
+            String basePath = logFeederProps.getCloudBasePath();
+            String outputPath = String.format("%s/%s/%s/%s/%s", basePath, clusterName, hostName, file.getParentFile().getName(), file.getName())
               .replaceAll("//", "/");
             logger.info("Upload will start: input: {}, output: {}", file.getAbsolutePath(), outputPath);
-            uploadClient.upload(file.getAbsolutePath(), outputPath, basePath);
+            uploadClient.upload(file.getAbsolutePath(), outputPath);
           }
         }
       } else {

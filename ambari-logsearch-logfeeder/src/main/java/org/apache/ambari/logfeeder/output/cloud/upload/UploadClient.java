@@ -19,15 +19,13 @@
 package org.apache.ambari.logfeeder.output.cloud.upload;
 
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
-import org.apache.ambari.logfeeder.conf.output.OutputConfig;
 
 import java.io.Closeable;
 
 /**
  * Client that is responsible to upload files to cloud storage implementation.
- * @param <CONF_TYPE> specific cloud configuration type
  */
-public interface UploadClient<CONF_TYPE extends OutputConfig> extends Closeable {
+public interface UploadClient extends Closeable {
 
   /**
    * Initialize the client
@@ -39,14 +37,7 @@ public interface UploadClient<CONF_TYPE extends OutputConfig> extends Closeable 
    * Upload source file to cloud storage location
    * @param source file that will be uploaded
    * @param target file key/output on cloud storage
-   * @param basePath act as a base directory or can be a bucket as well
    * @throws Exception error during upload
    */
-  void upload(String source, String target, String basePath) throws Exception;
-
-  /**
-   * Obtain cloud specific output configuration
-   * @return output configuration holder
-   */
-  CONF_TYPE getOutputConfig();
+  void upload(String source, String target) throws Exception;
 }

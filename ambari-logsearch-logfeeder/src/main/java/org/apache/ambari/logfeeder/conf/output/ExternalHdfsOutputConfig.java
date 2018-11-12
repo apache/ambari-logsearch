@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class HdfsOutputConfig implements OutputConfig {
+public class ExternalHdfsOutputConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.HDFS_HOST,
@@ -62,16 +62,6 @@ public class HdfsOutputConfig implements OutputConfig {
   )
   @Value("${"+ LogFeederConstants.HDFS_USER + ":}")
   private String hdfsUser;
-
-  @LogSearchPropertyDescription(
-    name = LogFeederConstants.HDFS_OUTPUT_BASE_DIR,
-    description = "HDFS base directory for uploading files",
-    examples = {"/my/path/on/hdfs"},
-    defaultValue = "/user/hdfs",
-    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
-  )
-  @Value("${"+ LogFeederConstants.HDFS_OUTPUT_BASE_DIR + ":/user/hdfs}")
-  private String hdfsOutputDir;
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.HDFS_KERBEROS,
@@ -115,24 +105,11 @@ public class HdfsOutputConfig implements OutputConfig {
     this.hdfsUser = hdfsUser;
   }
 
-  public String getHdfsOutputDir() {
-    return hdfsOutputDir;
-  }
-
-  public void setHdfsOutputDir(String hdfsOutputDir) {
-    this.hdfsOutputDir = hdfsOutputDir;
-  }
-
   public boolean isSecure() {
     return secure;
   }
 
   public void setSecure(boolean secure) {
     this.secure = secure;
-  }
-
-  @Override
-  public String getOutputBasePath() {
-    return this.hdfsOutputDir;
   }
 }

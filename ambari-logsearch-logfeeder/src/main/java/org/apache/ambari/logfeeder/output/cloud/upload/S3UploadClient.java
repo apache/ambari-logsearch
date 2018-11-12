@@ -37,7 +37,7 @@ import java.io.File;
 /**
  * S3 specific upload client
  */
-public class S3UploadClient extends AbstractCloudClient implements UploadClient<S3OutputConfig> {
+public class S3UploadClient extends AbstractS3CloudClient implements UploadClient {
 
   private static final Logger logger = LogManager.getLogger(S3UploadClient.class);
 
@@ -61,21 +61,17 @@ public class S3UploadClient extends AbstractCloudClient implements UploadClient<
       .withEndpointConfiguration(endpointConf)
       .withPathStyleAccessEnabled(s3OutputConfig.isPathStyleAccess())
       .build();
-    bootstrapBucket(s3OutputConfig.getOutputBasePath(), s3OutputConfig.getBucketConfig());
+    bootstrapBucket(s3OutputConfig.getBucketConfig().getBucket(), s3OutputConfig.getBucketConfig());
   }
 
   @Override
-  public void upload(String source, String target, String bucket) throws Exception {
+  public void upload(String source, String target) throws Exception {
+    String bucket = this.s3OutputConfig.getBucketConfig().getBucket();
     File fileToUpload = new File(source);
     logger.info("Starting S3 upload {} -> bucket: {}, key: {}", source, bucket, target);
     s3Client.putObject(bucket, target, new File(source));
     s3Client.setObjectAcl(bucket, target, acl);
     FileUtils.delete(fileToUpload);
-  }
-
-  @Override
-  public S3OutputConfig getOutputConfig() {
-    return this.s3OutputConfig;
   }
 
   @Override

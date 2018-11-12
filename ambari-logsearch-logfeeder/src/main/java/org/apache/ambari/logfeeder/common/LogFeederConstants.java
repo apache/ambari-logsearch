@@ -113,9 +113,13 @@ public class LogFeederConstants {
   public static final String CLOUD_STORAGE_DESTINATION = "logfeeder.cloud.storage.destination";
   public static final String CLOUD_STORAGE_UPLOAD_ON_SHUTDOWN = "logfeeder.cloud.storage.upload.on.shutdown";
   public static final String CLOUD_STORAGE_UPLOADER_INTERVAL_SECONDS = "logfeeder.cloud.storage.uploader.interval.seconds";
+  public static final String CLOUD_STORAGE_BUCKET = "logfeeder.cloud.storage.bucket";
   public static final String CLOUD_STORAGE_BUCKET_BOOTSTRAP = "logfeeder.cloud.storage.bucket.bootstrap";
   public static final String CLOUD_STORAGE_USE_HDFS_CLIENT = "logfeeder.cloud.storage.use.hdfs.client";
+  public static final String CLOUD_STORAGE_CUSTOM_FS = "logfeeder.cloud.storage.custom.fs";
+  public static final String CLOUD_STORAGE_BASE_PATH = "logfeeder.cloud.storage.base.path";
 
+  public static final String CLOUD_ROLLOVER_ARCHIVE_LOCATION = "logfeeder.cloud.rollover.archive.base.dir";
   public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_MIN = "logfeeder.cloud.rollover.threshold.min";
   public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE = "logfeeder.cloud.rollover.threshold.size";
   public static final String CLOUD_ROLLOVER_USE_GZIP = "logfeeder.cloud.rollover.use.gzip";
@@ -126,14 +130,12 @@ public class LogFeederConstants {
   public static final String HDFS_HOST = "logfeeder.hdfs.host";
   public static final String HDFS_PORT = "logfeeder.hdfs.port";
   public static final String HDFS_USER = "logfeeder.hdfs.user";
-  public static final String HDFS_OUTPUT_BASE_DIR = "logfeeder.hdfs.output.base.dir";
   public static final String HDFS_FILE_PERMISSIONS = "logfeeder.hdfs.file.permissions";
   public static final String HDFS_KERBEROS = "logfeeder.hdfs.kerberos";
 
   public static final String S3_ENDPOINT = "logfeeder.s3.endpoint";
   public static final String S3_ENDPOINT_DEFAULT = "https://s3.amazonaws.com";
   public static final String S3_REGION = "logfeeder.s3.region";
-  public static final String S3_BUCKET = "logfeeder.s3.bucket";
   public static final String S3_OBJECT_ACL = "logfeeder.s3.object.acl";
   public static final String S3_PATH_STYLE_ACCESS = "logfeeder.s3.path.style.access";
   public static final String S3_MULTIOBJECT_DELETE_ENABLE = "logfeeder.s3.multiobject.delete.enable";

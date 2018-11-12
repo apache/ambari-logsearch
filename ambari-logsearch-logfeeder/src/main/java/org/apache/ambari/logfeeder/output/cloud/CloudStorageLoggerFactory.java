@@ -45,16 +45,17 @@ public class CloudStorageLoggerFactory {
 
   private static final String ACTIVE_FOLDER = "active";
   private static final String ARCHIVED_FOLDER = "archived";
-  private static final String DATE_PATTERN_SUFFIX_GZ = "-%d{yyyy-MM-dd-hh-mm-ss-SSS}.log.gz";
-  private static final String DATE_PATTERN_SUFFIX = "-%d{yyyy-MM-dd-hh-mm-ss-SSS}.log";
+  private static final String DATE_PATTERN_SUFFIX_GZ = "-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log.gz";
+  private static final String DATE_PATTERN_SUFFIX = "-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log";
 
   public static Logger createLogger(Input input, LoggerContext loggerContext, LogFeederProps logFeederProps) {
     String type = input.getLogType().replace(LogFeederConstants.CLOUD_PREFIX, "");
     String uniqueThreadName = input.getThread().getName();
     Configuration config = loggerContext.getConfiguration();
     String destination = logFeederProps.getCloudStorageDestination().getText();
-    String activeLogDir = Paths.get(logFeederProps.getTmpDir(), ACTIVE_FOLDER, type).toFile().getAbsolutePath();
-    String archiveLogDir = Paths.get(logFeederProps.getTmpDir(), destination, ARCHIVED_FOLDER, type).toFile().getAbsolutePath();
+    String baseDir = logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir();
+    String activeLogDir = Paths.get(baseDir, destination, ACTIVE_FOLDER, type).toFile().getAbsolutePath();
+    String archiveLogDir = Paths.get(baseDir, destination, ARCHIVED_FOLDER, type).toFile().getAbsolutePath();
 
     boolean useGzip = logFeederProps.getRolloverConfig().isUseGzip();
     String archiveFilePattern = useGzip ? DATE_PATTERN_SUFFIX_GZ : DATE_PATTERN_SUFFIX;

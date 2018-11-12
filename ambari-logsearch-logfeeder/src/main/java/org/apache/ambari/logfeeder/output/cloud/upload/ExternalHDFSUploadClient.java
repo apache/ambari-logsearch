@@ -19,43 +19,55 @@
 package org.apache.ambari.logfeeder.output.cloud.upload;
 
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
+import org.apache.ambari.logfeeder.conf.output.ExternalHdfsOutputConfig;
 import org.apache.ambari.logfeeder.util.LogFeederHDFSUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-
 /**
- * HDFS client that uses core-site.xml file from the classpath to load the configuration.
- * Can connect to S3 / GCS / WASB / ADLS if the core-site.xml is configured to use one of those cloud storages
+ * HDFS (on-prem) specific uploader client that can work with an external HDFS.
  */
-public class HDFSUploadClient implements UploadClient {
+public class ExternalHDFSUploadClient implements UploadClient {
 
-  private static final Logger logger = LogManager.getLogger(HDFSUploadClient.class);
+  private static final Logger logger = LogManager.getLogger(ExternalHDFSUploadClient.class);
 
+  private final ExternalHdfsOutputConfig hdfsOutputConfig;
+  private final FsPermission fsPermission;
   private FileSystem fs;
+
+  public ExternalHDFSUploadClient(ExternalHdfsOutputConfig hdfsOutputConfig) {
+    this.hdfsOutputConfig = hdfsOutputConfig;
+    this.fsPermission = new FsPermission(hdfsOutputConfig.getHdfsFilePermissions());
+  }
 
   @Override
   public void init(LogFeederProps logFeederProps) {
-    logger.info("Initialize HDFS client (cloud mode), using core-site.xml from the classpath.");
-    Configuration configuration = new Configuration();
-    if (StringUtils.isNotBlank(logFeederProps.getCustomFs())) {
-      configuration.set("fs.defaultFS", logFeederProps.getCustomFs());
+    logger.info("Initialize external HDFS client ...");
+    if (StringUtils.isNotBlank(hdfsOutputConfig.getHdfsUser())) {
+      logger.info("Using HADOOP_USER_NAME: {}", hdfsOutputConfig.getHdfsUser());
+      System.setProperty("HADOOP_USER_NAME", hdfsOutputConfig.getHdfsUser());
     }
-    this.fs = LogFeederHDFSUtil.buildFileSystem(configuration);
+    this.fs = LogFeederHDFSUtil.buildFileSystem(
+      hdfsOutputConfig.getHdfsHost(),
+      String.valueOf(hdfsOutputConfig.getHdfsPort()));
+    if (logFeederProps.getHdfsOutputConfig().isSecure()) {
+      logger.info("Kerberos is enabled for external HDFS.");
+      Configuration conf = fs.getConf();
+      conf.set("hadoop.security.authentication", "kerberos");
+    }
   }
 
   @Override
   public void upload(String source, String target) throws Exception {
-    LogFeederHDFSUtil.copyFromLocal(source, target, fs, true, true, null);
+    LogFeederHDFSUtil.copyFromLocal(source, target, fs, true, true, fsPermission);
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     LogFeederHDFSUtil.closeFileSystem(fs);
   }
-
 }

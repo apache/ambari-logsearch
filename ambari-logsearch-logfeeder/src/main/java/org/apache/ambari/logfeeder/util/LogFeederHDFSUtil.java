@@ -55,12 +55,24 @@ public class LogFeederHDFSUtil {
   }
 
   public static FileSystem buildFileSystem(Configuration configuration) {
-    try {
-      return FileSystem.get(configuration);
-    } catch (Exception e) {
-      logger.error("Exception during buildFileSystem call:", e);
+    return buildFileSystem(configuration, 5);
+  }
+
+  public static FileSystem buildFileSystem(Configuration configuration, int sleepSeconds) {
+    while (true) {
+      try {
+        return FileSystem.get(configuration);
+      } catch (Exception e) {
+        logger.error("Exception during buildFileSystem call:", e);
+      }
+      try {
+        Thread.sleep(1000 * sleepSeconds);
+      } catch (InterruptedException e) {
+        logger.error("Error during thread sleep (filesystem bootstrap)", e);
+        Thread.currentThread().interrupt();
+        return null;
+      }
     }
-    return null;
   }
 
   public static Configuration buildHdfsConfiguration(String hdfsHost, String hdfsPort, String scheme) {
