@@ -32,6 +32,7 @@ import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
 
 import { ModalDialogComponent } from './modal-dialog.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ModalDialogComponent', () => {
   let component: ModalDialogComponent;
@@ -41,6 +42,7 @@ describe('ModalDialogComponent', () => {
     TestBed.configureTestingModule(getCommonTestingBedConfiguration({
       imports: [
         ...TranslationModules,
+        RouterTestingModule,
         StoreModule.provideStore({
           appState,
           auth: auth.reducer

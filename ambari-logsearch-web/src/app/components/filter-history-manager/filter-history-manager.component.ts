@@ -70,7 +70,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
     this.componentsLabels$ // this is just to recalculate the labels when the components arrived
   ).map(result => this.mapHistoryItemsToHistoryItemLabels(result));
   activeHistoryListItems$: Observable<ListItem[]> = Observable.combineLatest(
-    this.activeHistoryItemLabels$.map(this.mapHistoryItemLabelsToListItems),
+    this.activeHistoryItemLabels$.map((items) => this.mapHistoryItemLabelsToListItems(items, this.labelSeparator)),
     this.store.select(selectActiveFilterHistoryChangeIndex)
   ).map(([listItems, changeIndex]: [ListItem[], number]): ListItem[] => listItems.map((item, index) => {
     item.cssClass = index === changeIndex ? 'active' : (index === 0 ? 'initial' : '');
@@ -147,7 +147,9 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
   }
 
   navigateToFilterUrlParamChangeItem = (item: FilterUrlParamChange) => {
-    this.router.navigateByUrl(item.currentPath);
+    if (item) {
+      this.router.navigateByUrl(item.currentPath);
+    }
   }
 
   undo(item?: FilterUrlParamChange): void {
@@ -164,7 +166,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
     ).first().subscribe(this.navigateToFilterUrlParamChangeItem);
   }
 
-  private _getValueLabel(paramName, value) {
+  getValueLabel(paramName, value) {
     switch (paramName) {
       case 'level':
       case 'levels': {
@@ -191,7 +193,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
 
     const actionLabelTranslateKey: UrlParamsDifferenceType = difference.to ? UrlParamsDifferenceType.CHANGE : UrlParamsDifferenceType.CLEAR;
 
-    const valueLabel = difference.to ? this._getValueLabel(fieldLabelTranslateKey, difference.to) : '';
+    const valueLabel = difference.to ? this.getValueLabel(fieldLabelTranslateKey, difference.to) : '';
 
     return this.translateService.instant(`filterHistory.${urlParamsActionType[difference.name]}.changeLabel.${actionLabelTranslateKey}`, {
       fieldLabel,
@@ -268,7 +270,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
       const queryLabel = this.translateService.instant('filterHistory.query.changeLabel.add', {
         queryType: this.translateService.instant(`filterHistory.query.type.${addQuery.isExclude ? 'exclude' : 'include'}`),
         fieldLabel: this.activeQueryFieldsLocalCopy$.getValue()[addQuery.name] || addQuery.name,
-        valueLabel: this._getValueLabel(addQuery.name, addQuery.value)
+        valueLabel: this.getValueLabel(addQuery.name, addQuery.value)
       });
       return queryLabel ? [...labels, queryLabel] : labels;
     }, []) : [];
@@ -277,7 +279,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
       const queryLabel = this.translateService.instant('filterHistory.query.changeLabel.remove', {
         queryType: this.translateService.instant(`filterHistory.query.type.${removedQuery.isExclude ? 'exclude' : 'include'}`),
         fieldLabel: this.activeQueryFieldsLocalCopy$.getValue()[removedQuery.name] || removedQuery.name,
-        valueLabel: this._getValueLabel(removedQuery.name, removedQuery.value)
+        valueLabel: this.getValueLabel(removedQuery.name, removedQuery.value)
       });
       return queryLabel ? [...labels, queryLabel] : labels;
     }, []) : [];
@@ -365,14 +367,14 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
   mapHistoryItemsToHistoryItemLabels(
     [items, activeLogsType, components]: [FilterUrlParamChange[], LogsType, {[key: string]: string}]
   ): {[key: string]: any}[] {
-    return items.map((item, index): {[key: string]: any} => this.getHistoryItemChangeLabels(item, activeLogsType, index === 0));
+    return (items || []).map((item, index): {[key: string]: any} => this.getHistoryItemChangeLabels(item, activeLogsType, index === 0));
   }
 
-  mapHistoryItemLabelsToListItems(historyLabels) {
+  mapHistoryItemLabelsToListItems(historyLabels, labelSeparator = this.labelSeparator) {
     return historyLabels.map((historyLabel) => {
       return {
         value: historyLabel.url,
-        label: Object.keys(historyLabel.labels).map((url) => historyLabel.labels[url]).join(this.labelSeparator)
+        label: Object.keys(historyLabel.labels).map((url) => historyLabel.labels[url]).join(labelSeparator)
       };
     });
   }

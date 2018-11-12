@@ -17,11 +17,9 @@
  */
 
 import {HomogeneousObject} from '@app/classes/object';
-import { LogsType } from '../string';
 
 export interface LogTypeTab {
   id: string;
-  logsType?: LogsType;
   isActive?: boolean;
   isCloseable?: boolean;
   label: string;
@@ -32,7 +30,6 @@ export interface LogTypeTab {
 export const initialTabs: LogTypeTab[] = [
   {
     id: 'serviceLogs',
-    logsType: 'serviceLogs',
     isActive: true,
     label: 'common.serviceLogs',
     activeFilters: null,
@@ -43,7 +40,6 @@ export const initialTabs: LogTypeTab[] = [
   },
   {
     id: 'auditLogs',
-    logsType: 'auditLogs',
     isActive: false,
     label: 'common.auditLogs',
     activeFilters: null,

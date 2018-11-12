@@ -29,7 +29,6 @@ import { NgObjectPipesModule } from 'angular-pipes';
 import { TranslateService as AppTranslateService } from '@app/services/translate.service';
 
 import { NotificationService } from './services/notification.service';
-import { NavigationService } from './services/navigation.service';
 
 import { CanDeactivateGuardService } from './services/can-deactivate-guard.service';
 import { DisableControlDirective } from './directives/disable-control.directive';
@@ -73,8 +72,7 @@ import { CircleProgressBarComponent } from './components/circle-progress-bar/cir
     Title,
     NotificationService,
     CanDeactivateGuardService,
-    Angular2NotificationsService,
-    NavigationService
+    Angular2NotificationsService
   ],
   exports: [
     DisableControlDirective,

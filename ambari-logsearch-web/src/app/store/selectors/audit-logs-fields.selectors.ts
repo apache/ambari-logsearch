@@ -25,7 +25,7 @@ export const selectAuditLogsFieldState = (state: AppStore): LogField[] => state.
 
 export const selectDefaultAuditLogsFields = createSelector(
   selectAuditLogsFieldState,
-  (root) => root[ResponseRootProperties.DEFAULTS]
+  (root) => root && root[ResponseRootProperties.DEFAULTS]
 );
 
 export const createAuditLogsFieldComponentFieldsSelectorByComponentName = (componentName: string): Selector<AppStore, LogField[]> => (

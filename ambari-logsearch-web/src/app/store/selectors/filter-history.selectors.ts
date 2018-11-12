@@ -29,29 +29,35 @@ export const selectFilterHistoryState = (state: AppStore): fromFilterHistoryRedu
 export const selectActiveFilterHistory = createSelector(
   selectFilterHistoryState,
   fromAppStateSelector.selectActiveLogsType,
-  (filterHistoryState, activeLogsType): fromFilterHistoryReducers.LogTypeFilterHistory => filterHistoryState[activeLogsType]
+  (filterHistoryState, activeLogsType): fromFilterHistoryReducers.LogTypeFilterHistory => (
+    filterHistoryState && filterHistoryState[activeLogsType]
+  )
 );
 
 export const selectActiveFilterHistoryChangeIndex = createSelector(
   selectActiveFilterHistory,
-  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): number => logTypeFilterHistory.currentChangeIndex
+  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): number => (
+    logTypeFilterHistory && logTypeFilterHistory.currentChangeIndex
+  )
 );
 
 export const selectActiveFilterHistoryChanges = createSelector(
   selectActiveFilterHistory,
-  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): FilterUrlParamChange[] => logTypeFilterHistory.changes
+  (logTypeFilterHistory: fromFilterHistoryReducers.LogTypeFilterHistory): FilterUrlParamChange[] => (
+    logTypeFilterHistory && logTypeFilterHistory.changes
+  )
 );
 
 export const selectActiveFilterHistoryChangesUndoItems = createSelector(
   selectActiveFilterHistoryChanges,
   selectActiveFilterHistoryChangeIndex,
-  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items.slice(0, changeIndex)
+  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items && items.slice(0, changeIndex)
 );
 
 export const selectActiveFilterHistoryChangesRedoItems = createSelector(
   selectActiveFilterHistoryChanges,
   selectActiveFilterHistoryChangeIndex,
-  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items.slice(changeIndex + 1)
+  (items: FilterUrlParamChange[], changeIndex: number): FilterUrlParamChange[] => items && items.slice(changeIndex + 1)
 );
 
 export const createFilterHistorySelectorById = (id: string): Selector<AppStore, fromFilterHistoryReducers.LogTypeFilterHistory> => (

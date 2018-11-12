@@ -38,7 +38,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { NavigationService } from '@modules/shared/services/navigation.service';
 
 @Component({
   selector: 'logs-container',
@@ -97,8 +96,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     private serviceLogsHistogramStorage: ServiceLogsHistogramDataService,
     private auditLogsGraphStorage: AuditLogsGraphDataService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private navigationService: NavigationService
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -267,7 +265,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
         filters, this.logsContainerService.activeLogsType
       );
       this.paramsSyncStart(); // turn on the 'sync in progress' flag
-      this.navigationService.navigate([params], { relativeTo: this.activatedRoute })
+      this.router.navigate([params], { relativeTo: this.activatedRoute })
         .then(this.paramsSyncStop, this.paramsSyncStop) // turn off the 'sync in progress' flag
         .catch(this.paramsSyncStop); // turn off the 'sync in progress' flag
     });
@@ -387,7 +385,7 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     const activateNewTab: boolean = activeTab.isActive;
     this.tabsStorage.deleteObjectInstance(activeTab);
     if (activateNewTab && newActiveTab) {
-      this.navigationService.navigate(['/logs', ...this.logsFilteringUtilsService.getNavigationForTab(newActiveTab)]);
+      this.router.navigate(['/logs', ...this.logsFilteringUtilsService.getNavigationForTab(newActiveTab)]);
     }
   }
   //

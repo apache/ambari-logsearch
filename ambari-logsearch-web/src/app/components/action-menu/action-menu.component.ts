@@ -18,7 +18,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -28,7 +28,6 @@ import { UserSettingsService } from '@app/services/user-settings.service';
 import { ListItem } from '@app/classes/list-item';
 import { ClustersService } from '@app/services/storage/clusters.service';
 import { UtilsService } from '@app/services/utils.service';
-import { NavigationService } from '@app/modules/shared/services/navigation.service';
 import { Subject } from 'rxjs/Subject';
 
 @Component({
@@ -66,9 +65,9 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
     private logsContainerService: LogsContainerService,
     private settings: UserSettingsService,
     private route: ActivatedRoute,
+    private router: Router,
     private clustersService: ClustersService,
-    private utilsService: UtilsService,
-    private navigationService: NavigationService
+    private utilsService: UtilsService
   ) {
   }
 
@@ -99,7 +98,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   openLogIndexFilter(): void {
-    this.navigationService.navigate(['.'], {
+    this.router.navigate(['.'], {
       queryParamsHandling: 'merge',
       queryParams: {logIndexFilterSettings: 'show'},
       relativeTo: this.route.root.firstChild
@@ -109,7 +108,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   closeLogIndexFilter(): void {
     this.route.queryParams.first().subscribe((queryParams) => {
       const {logIndexFilterSettings, ...params} = queryParams;
-      this.navigationService.navigate(['.'], {
+      this.router.navigate(['.'], {
         queryParams: params,
         relativeTo: this.route.root.firstChild
       });

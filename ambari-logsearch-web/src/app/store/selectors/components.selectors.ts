@@ -25,7 +25,7 @@ export const selectComponentsList = (state: AppStore): NodeItem[] => state.compo
 
 export const selectComponentsLabels = createSelector(
   selectComponentsList,
-  (components: NodeItem[]) => components.reduce((labels: {[key: string]: string}, component: NodeItem) => (
+  (components: NodeItem[]) => (components || []).reduce((labels: {[key: string]: string}, component: NodeItem) => (
     {
       ...labels,
       [component.name]: component.label || component.name
