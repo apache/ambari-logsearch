@@ -16,32 +16,19 @@
  * limitations under the License.
  */
 
-import { createSelector } from 'reselect';
+import { createSelector, Selector } from 'reselect';
 
-import * as fromAuth from '@app/store/reducers/auth.reducers';
 import { AppStore } from '@app/classes/models/store';
+import { NodeItem } from '@app/classes/models/node-item';
 
-export const selectAuthState = (state: AppStore): fromAuth.State => state.auth;
+export const selectComponentsList = (state: AppStore): NodeItem[] => state.components;
 
-export const selectAuthStatus = createSelector( selectAuthState, fromAuth.getStatus );
-export const selectAuthMessage = createSelector( selectAuthState, fromAuth.getMessage );
-
-export const isAuthorizedSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isAuthorized
-);
-
-export const isLoginInProgressSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isLoginInProgress
-);
-
-export const isLoggedOutSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isLoggedOut
-);
-
-export const isCheckingAuthStatusInProgressSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isCheckingAuthInProgress
+export const selectComponentsLabels = createSelector(
+  selectComponentsList,
+  (components: NodeItem[]) => (components || []).reduce((labels: {[key: string]: string}, component: NodeItem) => (
+    {
+      ...labels,
+      [component.name]: component.label || component.name
+    }
+  ), {})
 );

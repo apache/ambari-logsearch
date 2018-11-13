@@ -23,6 +23,7 @@ import {
 import {Subscription} from 'rxjs/Subscription';
 import {ListItem} from '@app/classes/list-item';
 import {ComponentGeneratorService} from '@app/services/component-generator.service';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'ul[data-component="dropdown-list"]',
@@ -77,7 +78,7 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
 
   private filterRegExp: RegExp;
 
-  private subscriptions: Subscription[] = [];
+  private destroyed$ = new Subject();
 
   instanceId: string;
 
@@ -95,13 +96,11 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
     if (this.items.some((item: ListItem) => item.isChecked)) {
       this.selectedItemChange.emit(this.items);
     }
-    this.subscriptions.push(
-      this.selectedItemChange.subscribe(this.separateSelections)
-    );
+    this.selectedItemChange.takeUntil(this.destroyed$).subscribe(this.separateSelections)
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    this.destroyed$.next(true);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -186,9 +185,6 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
   unSelectAll() {
     this.items.forEach((item: ListItem) => {
       item.isChecked = false;
-      if (item.onSelect) {
-        item.onSelect(...this.actionArguments);
-      }
     });
     this.selectedItemChange.emit(this.items);
   }

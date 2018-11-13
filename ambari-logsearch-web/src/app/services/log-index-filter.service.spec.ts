@@ -28,12 +28,14 @@ import {NotificationService} from '@modules/shared/services/notification.service
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 
 import { LogIndexFilterService } from './log-index-filter.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('LogIndexFilterService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule(getCommonTestingBedConfiguration({
       imports: [
-        ...TranslationModules
+        ...TranslationModules,
+        RouterTestingModule,
       ],
       providers: [
         AppStateService,

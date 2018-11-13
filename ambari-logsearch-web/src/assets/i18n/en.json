@@ -7,6 +7,7 @@
   "common.name": "Name",
   "common.value": "Value",
   "common.settings": "Settings",
+  "common.loading": "Loading...",
 
   "common.form.errors.required": "This field is required",
 
@@ -100,6 +101,85 @@
   "filter.toggleTo.include": "Toggle to include",
 
   "filter.timeRange.error.tooShort": "The selected time range is too short.",
+
+  "filterHistory": {
+    "initialState": "Initial filter values",
+    "paramNames": {
+      "clusters": "Cluster",
+      "timeRange": "Time Range",
+      "components": "Component",
+      "levels": "Level",
+      "hosts": "Host",
+      "auditLogsSorting": "Sort by",
+      "serviceLogsSorting": "Sort by",
+      "pageSize": "Result Per Page",
+      "page": "Page Number",
+      "query": "Query",
+      "users": "User",
+      "sortingType": "Sorting Direction",
+      "sortingKey": "Sorting Field"
+    },
+    "single": {
+      "actionLabel": {
+        "change": "changed"
+      },
+      "changeLabel": {
+        "change": "{{fieldLabel}}: {{valueLabel}}"
+      }
+    },
+    "multiple": {
+      "actionLabel": {
+        "add": "selected",
+        "change": "changed",
+        "remove": "unselected",
+        "clear": "selection cleared"
+      },
+      "changeLabel": {
+        "add": "{{fieldLabel}}: {{valueLabel}}",
+        "change": "{{fieldLabel}}: {{valueLabel}}",
+        "remove": "{{fieldLabel}}: {{valueLabel}}",
+        "clear": "{{fieldLabel}}: {{valueLabel}}"
+      }
+    },
+    "query": {
+      "type": {
+        "include": "include",
+        "exclude": "exclude"
+      },
+      "changeLabel": {
+        "add": "{{queryType}} query added: {{fieldLabel}} - {{valueLabel}}",
+        "remove": "{{queryType}} query removed: {{fieldLabel}} - {{valueLabel}}",
+        "clear": "Query cleared"
+      }
+    },
+    "timeRange": {
+      "type": {
+        "last": "last",
+        "past": "previous",
+        "current": "this",
+        "today": "today",
+        "custom": ""
+      },
+      "unit": {
+        "d": ["day", "days"],
+        "M": ["month", "months"],
+        "y": ["year", "years"],
+        "w": ["week", "weeks"],
+        "m": ["minute", "minutes"],
+        "h": ["hour", "hours"]
+      },
+      "valueLabel": {
+        "last": "{{typeLabel}} {{value}} {{unitLabel}}",
+        "past": "{{typeLabel}} {{value}} {{unitLabel}}",
+        "yesterday": "yesterday",
+        "current": "{{typeLabel}} {{value}} {{unitLabel}}",
+        "today": "today",
+        "custom": "`{{valueStart}} - {{valueEnd}}`"
+      },
+      "changeLabel": "{{fieldLabel}}: {{valueLabel}}",
+      "dateTimeFormat": "YYYY-MM-DD hh:mm A zz"
+    }
+  },
 
   "levels.fatal": "Fatal",
   "levels.error": "Error",
@@ -279,6 +359,20 @@
   "dataAvaibilityState.clustersDataState.label": "Loading clusters",
   "dataAvaibilityState.hostsDataState.label": "Loading hosts",
   "dataAvaibilityState.componentsDataState.label": "Loading components",
-  "dataAvaibilityState.hasError.message": "We were not able to load the data. Please check your internet connection and reload the page!"
+  "dataAvaibilityState.hasError.message": "We were not able to load the data. Please check your internet connection and reload the page!",
+
+  "urlParamsLabels": {
+    "clusters": "Clusters",
+    "timeRange": "Time range",
+    "components": "Components",
+    "levels": "Levels",
+    "hosts": "Hosts",
+    "auditLogsSorting": "Sort by",
+    "serviceLogsSorting": "Sort by",
+    "pageSize": "# of logs",
+    "page": "Page",
+    "query": "Query",
+    "users": "Users"
+  }
 
 }

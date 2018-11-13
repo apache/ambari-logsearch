@@ -16,32 +16,16 @@
  * limitations under the License.
  */
 
-import { createSelector } from 'reselect';
-
-import * as fromAuth from '@app/store/reducers/auth.reducers';
+import { createSelector, Selector } from 'reselect';
 import { AppStore } from '@app/classes/models/store';
+import { LogField } from '@app/classes/object';
 
-export const selectAuthState = (state: AppStore): fromAuth.State => state.auth;
+export const selectServiceLogsFieldState = (state: AppStore): LogField[] => state.serviceLogsFields;
 
-export const selectAuthStatus = createSelector( selectAuthState, fromAuth.getStatus );
-export const selectAuthMessage = createSelector( selectAuthState, fromAuth.getMessage );
-
-export const isAuthorizedSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isAuthorized
-);
-
-export const isLoginInProgressSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isLoginInProgress
-);
-
-export const isLoggedOutSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isLoggedOut
-);
-
-export const isCheckingAuthStatusInProgressSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isCheckingAuthInProgress
+export const createServiceLogsFieldLabelSelectorByFieldName = (fieldName: string): Selector<AppStore, string> => createSelector(
+  selectServiceLogsFieldState,
+  (fields: LogField[]): string => {
+    const field: LogField = fields.find((nextField: LogField) => nextField.name === fieldName);
+    return field ? field.label : fieldName;
+  }
 );

@@ -29,7 +29,9 @@ import { notificationIcons } from '@modules/shared/services/notification.service
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { AuthorizationStatuses } from '@app/store/reducers/auth.reducers';
-import { isAuthorizedSelector, authStatusSelector, isCheckingAuthStatusInProgressSelector } from '@app/store/selectors/auth.selectors';
+import { isAuthorizedSelector, selectAuthStatus, isCheckingAuthStatusInProgressSelector } from '@app/store/selectors/auth.selectors';
+
+import { HttpClientService } from '@app/services/http-client.service';
 
 @Component({
   selector: 'app-root',
@@ -44,7 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
   authorizationStatuses = AuthorizationStatuses;
 
   isAuthorized$: Observable<boolean> = this.store.select(isAuthorizedSelector);
-  authorizationStatus$: Observable<AuthorizationStatuses> = this.store.select(authStatusSelector);
+  authorizationStatus$: Observable<AuthorizationStatuses> = this.store.select(selectAuthStatus);
   isCheckingAuthStatusInProgress$: Observable<boolean> = this.store.select(isCheckingAuthStatusInProgressSelector);
   authorizationCode$: Observable<number> = this.appState.getParameter('authorizationCode');
   isBaseDataAvailable$: Observable<boolean> = this.appState.getParameter('baseDataSetState')
@@ -66,6 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private appState: AppStateService,
+    public httpClient: HttpClientService,
     private store: Store<AppStore>
   ) {}
 

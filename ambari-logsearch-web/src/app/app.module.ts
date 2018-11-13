@@ -59,7 +59,6 @@ import {ServiceLogsFieldsService} from '@app/services/storage/service-logs-field
 import {AuditLogsFieldsService} from '@app/services/storage/audit-logs-fields.service';
 import {TabsService} from '@app/services/storage/tabs.service';
 import {AuthService} from '@app/services/auth.service';
-import {HistoryManagerService} from '@app/services/history-manager.service';
 import {reducer} from '@app/services/storage/reducers.service';
 
 import {AppComponent} from '@app/components/app.component';
@@ -109,6 +108,7 @@ import {ClusterSelectionService} from '@app/services/storage/cluster-selection.s
 import {TranslateService as AppTranslateService} from '@app/services/translate.service';
 import {RoutingUtilsService} from '@app/services/routing-utils.service';
 import {TabGuard} from '@app/services/tab.guard';
+import {FilterHistoryIndexGuard} from '@app/services/filter-history.guard';
 import {LogsBreadcrumbsResolverService} from '@app/services/logs-breadcrumbs-resolver.service';
 import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.service';
 import {LogsStateService} from '@app/services/storage/logs-state.service';
@@ -116,6 +116,7 @@ import {LoginScreenGuardService} from '@app/services/login-screen-guard.service'
 
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { FilterHistoryManagerComponent } from './components/filter-history-manager/filter-history-manager.component';
 
 @NgModule({
   declarations: [
@@ -158,7 +159,8 @@ import { NotificationEffects } from '@app/store/effects/notification.effects';
     TimerSecondsPipe,
     ComponentLabelPipe,
     BreadcrumbsComponent,
-    ClusterFilterComponent
+    ClusterFilterComponent,
+    FilterHistoryManagerComponent
   ],
   imports: [
     BrowserModule,
@@ -217,10 +219,10 @@ import { NotificationEffects } from '@app/store/effects/notification.effects';
     AuditLogsFieldsService,
     TabsService,
     TabGuard,
+    FilterHistoryIndexGuard,
     LogsBreadcrumbsResolverService,
     AuthService,
     AuthGuardService,
-    HistoryManagerService,
     ClusterSelectionService,
     LogsFilteringUtilsService,
     LogsStateService,

@@ -22,14 +22,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
 
 import { LogsContainerService } from '@app/services/logs-container.service';
-import { HistoryManagerService } from '@app/services/history-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { ListItem } from '@app/classes/list-item';
 import { ClustersService } from '@app/services/storage/clusters.service';
 import { UtilsService } from '@app/services/utils.service';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'action-menu',
@@ -60,11 +59,10 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   selectedClusterName$: BehaviorSubject<string> = new BehaviorSubject('');
 
-  subscriptions: Subscription[] = [];
+  destroyed$ = new Subject();
 
   constructor(
     private logsContainerService: LogsContainerService,
-    private historyManager: HistoryManagerService,
     private settings: UserSettingsService,
     private route: ActivatedRoute,
     private router: Router,
@@ -74,27 +72,13 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.selectedClusterName$.subscribe(
-        (clusterName: string) => this.setModalSubmitDisabled(!(!!clusterName))
-      )
+    this.selectedClusterName$.takeUntil(this.destroyed$).subscribe(
+      (clusterName: string) => this.setModalSubmitDisabled(!clusterName)
     );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
-  }
-
-  get undoItems(): ListItem[] {
-    return this.historyManager.undoItems;
-  }
-
-  get redoItems(): ListItem[] {
-    return this.historyManager.redoItems;
-  }
-
-  get historyItems(): ListItem[] {
-    return this.historyManager.activeHistory;
+    this.destroyed$.next(true);
   }
 
   get captureSeconds(): number {
@@ -103,26 +87,6 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   setModalSubmitDisabled(isDisabled: boolean): void {
     this.isModalSubmitDisabled = isDisabled;
-  }
-
-  undoLatest(): void {
-    if (this.undoItems.length) {
-      this.historyManager.undo(this.undoItems[0]);
-    }
-  }
-
-  redoLatest(): void {
-    if (this.redoItems.length) {
-      this.historyManager.redo(this.redoItems[0]);
-    }
-  }
-
-  undo(item: ListItem): void {
-    this.historyManager.undo(item);
-  }
-
-  redo(item: ListItem): void {
-    this.historyManager.redo(item);
   }
 
   refresh(): void {

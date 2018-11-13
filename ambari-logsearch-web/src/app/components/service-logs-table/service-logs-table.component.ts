@@ -53,6 +53,12 @@ export enum ListLayout {
 export class ServiceLogsTableComponent extends LogsTableComponent implements AfterViewChecked, OnInit, OnDestroy {
 
   /**
+   * Extra css class which can be applied to the container element
+   */
+  @Input()
+  cssClass: string;
+
+  /**
    * The element reference is used to check if the table is broken or not.
    */
   @ViewChild('tableListEl', {

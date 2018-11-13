@@ -15,19 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {DataAvailabilityValues} from 'app/classes/string';
 
-export interface DataAvaibilityStatesModel {
-  clustersDataState: DataAvailabilityValues;
-  hostsDataState: DataAvailabilityValues;
-  componentsDataState: DataAvailabilityValues;
-  logFieldsDataState: DataAvailabilityValues;
-  [key: string]: DataAvailabilityValues;
+export interface FilterUrlParamChange {
+  previousPath?: string | null;
+  currentPath: string;
+  time?: Date;
 }
-
-export const initialDataAvaibilityStates: DataAvaibilityStatesModel = {
-  clustersDataState: DataAvailabilityValues.NOT_AVAILABLE,
-  hostsDataState: DataAvailabilityValues.NOT_AVAILABLE,
-  componentsDataState: DataAvailabilityValues.NOT_AVAILABLE,
-  logFieldsDataState: DataAvailabilityValues.NOT_AVAILABLE
-};

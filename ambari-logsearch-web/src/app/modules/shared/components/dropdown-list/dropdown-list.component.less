@@ -20,11 +20,14 @@
 
 :host {
   max-height: @dropdown-max-height;
-  overflow-y: auto;
+  max-width: @dropdown-max-width;
+  overflow-y: hidden;
+  z-index: 1100;
 
   > li {
     .dropdown-item-default;
     transition: opacity 300ms ease-in, height 100ms 400ms ease-in;
+    text-overflow: ellipsis;
     &.filtered {
       overflow: hidden;
       opacity: 0;

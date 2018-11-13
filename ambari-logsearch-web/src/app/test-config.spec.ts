@@ -67,7 +67,7 @@ export const getCommonTestingBedConfiguration = (
 ) => ({
   imports: [
     ...TranslationModules,
-    RouterTestingModule,
+    // RouterTestingModule,
     StoreModule.provideStore({
       clusters,
       auth: auth.reducer

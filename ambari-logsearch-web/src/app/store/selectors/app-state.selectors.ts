@@ -16,32 +16,26 @@
  * limitations under the License.
  */
 
-import { createSelector } from 'reselect';
+import { createSelector, Selector } from 'reselect';
 
-import * as fromAuth from '@app/store/reducers/auth.reducers';
 import { AppStore } from '@app/classes/models/store';
+import { AppState } from '@app/classes/models/app-state';
+import { LogsType } from '@app/classes/string';
+import { ActiveServiceLogEntry } from '@app/classes/active-service-log-entry';
 
-export const selectAuthState = (state: AppStore): fromAuth.State => state.auth;
+export const selectAppState = (state: AppStore): AppState => state.appState;
 
-export const selectAuthStatus = createSelector( selectAuthState, fromAuth.getStatus );
-export const selectAuthMessage = createSelector( selectAuthState, fromAuth.getMessage );
-
-export const isAuthorizedSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isAuthorized
+export const selectActiveLogsType: Selector<AppStore, LogsType> = createSelector(
+  selectAppState,
+  (appState: AppState): LogsType => appState.activeLogsType
 );
 
-export const isLoginInProgressSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isLoginInProgress
+export const selectActiveLog: Selector<AppStore, ActiveServiceLogEntry> = createSelector(
+  selectAppState,
+  (appState: AppState): ActiveServiceLogEntry => appState.activeLog
 );
 
-export const isLoggedOutSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isLoggedOut
-);
-
-export const isCheckingAuthStatusInProgressSelector = createSelector(
-  selectAuthStatus,
-  fromAuth.isCheckingAuthInProgress
+export const selectActiveLogId: Selector<AppStore, string> = createSelector(
+  selectActiveLog,
+  (activeLog: ActiveServiceLogEntry): string => activeLog.id
 );
