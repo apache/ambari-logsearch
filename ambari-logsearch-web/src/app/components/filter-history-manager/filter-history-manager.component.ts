@@ -83,7 +83,7 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
   activeUndoHistoryListItems$: Observable<ListItem[]> = Observable.combineLatest(
     this.activeHistoryListItems$,
     this.store.select(selectActiveFilterHistoryChangeIndex)
-  ).map(([listItems, activeChangeIndex]: [ListItem[], number]): ListItem[] => listItems.slice(0, activeChangeIndex));
+  ).map(([listItems, activeChangeIndex]: [ListItem[], number]): ListItem[] => listItems.slice(0, activeChangeIndex).reverse());
 
   activeRedoHistoryItems$: Observable<FilterUrlParamChange[]> = this.store.select(selectActiveFilterHistoryChangesRedoItems);
   hasActiveRedoHistoryItems$: Observable<boolean> = this.activeRedoHistoryItems$
@@ -125,7 +125,6 @@ export class FilterHistoryManagerComponent implements OnInit, OnDestroy {
     this.componentsLabels$.takeUntil(this.destroyed$).subscribe(componentsLabels => this.componentsLabelsLocalCopy$.next(componentsLabels));
     this.activeQueryFieldsLabels$.takeUntil(this.destroyed$).subscribe(fieldLabels => this.activeQueryFieldsLocalCopy$.next(fieldLabels));
 
-    this.activeHistoryItemLabels$.takeUntil(this.destroyed$).subscribe(() => {});
     this.activeHistoryItemLabels$.takeUntil(this.destroyed$).map((historyLabels) => {
       return historyLabels.map((historyLabel) => {
         return {

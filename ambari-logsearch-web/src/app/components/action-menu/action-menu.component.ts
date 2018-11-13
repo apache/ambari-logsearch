@@ -73,7 +73,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.selectedClusterName$.takeUntil(this.destroyed$).subscribe(
-      (clusterName: string) => this.setModalSubmitDisabled(!(!!clusterName))
+      (clusterName: string) => this.setModalSubmitDisabled(!clusterName)
     );
   }
 
