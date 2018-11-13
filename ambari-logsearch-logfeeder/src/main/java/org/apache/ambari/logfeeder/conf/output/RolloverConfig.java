@@ -27,6 +27,16 @@ import org.springframework.context.annotation.Configuration;
 public class RolloverConfig {
 
   @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_ROLLOVER_ARCHIVE_LOCATION,
+    description = "Location where the active and archives logs will be stored. Beware, it could require a large amount of space, use mounted disks if it is possible.",
+    examples = {"/var/lib/ambari-logsearch-logfeeder/data"},
+    defaultValue = "/tmp",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_ARCHIVE_LOCATION + ":/tmp}")
+  private String rolloverArchiveBaseDir;
+
+  @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_MIN,
     description = "Rollover cloud log files after an interval (minutes)",
     examples = {"1"},
@@ -132,5 +142,13 @@ public class RolloverConfig {
 
   public void setRolloverOnStartup(boolean rolloverOnStartup) {
     this.rolloverOnStartup = rolloverOnStartup;
+  }
+
+  public String getRolloverArchiveBaseDir() {
+    return rolloverArchiveBaseDir;
+  }
+
+  public void setRolloverArchiveBaseDir(String rolloverArchiveBaseDir) {
+    this.rolloverArchiveBaseDir = rolloverArchiveBaseDir;
   }
 }

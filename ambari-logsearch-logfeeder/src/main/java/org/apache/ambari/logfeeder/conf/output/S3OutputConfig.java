@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.inject.Inject;
 
 @Configuration
-public class S3OutputConfig implements CloudStorageOutputConfig {
+public class S3OutputConfig {
 
   private final BucketConfig bucketConfig;
 
@@ -125,16 +125,6 @@ public class S3OutputConfig implements CloudStorageOutputConfig {
   private String region;
 
   @LogSearchPropertyDescription(
-    name = LogFeederConstants.S3_BUCKET,
-    description = "Amazon S3 bucket.",
-    examples = {"logs"},
-    defaultValue = "logfeeder",
-    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
-  )
-  @Value("${"+ LogFeederConstants.S3_BUCKET + ":logfeeder}")
-  private String bucket;
-
-  @LogSearchPropertyDescription(
     name = LogFeederConstants.S3_OBJECT_ACL,
     description = "Amazon S3 ACLs for new objects.",
     examples = {"logs"},
@@ -168,19 +158,6 @@ public class S3OutputConfig implements CloudStorageOutputConfig {
   @Inject
   public S3OutputConfig(BucketConfig bucketConfig) {
     this.bucketConfig = bucketConfig;
-  }
-
-  @Override
-  public String getOutputBasePath() {
-    return this.bucket;
-  }
-
-  public String getBucket() {
-    return this.bucket;
-  }
-
-  public void setBucket(String bucketName) {
-    this.bucket = bucketName;
   }
 
   public String getEndpoint() {
@@ -259,27 +236,22 @@ public class S3OutputConfig implements CloudStorageOutputConfig {
     return accessKeyHadoopCredentialReference;
   }
 
-  @Override
   public String getAccessKeyProperty() {
     return LogFeederConstants.S3_ACCESS_KEY;
   }
 
-  @Override
   public String getSecretKeyProperty() {
     return LogFeederConstants.S3_SECRET_KEY;
   }
 
-  @Override
   public String getAccessKeyEnvVariable() {
     return "AWS_ACCESS_KEY_ID";
   }
 
-  @Override
   public String getSecretKeyEnvVariable() {
     return "AWS_SECRET_ACCESS_KEY";
   }
 
-  @Override
   public String getDescription() {
     return "AWS S3";
   }

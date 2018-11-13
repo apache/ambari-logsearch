@@ -27,6 +27,16 @@ import org.springframework.context.annotation.Configuration;
 public class BucketConfig {
 
   @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_BUCKET,
+    description = "Amazon S3 bucket.",
+    examples = {"logs"},
+    defaultValue = "logfeeder",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.CLOUD_STORAGE_BUCKET + ":logfeeder}")
+  private String bucket;
+
+  @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_BUCKET_BOOTSTRAP,
     description = "Create bucket on startup.",
     examples = {"false"},
@@ -35,6 +45,14 @@ public class BucketConfig {
   )
   @Value("${"+ LogFeederConstants.CLOUD_STORAGE_BUCKET_BOOTSTRAP + ":false}")
   private boolean createBucketOnStartup;
+
+  public String getBucket() {
+    return this.bucket;
+  }
+
+  public void setBucket(String bucketName) {
+    this.bucket = bucketName;
+  }
 
   public boolean isCreateBucketOnStartup() {
     return createBucketOnStartup;

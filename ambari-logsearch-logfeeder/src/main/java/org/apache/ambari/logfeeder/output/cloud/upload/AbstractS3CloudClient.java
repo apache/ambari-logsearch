@@ -20,7 +20,7 @@ package org.apache.ambari.logfeeder.output.cloud.upload;
 
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.conf.output.BucketConfig;
-import org.apache.ambari.logfeeder.conf.output.CloudStorageOutputConfig;
+import org.apache.ambari.logfeeder.conf.output.S3OutputConfig;
 import org.apache.ambari.logfeeder.credential.CompositeSecretStore;
 import org.apache.ambari.logfeeder.credential.EnvSecretStore;
 import org.apache.ambari.logfeeder.credential.FileSecretStore;
@@ -38,9 +38,9 @@ import java.util.List;
 /**
  * Holds common cloud based client operations
  */
-abstract class AbstractCloudClient {
+abstract class AbstractS3CloudClient {
 
-  private static final Logger logger = LogManager.getLogger(AbstractCloudClient.class);
+  private static final Logger logger = LogManager.getLogger(AbstractS3CloudClient.class);
 
   /**
    * Create a cloud specific bucket if it does not exists
@@ -85,7 +85,7 @@ abstract class AbstractCloudClient {
    * @param config cloud based configuration
    * @return secret key pair
    */
-  SecretKeyPair getSecretKeyPair(LogFeederProps props, CloudStorageOutputConfig config) {
+  SecretKeyPair getSecretKeyPair(LogFeederProps props, S3OutputConfig config) {
     String secretFile = config.isUseFileSecrets() ? config.getSecretKeyFileLocation() : null;
     String secretRef = config.isUseHadoopCredentialStorage() ? config.getSecretKeyHadoopCredentialReference() : null;
     CompositeSecretStore secretKeyStore = createCompositeSecretStore(props, config.getSecretKey(), config.getSecretKeyProperty(),
@@ -113,7 +113,7 @@ abstract class AbstractCloudClient {
    * @param credentialRef credential provider referece to check for secret
    * @return composite secret store that contains multiple way to get a secret
    */
-  CompositeSecretStore createCompositeSecretStore(LogFeederProps props, String plainTextSecret, String property, String env,
+  private CompositeSecretStore createCompositeSecretStore(LogFeederProps props, String plainTextSecret, String property, String env,
                                                           String file, String credentialRef) {
     List<SecretStore> secretStores = new ArrayList<>();
     if (StringUtils.isNotBlank(plainTextSecret)) {

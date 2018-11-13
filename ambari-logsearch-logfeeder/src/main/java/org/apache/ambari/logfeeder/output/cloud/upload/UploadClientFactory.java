@@ -22,6 +22,7 @@ import org.apache.ambari.logfeeder.conf.CloudStorageDestination;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * Factory class to create cloud specific data uploader client based on global Log Feeder settings.
@@ -38,16 +39,28 @@ public class UploadClientFactory {
   public static UploadClient createUploadClient(LogFeederProps logFeederProps) {
     CloudStorageDestination destType = logFeederProps.getCloudStorageDestination();
     logger.info("Creating upload client for storage: {}", destType);
-    if (CloudStorageDestination.HDFS.equals(destType)) {
-      return new HDFSUploadClient(logFeederProps.getHdfsOutputConfig());
+    boolean useHdfsClient = logFeederProps.isUseCloudHdfsClient();
+    if (useHdfsClient && checkCoreSiteIsOnClasspath(logFeederProps)) {
+      logger.info("The core-site.xml from the classpath will be used to figure it out the cloud output settings.");
+      return new HDFSUploadClient();
+    }
+    else if (CloudStorageDestination.HDFS.equals(destType)) {
+      logger.info("External HDFS output will be used.");
+      return new ExternalHDFSUploadClient(logFeederProps.getHdfsOutputConfig());
     } else if (CloudStorageDestination.S3.equals(destType)) {
-      if (logFeederProps.isUseCloudHdfsClient()) {
+      if (useHdfsClient) {
+        logger.info("S3 cloud output will be used with HDFS client.");
         return new HDFSS3UploadClient(logFeederProps.getS3OutputConfig());
       } else {
+        logger.info("S3 cloud output will be used with AWS sdk client (core).");
         return new S3UploadClient(logFeederProps.getS3OutputConfig());
       }
     } else {
       throw new IllegalArgumentException(String.format("No cloud storage type is selected as destination: %s", destType));
     }
+  }
+
+  private static boolean checkCoreSiteIsOnClasspath(LogFeederProps logFeederProps) {
+    return new ClassPathResource("core-site.xml").exists();
   }
 }
