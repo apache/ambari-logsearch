@@ -75,6 +75,9 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
     this.selectedClusterName$.takeUntil(this.destroyed$).subscribe(
       (clusterName: string) => this.setModalSubmitDisabled(!clusterName)
     );
+    this.clustersListItems$.filter((items: ListItem[]) => items.some((item: ListItem) => item.isChecked)).first()
+      .map((items: ListItem[]) => items.find((item: ListItem) => item.isChecked))
+      .subscribe((item) => this.selectedClusterName$.next(item.value));
   }
 
   ngOnDestroy() {
