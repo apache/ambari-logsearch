@@ -127,6 +127,14 @@ export class MenuButtonComponent {
     return this.subItems && this.subItems.filter((option: ListItem): boolean => option.isChecked);
   }
 
+  get hasSelection(): boolean {
+    return this.subItems && this.subItems.filter((option: ListItem): boolean => option.isChecked).length > 0;
+  }
+
+  get totalSelection(): number {
+    return this.subItems ? this.subItems.filter((option: ListItem): boolean => option.isChecked).length : 0;
+  }
+
   constructor(private utils: UtilsService) {}
 
   findItemIndexInList(item: ListItem, itemList: ListItem[] = this.subItems): number {

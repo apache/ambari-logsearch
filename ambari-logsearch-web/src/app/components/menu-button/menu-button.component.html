@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 
-<div #dropdown [ngClass]="{'dropdown': hasSubItems, 'text-center': true, 'open': dropdownIsOpen, 'disabled': isDisabled}">
+<div #dropdown [ngClass]="{'dropdown': hasSubItems, 'text-center': true, 'open': dropdownIsOpen, 'disabled': isDisabled, 'has-selection': hasSelection}">
   <a class="dropdown-toggle" [ngClass]="(labelClass || '') + (hasCaret ? ' has-caret' : '')"
     (click)="onMouseClick($event)"
     (mousedown)="onMouseDown($event)">
