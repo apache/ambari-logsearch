@@ -55,7 +55,7 @@
 
   "filter.capture": "Capture",
   "filter.captureSnapshot": "Snapshot",
-  "filter.refreshingLogListIn": "Refreshing log list in...",
+  "filter.refreshingLogListIn": "Please wait while the logs for your capture period are indexed...",
   "filter.capture.min": "Min",
   "filter.capture.sec": "Sec",
   "filter.capture.triggeringRefresh": "Triggering auto-refresh in {{remainingSeconds}} sec",
