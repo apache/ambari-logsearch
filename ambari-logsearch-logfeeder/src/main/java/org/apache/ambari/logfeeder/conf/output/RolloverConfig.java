@@ -49,12 +49,32 @@ public class RolloverConfig {
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE,
     description = "Rollover cloud log files after the log file size reach this limit",
-    examples = {"1024KB"},
-    defaultValue = "80MB",
+    examples = {"1024"},
+    defaultValue = "80",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
-  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE + ":80MB}")
-  private String rolloverSize;
+  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE + ":80}")
+  private Integer rolloverSize;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_ROLLOVER_MAX_BACKUP_FILES,
+    description = "The number of max backup log files for rolled over logs.",
+    examples = {"50"},
+    defaultValue = "10",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_MAX_BACKUP_FILES + ":10}")
+  private Integer rolloverMaxBackupFiles;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_FORMAT,
+    description = "Rollover cloud log file size format (e.g: KB, MB etc.)",
+    examples = {"KB"},
+    defaultValue = "MB",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_FORMAT + ":MB}")
+  private String rolloverSizeFormat;
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_USE_GZIP,
@@ -68,7 +88,7 @@ public class RolloverConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_IMMEDIATE_FLUSH,
-    description = "Immediately flush cloud logs (to active location).",
+    description = "Immediately flush temporal cloud logs (to active location).",
     examples = {"false"},
     defaultValue = "true",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
@@ -78,7 +98,7 @@ public class RolloverConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_ON_SHUTDOWN,
-    description = "Rollover log files on shutdown",
+    description = "Rollover temporal cloud log files on shutdown",
     examples = {"false"},
     defaultValue = "true",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
@@ -88,7 +108,7 @@ public class RolloverConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_ON_STARTUP,
-    description = "Rollover log files on startup",
+    description = "Rollover temporal cloud log files on startup",
     examples = {"false"},
     defaultValue = "true",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
@@ -104,12 +124,28 @@ public class RolloverConfig {
     this.rolloverThresholdTimeMins = rolloverThresholdTimeMins;
   }
 
-  public String getRolloverSize() {
+  public Integer getRolloverMaxBackupFiles() {
+    return rolloverMaxBackupFiles;
+  }
+
+  public void setRolloverMaxBackupFiles(Integer rolloverMaxBackupFiles) {
+    this.rolloverMaxBackupFiles = rolloverMaxBackupFiles;
+  }
+
+  public Integer getRolloverSize() {
     return rolloverSize;
   }
 
-  public void setRolloverSize(String rolloverSize) {
+  public void setRolloverSize(Integer rolloverSize) {
     this.rolloverSize = rolloverSize;
+  }
+
+  public String getRolloverSizeFormat() {
+    return rolloverSizeFormat;
+  }
+
+  public void setRolloverSizeFormat(String rolloverSizeFormat) {
+    this.rolloverSizeFormat = rolloverSizeFormat;
   }
 
   public boolean isUseGzip() {

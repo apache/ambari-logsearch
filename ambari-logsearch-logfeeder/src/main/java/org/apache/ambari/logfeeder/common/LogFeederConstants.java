@@ -34,10 +34,6 @@ public class LogFeederConstants {
   // Event History Constants History
   public static final String VALUES = "jsons";
   public static final String ROW_TYPE = "rowtype";
-  
-  // S3 Constants
-  public static final String S3_PATH_START_WITH = "s3://";
-  public static final String S3_PATH_SEPARATOR = "/";
 
   public static final String IN_MEMORY_TIMESTAMP = "in_memory_timestamp";
 
@@ -122,6 +118,8 @@ public class LogFeederConstants {
   public static final String CLOUD_ROLLOVER_ARCHIVE_LOCATION = "logfeeder.cloud.rollover.archive.base.dir";
   public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_MIN = "logfeeder.cloud.rollover.threshold.min";
   public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE = "logfeeder.cloud.rollover.threshold.size";
+  public static final String CLOUD_ROLLOVER_MAX_BACKUP_FILES = "logfeeder.cloud.rollover.max.files";
+  public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_FORMAT = "logfeeder.cloud.rollover.threshold.size.format";
   public static final String CLOUD_ROLLOVER_USE_GZIP = "logfeeder.cloud.rollover.use.gzip";
   public static final String CLOUD_ROLLOVER_IMMEDIATE_FLUSH = "logfeeder.cloud.rollover.immediate.flush";
   public static final String CLOUD_ROLLOVER_ON_SHUTDOWN = "logfeeder.cloud.rollover.on.shutdown";
