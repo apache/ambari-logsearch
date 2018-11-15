@@ -74,7 +74,7 @@ public class CloudStorageUploader extends Thread {
    */
   void doUpload() {
     try {
-      final String archiveLogDir = String.join(File.separator, logFeederProps.getTmpDir(), uploaderType, "archived");
+      final String archiveLogDir = String.join(File.separator, logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir(), uploaderType, "archived");
       if (new File(archiveLogDir).exists()) {
         String[] extensions = {"log", "gz"};
         Collection<File> filesToUpload = FileUtils.listFiles(new File(archiveLogDir), extensions, true);
