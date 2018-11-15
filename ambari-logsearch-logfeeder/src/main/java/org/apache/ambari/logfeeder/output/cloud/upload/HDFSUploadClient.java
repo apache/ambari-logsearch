@@ -34,6 +34,8 @@ import java.io.IOException;
  */
 public class HDFSUploadClient implements UploadClient {
 
+  private static final String FS_DEFAULT_FS = "fs.defaultFS";
+
   private static final Logger logger = LogManager.getLogger(HDFSUploadClient.class);
 
   private FileSystem fs;
@@ -43,7 +45,11 @@ public class HDFSUploadClient implements UploadClient {
     logger.info("Initialize HDFS client (cloud mode), using core-site.xml from the classpath.");
     Configuration configuration = new Configuration();
     if (StringUtils.isNotBlank(logFeederProps.getCustomFs())) {
-      configuration.set("fs.defaultFS", logFeederProps.getCustomFs());
+      configuration.set(FS_DEFAULT_FS, logFeederProps.getCustomFs());
+    }
+    if (StringUtils.isNotBlank(logFeederProps.getLogfeederHdfsUser()) && isHadoopFileSystem(configuration)) {
+      logger.info("Using HADOOP_USER_NAME: {}", logFeederProps.getLogfeederHdfsUser());
+      System.setProperty("HADOOP_USER_NAME", logFeederProps.getLogfeederHdfsUser());
     }
     this.fs = LogFeederHDFSUtil.buildFileSystem(configuration);
   }
@@ -56,6 +62,10 @@ public class HDFSUploadClient implements UploadClient {
   @Override
   public void close() throws IOException {
     LogFeederHDFSUtil.closeFileSystem(fs);
+  }
+
+  private boolean isHadoopFileSystem(Configuration conf) {
+    return conf.get(FS_DEFAULT_FS).contains("hdfs://");
   }
 
 }

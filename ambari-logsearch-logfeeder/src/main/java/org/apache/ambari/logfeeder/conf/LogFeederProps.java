@@ -280,6 +280,15 @@ public class LogFeederProps implements LogFeederProperties {
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_BASE_PATH + ":}")
   private String cloudBasePath;
 
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.HDFS_USER,
+    description = "Overrides HADOOP_USER_NAME variable at runtime",
+    examples = {"hdfs"},
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.HDFS_USER + ":}")
+  private String logfeederHdfsUser;
+
   @Inject
   private LogEntryCacheConfig logEntryCacheConfig;
 
@@ -491,6 +500,14 @@ public class LogFeederProps implements LogFeederProperties {
 
   public boolean isUseCloudHdfsClient() {
     return useCloudHdfsClient;
+  }
+
+  public String getLogfeederHdfsUser() {
+    return logfeederHdfsUser;
+  }
+
+  public void setLogfeederHdfsUser(String logfeederHdfsUser) {
+    this.logfeederHdfsUser = logfeederHdfsUser;
   }
 
   public void setUseCloudHdfsClient(boolean useCloudHdfsClient) {

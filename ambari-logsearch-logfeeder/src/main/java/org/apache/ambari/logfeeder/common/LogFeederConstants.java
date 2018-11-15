@@ -125,9 +125,10 @@ public class LogFeederConstants {
   public static final String CLOUD_ROLLOVER_ON_SHUTDOWN = "logfeeder.cloud.rollover.on.shutdown";
   public static final String CLOUD_ROLLOVER_ON_STARTUP = "logfeeder.cloud.rollover.on.startup";
 
+  public static final String HDFS_USER = "logfeeder.hdfs.user";
+
   public static final String HDFS_HOST = "logfeeder.hdfs.host";
   public static final String HDFS_PORT = "logfeeder.hdfs.port";
-  public static final String HDFS_USER = "logfeeder.hdfs.user";
   public static final String HDFS_FILE_PERMISSIONS = "logfeeder.hdfs.file.permissions";
   public static final String HDFS_KERBEROS = "logfeeder.hdfs.kerberos";
 
