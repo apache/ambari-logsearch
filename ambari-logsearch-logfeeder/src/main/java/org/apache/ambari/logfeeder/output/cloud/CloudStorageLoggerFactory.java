@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.OnStartupTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.config.AppenderRef;
@@ -64,8 +65,8 @@ public class CloudStorageLoggerFactory {
     PatternLayout layout = PatternLayout.newBuilder()
       .withPattern(PatternLayout.DEFAULT_CONVERSION_PATTERN).build();
 
-    SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy = SizeBasedTriggeringPolicy.createPolicy(
-      logFeederProps.getRolloverConfig().getRolloverSize());
+    String rolloverSize = logFeederProps.getRolloverConfig().getRolloverSize().toString() + logFeederProps.getRolloverConfig().getRolloverSizeFormat();
+    SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy = SizeBasedTriggeringPolicy.createPolicy(rolloverSize);
     CustomTimeBasedTriggeringPolicy customTimeBasedTriggeringPolicy = CustomTimeBasedTriggeringPolicy
       .createPolicy(String.valueOf(logFeederProps.getRolloverConfig().getRolloverThresholdTimeMins()));
 
@@ -80,6 +81,9 @@ public class CloudStorageLoggerFactory {
         .createPolicy(sizeBasedTriggeringPolicy, customTimeBasedTriggeringPolicy);
     }
 
+    DefaultRolloverStrategy defaultRolloverStrategy = DefaultRolloverStrategy.newBuilder().withMax(String.valueOf(
+      logFeederProps.getRolloverConfig().getRolloverMaxBackupFiles())).build();
+
     boolean immediateFlush = logFeederProps.getRolloverConfig().isImmediateFlush();
     RollingFileAppender appender = RollingFileAppender.newBuilder()
       .withFileName(fileName)
@@ -87,6 +91,7 @@ public class CloudStorageLoggerFactory {
       .withLayout(layout)
       .withName(type)
       .withPolicy(compositeTriggeringPolicy)
+      .withStrategy(defaultRolloverStrategy)
       .withImmediateFlush(immediateFlush)
       .build();
 

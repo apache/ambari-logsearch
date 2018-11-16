@@ -47,9 +47,9 @@ public class ExternalHDFSUploadClient implements UploadClient {
   @Override
   public void init(LogFeederProps logFeederProps) {
     logger.info("Initialize external HDFS client ...");
-    if (StringUtils.isNotBlank(hdfsOutputConfig.getHdfsUser())) {
-      logger.info("Using HADOOP_USER_NAME: {}", hdfsOutputConfig.getHdfsUser());
-      System.setProperty("HADOOP_USER_NAME", hdfsOutputConfig.getHdfsUser());
+    if (StringUtils.isNotBlank(logFeederProps.getLogfeederHdfsUser())) {
+      logger.info("Using HADOOP_USER_NAME: {}", logFeederProps.getLogfeederHdfsUser());
+      System.setProperty("HADOOP_USER_NAME", logFeederProps.getLogfeederHdfsUser());
     }
     this.fs = LogFeederHDFSUtil.buildFileSystem(
       hdfsOutputConfig.getHdfsHost(),

@@ -19,7 +19,7 @@
 package org.apache.ambari.logfeeder.conf;
 
 public enum CloudStorageDestination {
-  HDFS("hdfs"), S3("s3"), GCS("gcs"), ADLS("adls"), NONE("none");
+  HDFS("hdfs"), S3("s3"), GCS("gcs"), ADLS("adls"), WASB("wasb"), DEFAULT_FS("default-fs"), NONE("none");
 
   private String text;
 

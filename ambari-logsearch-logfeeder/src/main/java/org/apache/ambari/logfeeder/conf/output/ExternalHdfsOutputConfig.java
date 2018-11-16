@@ -55,15 +55,6 @@ public class ExternalHdfsOutputConfig {
   private String hdfsFilePermissions;
 
   @LogSearchPropertyDescription(
-    name = LogFeederConstants.HDFS_USER,
-    description = "Overrides HADOOP_USER_NAME variable at runtime",
-    examples = {"hdfs"},
-    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
-  )
-  @Value("${"+ LogFeederConstants.HDFS_USER + ":}")
-  private String hdfsUser;
-
-  @LogSearchPropertyDescription(
     name = LogFeederConstants.HDFS_KERBEROS,
     description = "Enable kerberos support for HDFS",
     examples = {"true"},
@@ -95,14 +86,6 @@ public class ExternalHdfsOutputConfig {
 
   public void setHdfsFilePermissions(String hdfsFilePermissions) {
     this.hdfsFilePermissions = hdfsFilePermissions;
-  }
-
-  public String getHdfsUser() {
-    return hdfsUser;
-  }
-
-  public void setHdfsUser(String hdfsUser) {
-    this.hdfsUser = hdfsUser;
   }
 
   public boolean isSecure() {

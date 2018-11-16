@@ -42,6 +42,7 @@ public class UploadClientFactory {
     boolean useHdfsClient = logFeederProps.isUseCloudHdfsClient();
     if (useHdfsClient && checkCoreSiteIsOnClasspath(logFeederProps)) {
       logger.info("The core-site.xml from the classpath will be used to figure it out the cloud output settings.");
+      logFeederProps.setCloudStorageDestination(CloudStorageDestination.DEFAULT_FS);
       return new HDFSUploadClient();
     }
     else if (CloudStorageDestination.HDFS.equals(destType)) {
