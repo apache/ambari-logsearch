@@ -67,13 +67,13 @@ public class RolloverConfig {
   private Integer rolloverMaxBackupFiles;
 
   @LogSearchPropertyDescription(
-    name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_FORMAT,
-    description = "Rollover cloud log file size format (e.g: KB, MB etc.)",
+    name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_UNIT,
+    description = "Rollover cloud log file size unit (e.g: KB, MB etc.)",
     examples = {"KB"},
     defaultValue = "MB",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
-  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_FORMAT + ":MB}")
+  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_UNIT + ":MB}")
   private String rolloverSizeFormat;
 
   @LogSearchPropertyDescription(
