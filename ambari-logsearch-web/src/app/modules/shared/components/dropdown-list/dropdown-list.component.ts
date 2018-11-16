@@ -20,9 +20,8 @@ import {
   Component, OnChanges, AfterViewChecked, OnDestroy, SimpleChanges, Input, Output, EventEmitter,
   ViewChildren, ViewContainerRef, QueryList, ChangeDetectorRef, ElementRef, ViewChild, OnInit
 } from '@angular/core';
-import {Subscription} from 'rxjs/Subscription';
-import {ListItem} from '@app/classes/list-item';
-import {ComponentGeneratorService} from '@app/services/component-generator.service';
+import { ListItem } from '@app/classes/list-item';
+import { ComponentGeneratorService } from '@app/services/component-generator.service';
 import { Subject } from 'rxjs/Subject';
 
 @Component({

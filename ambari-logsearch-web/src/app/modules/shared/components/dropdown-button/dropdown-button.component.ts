@@ -67,14 +67,31 @@ export class DropdownButtonComponent {
   @Input()
   useClearToDefaultSelection = false;
 
-  protected selectedItems?: ListItem[] = [];
+  protected selectedItems: ListItem[] = [];
 
   get selection(): ListItem[] {
     return this.selectedItems;
   }
 
   set selection(items: ListItem[]) {
-    this.selectedItems = items;
+    this.selectedItems = <ListItem[]>(Array.isArray(items) ? items : (items || []));
+    if (this.selectedItems.length > 1 && !this.isMultipleChoice) {
+      this.selectedItems = this.selectedItems.slice(0, 1);
+    }
+    if (this.isMultipleChoice && this.options) {
+      this.options.forEach((option: ListItem): void => {
+        const selectionItem = this.selectedItems.find((item: ListItem): boolean => this.utils.isEqual(item.value, option.value));
+        option.isChecked = !!selectionItem;
+      });
+    }
+  }
+
+  get hasSelection(): boolean {
+    return this.selectedItems.length > 0;
+  }
+
+  get totalSelection(): number {
+    return this.selectedItems.length;
   }
 
   // TODO handle case of selections with multiple items
@@ -84,7 +101,7 @@ export class DropdownButtonComponent {
    * @returns {boolean}
    */
   get isSelectionDisplayable(): boolean {
-    return this.showSelectedValue && !this.isMultipleChoice && this.selection.length > 0;
+    return this.showSelectedValue && !this.isMultipleChoice && this.hasSelection;
   }
 
   constructor(

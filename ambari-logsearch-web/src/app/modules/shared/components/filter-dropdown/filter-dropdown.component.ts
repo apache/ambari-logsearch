@@ -36,20 +36,6 @@ export class FilterDropdownComponent extends DropdownButtonComponent implements 
 
   private onChange;
 
-  get selection(): ListItem[] {
-    return this.selectedItems;
-  }
-
-  set selection(items: ListItem[]) {
-    this.selectedItems = items;
-    if (this.isMultipleChoice && this.options) {
-      this.options.forEach((option: ListItem): void => {
-        const selectionItem = items.find((item: ListItem): boolean => this.utils.isEqual(item.value, option.value));
-        option.isChecked = Boolean(selectionItem);
-      });
-    }
-  }
-
   private _onChange(value) {
     if (this.onChange) {
       this.onChange(value);
@@ -65,7 +51,7 @@ export class FilterDropdownComponent extends DropdownButtonComponent implements 
   }
 
   writeValue(items: ListItem[]) {
-    this.selection = items || [];
+    this.selection = items ? (Array.isArray(items) ? items : [items] ) : [];
   }
 
   registerOnChange(callback: any): void {
