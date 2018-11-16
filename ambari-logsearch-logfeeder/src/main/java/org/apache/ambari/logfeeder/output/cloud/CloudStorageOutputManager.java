@@ -18,7 +18,10 @@
  */
 package org.apache.ambari.logfeeder.output.cloud;
 
+import org.apache.ambari.logfeeder.common.IdGeneratorHelper;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
+import org.apache.ambari.logfeeder.output.OutputLineEnricher;
+import org.apache.ambari.logfeeder.output.OutputLineFilter;
 import org.apache.ambari.logfeeder.plugin.common.MetricData;
 import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
@@ -48,9 +51,19 @@ public class CloudStorageOutputManager extends OutputManager {
 
   private List<Output> outputList = new ArrayList<>();
 
+  private final MetricData messageTruncateMetric = new MetricData(null, false);
+  private final OutputLineEnricher outputLineEnricher = new OutputLineEnricher();
+  private final OutputLineFilter outputLineFilter = new OutputLineFilter();
+
   @Override
   public void write(Map<String, Object> jsonObj, InputMarker marker) {
-    write(LogFeederUtil.getGson().toJson(jsonObj), marker);
+    outputLineEnricher.enrichFields(jsonObj, marker, messageTruncateMetric);
+    if (!outputLineFilter.apply(jsonObj, marker.getInput())) {
+      if (jsonObj.get("id") == null) {
+        jsonObj.put("id", IdGeneratorHelper.generateUUID(jsonObj, storageOutput.getIdFields()));
+      }
+      write(LogFeederUtil.getGson().toJson(jsonObj), marker);
+    }
   }
 
   @Override

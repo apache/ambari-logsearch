@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Holds input/filter/output operations in default Log Feeder mode.
  */
-public class DefaultInputConfigHandler implements InputConfigHandler {
+public class DefaultInputConfigHandler extends AbstractInputConfigHandler {
 
   private static final Logger logger = LogManager.getLogger(DefaultInputConfigHandler.class);
 
@@ -102,65 +102,5 @@ public class DefaultInputConfigHandler implements InputConfigHandler {
         logger.info("Input is disabled. So ignoring it. " + input.getShortDescription());
       }
     }
-  }
-
-  private void loadFilters(String serviceName, InputConfigHolder inputConfigHolder) {
-    sortFilters(inputConfigHolder);
-
-    List<Input> toRemoveInputList = new ArrayList<>();
-    for (Input input : inputConfigHolder.getInputManager().getInputList(serviceName)) {
-      for (FilterDescriptor filterDescriptor : inputConfigHolder.getFilterConfigList()) {
-        if (filterDescriptor == null) {
-          logger.warn("Filter descriptor is smpty. Skipping...");
-          continue;
-        }
-        if (BooleanUtils.isFalse(filterDescriptor.isEnabled())) {
-          logger.debug("Ignoring filter " + filterDescriptor.getFilter() + " because it is disabled");
-          continue;
-        }
-        if (!input.isFilterRequired(filterDescriptor)) {
-          logger.debug("Ignoring filter " + filterDescriptor.getFilter() + " for input " + input.getShortDescription());
-          continue;
-        }
-
-        String value = filterDescriptor.getFilter();
-        if (StringUtils.isEmpty(value)) {
-          logger.error("Filter block doesn't have filter element");
-          continue;
-        }
-        Filter filter = (Filter) AliasUtil.getClassInstance(value, AliasUtil.AliasType.FILTER);
-        if (filter == null) {
-          logger.error("Filter object could not be found");
-          continue;
-        }
-        filter.loadConfig(filterDescriptor);
-        filter.setInput(input);
-
-        filter.setOutputManager(inputConfigHolder.getOutputManager());
-        input.addFilter(filter);
-        filter.logConfigs();
-      }
-
-      if (input.getFirstFilter() == null) {
-        toRemoveInputList.add(input);
-      }
-    }
-
-    for (Input toRemoveInput : toRemoveInputList) {
-      logger.warn("There are no filters, we will ignore this input. " + toRemoveInput.getShortDescription());
-      inputConfigHolder.getInputManager().removeInput(toRemoveInput);
-    }
-  }
-
-  private void sortFilters(InputConfigHolder inputConfigHolder) {
-    Collections.sort(inputConfigHolder.getFilterConfigList(), (o1, o2) -> {
-      Integer o1Sort = o1.getSortOrder();
-      Integer o2Sort = o2.getSortOrder();
-      if (o1Sort == null || o2Sort == null) {
-        return 0;
-      }
-
-      return o1Sort - o2Sort;
-    });
   }
 }

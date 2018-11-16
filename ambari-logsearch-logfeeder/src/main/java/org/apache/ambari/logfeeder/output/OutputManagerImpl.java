@@ -59,7 +59,8 @@ public class OutputManagerImpl extends OutputManager {
   @Inject
   private LogFeederProps logFeederProps;
 
-  private OutputLineFilter outputLineFilter = new OutputLineFilter();
+  private final OutputLineEnricher outputLineEnricher = new OutputLineEnricher();
+  private final OutputLineFilter outputLineFilter = new OutputLineFilter();
 
   public List<Output> getOutputs() {
     return outputs;
@@ -80,57 +81,12 @@ public class OutputManagerImpl extends OutputManager {
 
   @SuppressWarnings("unchecked")
   public void write(Map<String, Object> jsonObj, InputMarker inputMarker) {
-    Input input = inputMarker.getInput();
-
-    // Update the block with the context fields
-    for (Map.Entry<String, String> entry : input.getInputDescriptor().getAddFields().entrySet()) {
-      if (jsonObj.get(entry.getKey()) == null || entry.getKey().equals("cluster") && "null".equals(jsonObj.get(entry.getKey()))) {
-        jsonObj.put(entry.getKey(), entry.getValue());
-      }
-    }
-
-    // TODO: Ideally most of the overrides should be configurable
-
-    LogFeederUtil.fillMapWithFieldDefaults(jsonObj, inputMarker, true);
-    jsonObj.putIfAbsent("level", LogFeederConstants.LOG_LEVEL_UNKNOWN);
-
-    if (input.isUseEventMD5() || input.isGenEventMD5()) {
-      String prefix = "";
-      Object logtimeObj = jsonObj.get("logtime");
-      if (logtimeObj != null) {
-        if (logtimeObj instanceof Date) {
-          prefix = "" + ((Date) logtimeObj).getTime();
-        } else {
-          prefix = logtimeObj.toString();
-        }
-      }
-
-
-      byte[] bytes = LogFeederUtil.getGson().toJson(jsonObj).getBytes();
-      long eventMD5 = Hashing.md5().hashBytes(bytes).asLong();
-      if (input.isGenEventMD5()) {
-        jsonObj.put("event_md5", prefix + Long.toString(eventMD5));
-      }
-      if (input.isUseEventMD5()) {
-        jsonObj.put("id", prefix + Long.toString(eventMD5));
-      }
-    }
-
     jsonObj.put("seq_num", docCounter++);
-    jsonObj.computeIfAbsent("event_count", k -> 1);
-    if (StringUtils.isNotBlank(input.getInputDescriptor().getGroup())) {
-      jsonObj.put("group", input.getInputDescriptor().getGroup());
+    if (docCounter == Long.MIN_VALUE) {
+      docCounter = 1;
     }
-    if (inputMarker.getAllProperties().containsKey("line_number") &&
-      (Integer) inputMarker.getAllProperties().get("line_number") > 0) {
-      jsonObj.put("logfile_line_number", inputMarker.getAllProperties().get("line_number"));
-    }
-    if (jsonObj.containsKey("log_message")) {
-      // TODO: Let's check size only for log_message for now
-      String logMessage = (String) jsonObj.get("log_message");
-      logMessage = truncateLongLogMessage(jsonObj, input, logMessage);
-      jsonObj.put("message_md5", "" + Hashing.md5().hashBytes(logMessage.getBytes()).asLong());
-    }
+    outputLineEnricher.enrichFields(jsonObj, inputMarker, messageTruncateMetric);
+    Input input = inputMarker.getInput();
     List<String> defaultLogLevels = getDefaultLogLevels(input);
     if (logLevelFilterHandler.isAllowed(jsonObj, inputMarker, defaultLogLevels)
       && !outputLineFilter.apply(jsonObj, inputMarker.getInput())) {
@@ -156,26 +112,6 @@ public class OutputManagerImpl extends OutputManager {
     } else {
       return defaultLogLevels;
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private String truncateLongLogMessage(Map<String, Object> jsonObj, Input input, String logMessage) {
-    if (logMessage != null && logMessage.getBytes().length > MAX_OUTPUT_SIZE) {
-      messageTruncateMetric.value++;
-      String logMessageKey = this.getClass().getSimpleName() + "_MESSAGESIZE";
-      LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Message is too big. size=" + logMessage.getBytes().length +
-        ", input=" + input.getShortDescription() + ". Truncating to " + MAX_OUTPUT_SIZE + ", first upto 100 characters=" +
-        StringUtils.abbreviate(logMessage, 100), null, logger, Level.WARN);
-      logMessage = new String(logMessage.getBytes(), 0, MAX_OUTPUT_SIZE);
-      jsonObj.put("log_message", logMessage);
-      List<String> tagsList = (List<String>) jsonObj.get("tags");
-      if (tagsList == null) {
-        tagsList = new ArrayList<String>();
-        jsonObj.put("tags", tagsList);
-      }
-      tagsList.add("error_message_truncated");
-    }
-    return logMessage;
   }
 
   @SuppressWarnings("unchecked")

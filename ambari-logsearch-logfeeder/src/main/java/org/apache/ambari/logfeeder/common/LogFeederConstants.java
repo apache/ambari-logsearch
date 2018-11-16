@@ -112,6 +112,7 @@ public class LogFeederConstants {
   public static final String CLOUD_STORAGE_BUCKET = "logfeeder.cloud.storage.bucket";
   public static final String CLOUD_STORAGE_BUCKET_BOOTSTRAP = "logfeeder.cloud.storage.bucket.bootstrap";
   public static final String CLOUD_STORAGE_USE_HDFS_CLIENT = "logfeeder.cloud.storage.use.hdfs.client";
+  public static final String CLOUD_STORAGE_USE_FILTERS = "logfeeder.cloud.storage.use.filters";
   public static final String CLOUD_STORAGE_CUSTOM_FS = "logfeeder.cloud.storage.custom.fs";
   public static final String CLOUD_STORAGE_BASE_PATH = "logfeeder.cloud.storage.base.path";
 
