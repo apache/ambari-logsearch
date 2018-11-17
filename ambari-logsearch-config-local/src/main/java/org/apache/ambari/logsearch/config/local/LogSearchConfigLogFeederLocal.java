@@ -96,7 +96,7 @@ public class LogSearchConfigLogFeederLocal extends LogSearchConfigLocal implemen
   }
 
   private void tryLoadingInputConfig(InputConfigMonitor inputConfigMonitor, JsonParser parser, JsonArray globalConfigNode, File inputConfigFile) throws Exception {
-    // note: that will try to solve a weird issue when the input config json is a null string (during file generation), that process will re-try to process the files a few times
+    // note: that will try to solve a intermittent issue when the input config json is a null string (during file generation), that process will re-try to process the files a few times
     int tries = 0;
     while(true) {
       tries++;
