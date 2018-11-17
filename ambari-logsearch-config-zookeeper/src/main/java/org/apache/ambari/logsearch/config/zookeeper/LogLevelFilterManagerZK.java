@@ -48,6 +48,7 @@ public class LogLevelFilterManagerZK implements LogLevelFilterManager {
 
   public LogLevelFilterManagerZK(Map<String, String> properties) throws Exception {
     this.client = LogSearchConfigZKHelper.createZKClient(properties);
+    this.client.start();
     this.serverCache = new TreeCache(client, "/");
     this.aclList = LogSearchConfigZKHelper.getAcls(properties);
     this.gson = LogSearchConfigZKHelper.createGson();

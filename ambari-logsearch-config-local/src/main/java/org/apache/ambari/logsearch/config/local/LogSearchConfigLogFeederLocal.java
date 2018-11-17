@@ -84,12 +84,7 @@ public class LogSearchConfigLogFeederLocal extends LogSearchConfigLocal implemen
     File[] inputConfigFiles = new File(configDir).listFiles(inputConfigFileFilter);
     if (inputConfigFiles != null) {
       for (File inputConfigFile : inputConfigFiles) {
-        String inputConfig = new String(Files.readAllBytes(inputConfigFile.toPath()));
-        Matcher m = serviceNamePattern.matcher(inputConfigFile.getName());
-        m.find();
-        String serviceName = m.group(1);
-        JsonElement inputConfigJson = JsonHelper.mergeGlobalConfigWithInputConfig(parser, inputConfig, globalConfigNode);
-        inputConfigMonitor.loadInputConfigs(serviceName, InputConfigGson.gson.fromJson(inputConfigJson, InputConfigImpl.class));
+        tryLoadingInputConfig(inputConfigMonitor, parser, globalConfigNode, inputConfigFile);
       }
     }
     final FileSystem fs = FileSystems.getDefault();
@@ -98,6 +93,41 @@ public class LogSearchConfigLogFeederLocal extends LogSearchConfigLocal implemen
     LogSearchConfigLocalUpdater updater = new LogSearchConfigLocalUpdater(configPath, ws, inputConfigMonitor, inputFileContentsMap,
       parser, globalConfigNode, serviceNamePattern);
     executorService.submit(updater);
+  }
+
+  private void tryLoadingInputConfig(InputConfigMonitor inputConfigMonitor, JsonParser parser, JsonArray globalConfigNode, File inputConfigFile) throws Exception {
+    // note: that will try to solve a weird issue when the input config json is a null string (during file generation), that process will re-try to process the files a few times
+    int tries = 0;
+    while(true) {
+      tries++;
+      Matcher m = serviceNamePattern.matcher(inputConfigFile.getName());
+      m.find();
+      String inputConfig = new String(Files.readAllBytes(inputConfigFile.toPath()));
+      String serviceName = m.group(1);
+      JsonElement inputConfigJson = null;
+      logger.info("Trying to load '{}' service input config from input file '{}'", serviceName, inputConfigFile.getAbsolutePath());
+      try {
+        inputConfigJson = JsonHelper.mergeGlobalConfigWithInputConfig(parser, inputConfig, globalConfigNode);
+      } catch (Exception e) {
+        final String errorMessage;
+        if (tries < 3) {
+          errorMessage = String.format("Cannot parse input config: %s, will retry in a few seconds again (tries: %s)", inputConfig, String.valueOf(tries));
+          logger.error(errorMessage, e);
+          try {
+            Thread.sleep(2000);
+          } catch (Exception ex) {
+            // skip
+          }
+          continue;
+        } else {
+          errorMessage = String.format("Cannot parse input config: %s, after %s tries. Will skip to processing it", inputConfig, String.valueOf(tries));
+          logger.error(errorMessage, e);
+          break;
+        }
+      }
+      inputConfigMonitor.loadInputConfigs(serviceName, InputConfigGson.gson.fromJson(inputConfigJson, InputConfigImpl.class));
+      break;
+    }
   }
 
   @Override
