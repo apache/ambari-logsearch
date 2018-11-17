@@ -16,10 +16,15 @@
  * limitations under the License.
  */
 
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ListItem} from '@app/classes/list-item';
 import {LogsTableComponent} from '@app/classes/components/logs-table/logs-table-component';
 import {LogsContainerService} from '@app/services/logs-container.service';
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { Observable } from 'rxjs/Observable';
+import { createAuditLogsFieldComponentFieldsSelectorByComponentName } from '@app/store/selectors/audit-logs-fields.selectors';
+import { LogField } from '@app/classes/object';
 
 @Component({
   selector: 'audit-logs-table',
@@ -28,15 +33,35 @@ import {LogsContainerService} from '@app/services/logs-container.service';
 })
 export class AuditLogsTableComponent extends LogsTableComponent {
 
-  constructor(private logsContainer: LogsContainerService) {
-    super();
-  }
+  @Input()
+  commonFieldNames: string[];
 
   readonly customProcessedColumns: string[] = ['evtTime'];
 
-  readonly timeFormat: string = 'YYYY-MM-DD HH:mm:ss,SSS';
+  readonly timeFormat = 'YYYY-MM-DD HH:mm:ss';
 
-  private readonly logsType: string = 'auditLogs';
+  private readonly logsType = 'auditLogs';
+
+  get displayedCommonColumns(): string[] {
+    return this.commonFieldNames.reduce(
+      (fieldNames: string[], fieldName: string): string[] => {
+        return this.isColumnDisplayed(fieldName) ? [...fieldNames, fieldName] : fieldNames;
+      },
+      []
+    );
+  }
+
+  get displayedNotCommonColumns(): string[] {
+    return this.displayedColumns.filter((column: ListItem) => this.commonFieldNames.indexOf(column.value) === -1)
+      .map((column: ListItem) => column.value);
+  }
+
+  constructor(
+    private logsContainer: LogsContainerService,
+    private store: Store<AppStore>
+  ) {
+    super();
+  }
 
   get filters(): any {
     return this.logsContainer.filters;
@@ -52,6 +77,15 @@ export class AuditLogsTableComponent extends LogsTableComponent {
 
   updateSelectedColumns(columns: string[]): void {
     this.logsContainer.updateSelectedColumns(columns, this.logsType);
+  }
+
+  isCommonField(fieldName: string): boolean {
+    return this.commonFieldNames.indexOf(fieldName) > -1;
+  }
+
+  fieldIsAvailableForComponent(field: string, componentName: string): Observable<boolean> {
+    return this.store.select(createAuditLogsFieldComponentFieldsSelectorByComponentName(componentName))
+      .map((logFields: LogField[]) => logFields.some((logField: LogField) => logField.name === field));
   }
 
 }

@@ -16,33 +16,13 @@
  * limitations under the License.
  */
 
-import {Log} from '@app/classes/models/log';
-
-export const commonFieldNames: string[] = ['evtTime', 'repo', 'reqUser', 'action'];
-
-export interface AuditLog extends Log {
-  policy?: string;
-  reason?: string;
-  result: number;
-  text?: string;
-  tags?: string[];
-  resource?: string;
-  sess?: string;
-  access?: string;
-  logType: string;
-  tags_str?: string;
-  resType?: string;
-  reqUser: string;
-  reqData?: string;
-  repoType: number;
-  repo: string;
-  proxyUsers?: string[];
-  evtTime: number;
-  enforcer: string;
-  reqContext?: string;
-  cliType?: string;
-  cliIP?: string;
-  agent?: string;
-  agentHost?: string;
-  action?: string;
+:host {
+  display: block;
+ /deep/ tabs {
+    display: block;
+    margin: 0 0 1rem 0;
+    ul.nav.nav-tabs {
+      margin: 0;
+    }
+  }
 }

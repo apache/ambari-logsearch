@@ -25,7 +25,8 @@ import {
   ElementRef,
   Input,
   ChangeDetectorRef,
-  SimpleChanges
+  SimpleChanges,
+  OnChanges
 } from '@angular/core';
 
 import { Subject } from 'rxjs/Subject';
@@ -50,7 +51,7 @@ export enum ListLayout {
   templateUrl: './service-logs-table.component.html',
   styleUrls: ['./service-logs-table.component.less']
 })
-export class ServiceLogsTableComponent extends LogsTableComponent implements AfterViewChecked, OnInit, OnDestroy {
+export class ServiceLogsTableComponent extends LogsTableComponent implements AfterViewChecked, OnInit, OnDestroy, OnChanges {
 
   /**
    * Extra css class which can be applied to the container element
@@ -183,7 +184,6 @@ export class ServiceLogsTableComponent extends LogsTableComponent implements Aft
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.hasOwnProperty('columns')) {
-      this.displayedColumns = this.columns.filter((column: ListItem): boolean => column.isChecked);
       this.tableRefresh$.next(Date.now());
     }
   }

@@ -8,6 +8,7 @@
   "common.value": "Value",
   "common.settings": "Settings",
   "common.loading": "Loading...",
+  "common.notAvailable": "N/A",
 
   "common.form.errors.required": "This field is required",
 
