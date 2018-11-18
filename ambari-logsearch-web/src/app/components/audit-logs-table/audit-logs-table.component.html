@@ -43,19 +43,25 @@
 <section class="audit-logs-list-container">
 
   <div class="audit-logs-list-body dashrow-container">
-      <div *ngFor="let log of logs" class="audit-logs-list-row dashrow-row" [ngClass]="log.repo">
-        <div class="repo-initial dashrow-initial">{{log.repo[0]}}</div>
-        <ng-container *ngFor="let field of displayedCommonColumns">
-          <ng-container *ngIf="fieldIsAvailableForComponent(field, log.repo) | async">
-            <ng-container *ngTemplateOutlet="fieldTemplate; context:{$implicit: log[field], field: field, label: getColumnLabel(field)}"></ng-container>
+    <div *ngFor="let log of logs" class="audit-logs-list-row dashrow-row-wrapper" [ngClass]="log.repo">
+      <div class="repo-initial dashrow-initial">{{log.repo[0]}}</div>
+      <div class="audit-logs-list-row dashrow-row">
+        <div *ngIf="displayedCommonColumns.length" class="dashrow-column-group dashrow-column-group-fixed-left">
+          <ng-container *ngFor="let field of displayedCommonColumns">
+            <ng-container *ngIf="fieldIsAvailableForComponent(field, log.repo) | async">
+              <ng-container *ngTemplateOutlet="fieldTemplate; context:{$implicit: log[field], field: field, label: getColumnLabel(field)}"></ng-container>
+            </ng-container>
           </ng-container>
-        </ng-container>
-        <ng-container *ngFor="let field of displayedNotCommonColumns">
-          <ng-container *ngIf="fieldIsAvailableForComponent(field, log.repo) | async">
-            <ng-container *ngTemplateOutlet="fieldTemplate; context:{$implicit: log[field], field: field, label: getColumnLabel(field)}"></ng-container>
+        </div>
+        <div *ngIf="displayedNotCommonColumns.length" class="dashrow-column-group">
+          <ng-container *ngFor="let field of displayedNotCommonColumns">
+            <ng-container *ngIf="fieldIsAvailableForComponent(field, log.repo) | async">
+              <ng-container *ngTemplateOutlet="fieldTemplate; context:{$implicit: log[field], field: field, label: getColumnLabel(field)}"></ng-container>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
+    </div>
   </div>
 
   <footer class="audit-logs-list-footer"></footer>

@@ -20,15 +20,9 @@
 @import "mixins";
 
 .dashrow-container {
-  .dashrow-row {
-    align-items: stretch;
-    background-color: @white;
-    box-shadow: @dashrow-box-shadow;
+  .dashrow-row-wrapper {
     display: flex;
-    height: @dashrow-row-height;
-    // justify-content: space-between;
     margin: @dashrow-margin;
-    padding: 0 10rem 0 6.5rem;
     position: relative;
     .dashrow-initial {
       .hexagon(@dashrow-hexagon-size);
@@ -37,22 +31,53 @@
       left: -(@dashrow-hexagon-size/2);
       order: -1;
       position: absolute;
+      z-index: 2;
     }
-    .dashrow-column {
+    .dashrow-row {
+      align-items: stretch;
+      background-color: @white;
+      box-shadow: @dashrow-box-shadow;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      .dashrow-value {
-        color: @dashrow-value-font-color;
-        font-size: @dashrow-value-font-size;
+      flex: 1;
+      height: @dashrow-row-height;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0 2rem 0 5rem;
+      .dashrow-column-group {
+        align-items: stretch;
+        display: flex;
+        &[class*='dashrow-column-group-fixed-'] {
+          position: sticky;
+        }
+        &.dashrow-column-group-fixed-left {
+          background-color: @white;
+          box-shadow: 1rem 0rem 1rem -1rem fadeout(@fluid-gray-2, .5);
+          left: 0;
+          z-index: 1;
+        }
+        &.dashrow-column-group-fixed-right {
+          box-shadow: 1rem 0rem -1rem 1rem fadeout(@fluid-gray-2, .5);
+          right: 0;
+          z-index: 1;
+        }
+        .dashrow-column {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          .dashrow-value {
+            color: @dashrow-value-font-color;
+            font-size: @dashrow-value-font-size;
 
-      }
-      .dashrow-label {
-        color: @dashrow-label-color;
-        display: block;
-        font-size: @dashrow-label-font-size;
-        font-weight: lighter;
-        text-transform: uppercase;
+          }
+          .dashrow-label {
+            color: @dashrow-label-color;
+            display: block;
+            font-size: @dashrow-label-font-size;
+            font-weight: lighter;
+            text-transform: uppercase;
+            white-space: nowrap;
+          }
+        }
       }
     }
   }
