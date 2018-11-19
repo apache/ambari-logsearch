@@ -57,6 +57,7 @@ public class HDFSS3UploadClient extends AbstractS3CloudClient implements UploadC
     conf.set("fs.s3a.endpoint", s3OutputConfig.getEndpoint());
     conf.set("fs.s3a.path.style.access", String.valueOf(s3OutputConfig.isPathStyleAccess()));
     conf.set("fs.s3a.multiobjectdelete.enable", String.valueOf(s3OutputConfig.isMultiobjectDeleteEnable()));
+    LogFeederHDFSUtil.overrideFileSystemConfigs(logFeederProps, conf);
     this.fs = LogFeederHDFSUtil.buildFileSystem(conf);
   }
 
