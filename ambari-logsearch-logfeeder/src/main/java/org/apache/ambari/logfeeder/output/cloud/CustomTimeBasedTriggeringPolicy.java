@@ -34,17 +34,17 @@ import java.util.concurrent.TimeUnit;
 @Plugin(name = "CustomTimeBasedTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
 public final class CustomTimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
 
-  private final long intervalMin;
+  private final long intervalSeconds;
 
   private RollingFileManager manager;
   private long nextRolloverMillis;
 
-  private CustomTimeBasedTriggeringPolicy(final long intervalMin) {
-    this.intervalMin = intervalMin;
+  private CustomTimeBasedTriggeringPolicy(final long intervalSeconds) {
+    this.intervalSeconds = intervalSeconds;
   }
 
-  public long getIntervalMin() {
-    return this.intervalMin;
+  public long getIntervalSeconds() {
+    return this.intervalSeconds;
   }
 
   @Override
@@ -53,7 +53,7 @@ public final class CustomTimeBasedTriggeringPolicy extends AbstractTriggeringPol
     long fileTime = this.manager.getFileTime();
     long actualDate = System.currentTimeMillis();
     long diff = actualDate - fileTime;
-    long intervalMillis = TimeUnit.MINUTES.toMillis(this.intervalMin);
+    long intervalMillis = TimeUnit.SECONDS.toMillis(this.intervalSeconds);
     if (diff > intervalMillis) {
       this.nextRolloverMillis = actualDate;
     } else {
@@ -69,7 +69,7 @@ public final class CustomTimeBasedTriggeringPolicy extends AbstractTriggeringPol
     } else {
       long nowMillis = event.getTimeMillis();
       if (nowMillis >= this.nextRolloverMillis) {
-        this.nextRolloverMillis = nowMillis + TimeUnit.MINUTES.toMillis(this.intervalMin);
+        this.nextRolloverMillis = nowMillis + TimeUnit.SECONDS.toMillis(this.intervalSeconds);
         return true;
       } else {
         return false;
@@ -78,8 +78,8 @@ public final class CustomTimeBasedTriggeringPolicy extends AbstractTriggeringPol
   }
 
   @PluginFactory
-  public static CustomTimeBasedTriggeringPolicy createPolicy(@PluginAttribute("intervalMins") final String intervalMins) {
-    return new CustomTimeBasedTriggeringPolicy(Long.parseLong(intervalMins));
+  public static CustomTimeBasedTriggeringPolicy createPolicy(@PluginAttribute("intervalSeconds") final String intervalSeconds) {
+    return new CustomTimeBasedTriggeringPolicy(Long.parseLong(intervalSeconds));
   }
 
 }

@@ -117,7 +117,7 @@ public class LogFeederConstants {
   public static final String CLOUD_STORAGE_BASE_PATH = "logfeeder.cloud.storage.base.path";
 
   public static final String CLOUD_ROLLOVER_ARCHIVE_LOCATION = "logfeeder.cloud.rollover.archive.base.dir";
-  public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_MIN = "logfeeder.cloud.rollover.threshold.min";
+  public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_SECONDS = "logfeeder.cloud.rollover.threshold.min";
   public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE = "logfeeder.cloud.rollover.threshold.size";
   public static final String CLOUD_ROLLOVER_MAX_BACKUP_FILES = "logfeeder.cloud.rollover.max.files";
   public static final String CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE_UNIT = "logfeeder.cloud.rollover.threshold.size.unit";

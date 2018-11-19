@@ -37,14 +37,14 @@ public class RolloverConfig {
   private String rolloverArchiveBaseDir;
 
   @LogSearchPropertyDescription(
-    name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_MIN,
+    name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SECONDS,
     description = "Rollover cloud log files after an interval (minutes)",
-    examples = {"1"},
-    defaultValue = "60",
+    examples = {"60"},
+    defaultValue = "3600",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
-  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_MIN + ":60}")
-  private int rolloverThresholdTimeMins;
+  @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SECONDS + ":3600}")
+  private int rolloverThresholdTimeSeconds;
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SIZE,
@@ -116,12 +116,12 @@ public class RolloverConfig {
   @Value("${"+ LogFeederConstants.CLOUD_ROLLOVER_ON_STARTUP + ":false}")
   private boolean rolloverOnStartup;
 
-  public int getRolloverThresholdTimeMins() {
-    return rolloverThresholdTimeMins;
+  public int getRolloverThresholdTimeSeconds() {
+    return rolloverThresholdTimeSeconds;
   }
 
-  public void setRolloverThresholdTimeMins(int rolloverThresholdTimeMins) {
-    this.rolloverThresholdTimeMins = rolloverThresholdTimeMins;
+  public void setRolloverThresholdTimeSeconds(int rolloverThresholdTimeSeconds) {
+    this.rolloverThresholdTimeSeconds = rolloverThresholdTimeSeconds;
   }
 
   public Integer getRolloverMaxBackupFiles() {

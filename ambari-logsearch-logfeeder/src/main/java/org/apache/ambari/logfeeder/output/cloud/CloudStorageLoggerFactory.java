@@ -78,7 +78,7 @@ public class CloudStorageLoggerFactory {
     String rolloverSize = logFeederProps.getRolloverConfig().getRolloverSize().toString() + logFeederProps.getRolloverConfig().getRolloverSizeFormat();
     SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy = SizeBasedTriggeringPolicy.createPolicy(rolloverSize);
     CustomTimeBasedTriggeringPolicy customTimeBasedTriggeringPolicy = CustomTimeBasedTriggeringPolicy
-      .createPolicy(String.valueOf(logFeederProps.getRolloverConfig().getRolloverThresholdTimeMins()));
+      .createPolicy(String.valueOf(logFeederProps.getRolloverConfig().getRolloverThresholdTimeSeconds()));
 
     final CompositeTriggeringPolicy compositeTriggeringPolicy;
 
