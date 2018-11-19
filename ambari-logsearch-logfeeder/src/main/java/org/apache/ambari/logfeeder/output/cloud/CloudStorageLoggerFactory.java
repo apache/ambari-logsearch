@@ -21,6 +21,7 @@ package org.apache.ambari.logfeeder.output.cloud;
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.plugin.input.Input;
+import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -58,8 +59,9 @@ public class CloudStorageLoggerFactory {
     Configuration config = loggerContext.getConfiguration();
     String destination = logFeederProps.getCloudStorageDestination().getText();
     String baseDir = logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir();
-    String activeLogDir = Paths.get(baseDir, destination, ACTIVE_FOLDER, type).toFile().getAbsolutePath();
-    String archiveLogDir = Paths.get(baseDir, destination, ARCHIVED_FOLDER, type).toFile().getAbsolutePath();
+    String clusterHostnameBaseDir = Paths.get(baseDir, destination, logFeederProps.getClusterName(), LogFeederUtil.hostName).toFile().getAbsolutePath();
+    String activeLogDir = Paths.get(clusterHostnameBaseDir, ACTIVE_FOLDER, type).toFile().getAbsolutePath();
+    String archiveLogDir = Paths.get(clusterHostnameBaseDir, ARCHIVED_FOLDER, type).toFile().getAbsolutePath();
 
     boolean useGzip = logFeederProps.getRolloverConfig().isUseGzip();
     final String archiveFilePattern;
