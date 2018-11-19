@@ -85,7 +85,7 @@ public class HdfsOutputConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.HDFS_KERBEROS_PRINCIPAL,
-    description = "Kerberos keytab location for Log Feeder for communicating with secure HDFS. ",
+    description = "Kerberos principal for Log Feeder for communicating with secure HDFS. ",
     examples = {"mylogfeeder/myhost1@EXAMPLE.COM"},
     defaultValue = "logfeeder/_HOST",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
