@@ -74,7 +74,7 @@ public class DefaultInputConfigHandler extends AbstractInputConfigHandler {
   private void loadInputs(String serviceName, InputConfigHolder inputConfigHolder) {
     for (InputDescriptor inputDescriptor : inputConfigHolder.getInputConfigList()) {
       if (inputDescriptor == null) {
-        logger.warn("Input descriptor is smpty. Skipping...");
+        logger.warn("Input descriptor is empty. Skipping...");
         continue;
       }
 

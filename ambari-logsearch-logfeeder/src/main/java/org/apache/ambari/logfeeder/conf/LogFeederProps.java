@@ -19,7 +19,7 @@
 package org.apache.ambari.logfeeder.conf;
 
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
-import org.apache.ambari.logfeeder.conf.output.ExternalHdfsOutputConfig;
+import org.apache.ambari.logfeeder.conf.output.HdfsOutputConfig;
 import org.apache.ambari.logfeeder.conf.output.RolloverConfig;
 import org.apache.ambari.logfeeder.conf.output.S3OutputConfig;
 import org.apache.ambari.logfeeder.plugin.common.LogFeederProperties;
@@ -53,7 +53,7 @@ public class LogFeederProps implements LogFeederProperties {
   private S3OutputConfig s3OutputConfig;
 
   @Inject
-  private ExternalHdfsOutputConfig hdfsOutputConfig;
+  private HdfsOutputConfig hdfsOutputConfig;
 
   private Properties properties;
 
@@ -258,7 +258,7 @@ public class LogFeederProps implements LogFeederProperties {
     defaultValue = "false",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
-  @Value("${" + LogFeederConstants.CLOUD_STORAGE_USE_HDFS_CLIENT + ":false}")
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_USE_HDFS_CLIENT + ":true}")
   private boolean useCloudHdfsClient;
 
   @LogSearchPropertyDescription(
@@ -279,15 +279,6 @@ public class LogFeederProps implements LogFeederProperties {
   )
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_BASE_PATH + ":}")
   private String cloudBasePath;
-
-  @LogSearchPropertyDescription(
-    name = LogFeederConstants.HDFS_USER,
-    description = "Overrides HADOOP_USER_NAME variable at runtime",
-    examples = {"hdfs"},
-    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
-  )
-  @Value("${"+ LogFeederConstants.HDFS_USER + ":}")
-  private String logfeederHdfsUser;
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_USE_FILTERS,
@@ -460,7 +451,7 @@ public class LogFeederProps implements LogFeederProperties {
     this.cloudStorageMode = cloudStorageMode;
   }
 
-  public ExternalHdfsOutputConfig getHdfsOutputConfig() {
+  public HdfsOutputConfig getHdfsOutputConfig() {
     return hdfsOutputConfig;
   }
 
@@ -480,7 +471,7 @@ public class LogFeederProps implements LogFeederProperties {
     this.rolloverConfig = rolloverConfig;
   }
 
-  public void setHdfsOutputConfig(ExternalHdfsOutputConfig hdfsOutputConfig) {
+  public void setHdfsOutputConfig(HdfsOutputConfig hdfsOutputConfig) {
     this.hdfsOutputConfig = hdfsOutputConfig;
   }
 
@@ -510,14 +501,6 @@ public class LogFeederProps implements LogFeederProperties {
 
   public boolean isUseCloudHdfsClient() {
     return useCloudHdfsClient;
-  }
-
-  public String getLogfeederHdfsUser() {
-    return logfeederHdfsUser;
-  }
-
-  public void setLogfeederHdfsUser(String logfeederHdfsUser) {
-    this.logfeederHdfsUser = logfeederHdfsUser;
   }
 
   public void setUseCloudHdfsClient(boolean useCloudHdfsClient) {

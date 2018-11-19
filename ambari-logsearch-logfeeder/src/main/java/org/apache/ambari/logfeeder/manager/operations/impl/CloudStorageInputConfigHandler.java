@@ -52,7 +52,7 @@ public class CloudStorageInputConfigHandler extends AbstractInputConfigHandler {
     final boolean useFilters = inputConfigHolder.getLogFeederProps().isCloudStorageUseFilters();
     for (InputDescriptor inputDescriptor : inputConfigHolder.getInputConfigList()) {
       if (inputDescriptor == null) {
-        logger.warn("Input descriptor is smpty. Skipping...");
+        logger.warn("Input descriptor is empty. Skipping...");
         continue;
       }
       LogFeederMode mode = inputConfigHolder.getLogFeederProps().getCloudStorageMode();

@@ -43,11 +43,11 @@ public class UploadClientFactory {
     if (useHdfsClient && checkCoreSiteIsOnClasspath(logFeederProps)) {
       logger.info("The core-site.xml from the classpath will be used to figure it out the cloud output settings.");
       logFeederProps.setCloudStorageDestination(CloudStorageDestination.DEFAULT_FS);
-      return new HDFSUploadClient();
+      return new HDFSUploadClient(logFeederProps.getHdfsOutputConfig(), false);
     }
     else if (CloudStorageDestination.HDFS.equals(destType)) {
       logger.info("External HDFS output will be used.");
-      return new ExternalHDFSUploadClient(logFeederProps.getHdfsOutputConfig());
+      return new HDFSUploadClient(logFeederProps.getHdfsOutputConfig(), true);
     } else if (CloudStorageDestination.S3.equals(destType)) {
       if (useHdfsClient) {
         logger.info("S3 cloud output will be used with HDFS client.");

@@ -19,14 +19,16 @@
 package org.apache.ambari.logfeeder.output.cloud.upload;
 
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
+import org.apache.ambari.logfeeder.conf.output.HdfsOutputConfig;
 import org.apache.ambari.logfeeder.util.LogFeederHDFSUtil;
+import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.permission.FsPermission;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 /**
  * HDFS client that uses core-site.xml file from the classpath to load the configuration.
@@ -35,37 +37,64 @@ import java.io.IOException;
 public class HDFSUploadClient implements UploadClient {
 
   private static final String FS_DEFAULT_FS = "fs.defaultFS";
+  private static final String HADOOP_SECURITY_AUTHENTICATION = "hadoop.security.authentication";
 
   private static final Logger logger = LogManager.getLogger(HDFSUploadClient.class);
 
+  private final boolean externalHdfs;
+  private final HdfsOutputConfig hdfsOutputConfig;
+  private final FsPermission fsPermission;
   private FileSystem fs;
+
+  public HDFSUploadClient(HdfsOutputConfig hdfsOutputConfig, boolean externalHdfs) {
+    this.hdfsOutputConfig = hdfsOutputConfig;
+    this.externalHdfs = externalHdfs;
+    this.fsPermission = new FsPermission(hdfsOutputConfig.getHdfsFilePermissions());
+  }
 
   @Override
   public void init(LogFeederProps logFeederProps) {
-    logger.info("Initialize HDFS client (cloud mode), using core-site.xml from the classpath.");
-    Configuration configuration = new Configuration();
+    final Configuration configuration;
+    if (externalHdfs) {
+      configuration = LogFeederHDFSUtil.buildHdfsConfiguration(hdfsOutputConfig.getHdfsHost(), String.valueOf(hdfsOutputConfig.getHdfsPort()), "hdfs");
+      logger.info("Using external HDFS client as core-site.xml is not located on the classpath.");
+    } else {
+      configuration = new Configuration();
+      logger.info("Initialize HDFS client (cloud mode), using core-site.xml from the classpath.");
+    }
     if (StringUtils.isNotBlank(logFeederProps.getCustomFs())) {
       configuration.set(FS_DEFAULT_FS, logFeederProps.getCustomFs());
     }
-    if (StringUtils.isNotBlank(logFeederProps.getLogfeederHdfsUser()) && isHadoopFileSystem(configuration)) {
-      logger.info("Using HADOOP_USER_NAME: {}", logFeederProps.getLogfeederHdfsUser());
-      System.setProperty("HADOOP_USER_NAME", logFeederProps.getLogfeederHdfsUser());
+    if (hdfsOutputConfig.isHdfsKerberos()) {
+      logger.info("Kerberos is enabled for HDFS.");
+      configuration.set(HADOOP_SECURITY_AUTHENTICATION, "kerberos");
+      final String principal = hdfsOutputConfig.getPrincipal().replace("_HOST", LogFeederUtil.hostName);
+      UserGroupInformation.setConfiguration(configuration);
+      try {
+        UserGroupInformation ugi = UserGroupInformation.loginUserFromKeytabAndReturnUGI(principal, hdfsOutputConfig.getKeytab());
+        UserGroupInformation.setLoginUser(ugi);
+      } catch (Exception e) {
+        logger.error("Error during kerberos login", e);
+        throw new RuntimeException(e);
+      }
+    } else {
+      if (StringUtils.isNotBlank(hdfsOutputConfig.getLogfeederHdfsUser())) {
+        logger.info("Using HADOOP_USER_NAME: {}", hdfsOutputConfig.getLogfeederHdfsUser());
+        System.setProperty("HADOOP_USER_NAME", hdfsOutputConfig.getLogfeederHdfsUser());
+      }
     }
+    logger.info("HDFS client - will use '{}' permission for uploaded files", hdfsOutputConfig.getHdfsFilePermissions());
     this.fs = LogFeederHDFSUtil.buildFileSystem(configuration);
   }
 
   @Override
   public void upload(String source, String target) throws Exception {
-    LogFeederHDFSUtil.copyFromLocal(source, target, fs, true, true, null);
+    LogFeederHDFSUtil.copyFromLocal(source, target, fs, true, true, this.fsPermission);
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     LogFeederHDFSUtil.closeFileSystem(fs);
-  }
-
-  private boolean isHadoopFileSystem(Configuration conf) {
-    return conf.get(FS_DEFAULT_FS).contains("hdfs://");
   }
 
 }

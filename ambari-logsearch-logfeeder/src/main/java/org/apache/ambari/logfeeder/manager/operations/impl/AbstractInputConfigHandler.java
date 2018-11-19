@@ -47,7 +47,7 @@ public abstract class AbstractInputConfigHandler implements InputConfigHandler {
     for (Input input : inputConfigHolder.getInputManager().getInputList(serviceName)) {
       for (FilterDescriptor filterDescriptor : inputConfigHolder.getFilterConfigList()) {
         if (filterDescriptor == null) {
-          logger.warn("Filter descriptor is smpty. Skipping...");
+          logger.warn("Filter descriptor is empty. Skipping...");
           continue;
         }
         if (BooleanUtils.isFalse(filterDescriptor.isEnabled())) {
