@@ -38,7 +38,7 @@ public class RolloverConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_ROLLOVER_THRESHOLD_TIME_SECONDS,
-    description = "Rollover cloud log files after an interval (minutes)",
+    description = "Rollover cloud log files after an interval (seconds)",
     examples = {"60"},
     defaultValue = "3600",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
