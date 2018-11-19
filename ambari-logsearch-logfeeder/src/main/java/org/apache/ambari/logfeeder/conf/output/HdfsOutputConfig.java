@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ExternalHdfsOutputConfig {
+public class HdfsOutputConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.HDFS_HOST,
@@ -55,6 +55,15 @@ public class ExternalHdfsOutputConfig {
   private String hdfsFilePermissions;
 
   @LogSearchPropertyDescription(
+    name = LogFeederConstants.HDFS_USER,
+    description = "Overrides HADOOP_USER_NAME variable at runtime",
+    examples = {"hdfs"},
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.HDFS_USER + ":}")
+  private String logfeederHdfsUser;
+
+  @LogSearchPropertyDescription(
     name = LogFeederConstants.HDFS_KERBEROS,
     description = "Enable kerberos support for HDFS",
     examples = {"true"},
@@ -62,7 +71,27 @@ public class ExternalHdfsOutputConfig {
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
   @Value("${"+ LogFeederConstants.HDFS_KERBEROS + ":false}")
-  private boolean secure;
+  private boolean hdfsKerberos;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.HDFS_KERBEROS_KEYTAB,
+    description = "Kerberos keytab location for Log Feeder for communicating with secure HDFS. ",
+    examples = {"/etc/security/keytabs/mykeytab.keytab"},
+    defaultValue = "/etc/security/keytabs/logfeeder.service.keytab",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.HDFS_KERBEROS_KEYTAB + ":/etc/security/keytabs/logfeeder.service.keytab}")
+  private String keytab;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.HDFS_KERBEROS_PRINCIPAL,
+    description = "Kerberos principal for Log Feeder for communicating with secure HDFS. ",
+    examples = {"mylogfeeder/myhost1@EXAMPLE.COM"},
+    defaultValue = "logfeeder/_HOST",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${"+ LogFeederConstants.HDFS_KERBEROS_PRINCIPAL + ":logfeeder/_HOST}")
+  private String principal;
 
   public String getHdfsHost() {
     return hdfsHost;
@@ -88,11 +117,35 @@ public class ExternalHdfsOutputConfig {
     this.hdfsFilePermissions = hdfsFilePermissions;
   }
 
-  public boolean isSecure() {
-    return secure;
+  public String getKeytab() {
+    return keytab;
   }
 
-  public void setSecure(boolean secure) {
-    this.secure = secure;
+  public void setKeytab(String keytab) {
+    this.keytab = keytab;
+  }
+
+  public String getPrincipal() {
+    return principal;
+  }
+
+  public void setPrincipal(String principal) {
+    this.principal = principal;
+  }
+
+  public String getLogfeederHdfsUser() {
+    return logfeederHdfsUser;
+  }
+
+  public void setLogfeederHdfsUser(String logfeederHdfsUser) {
+    this.logfeederHdfsUser = logfeederHdfsUser;
+  }
+
+  public boolean isHdfsKerberos() {
+    return hdfsKerberos;
+  }
+
+  public void setHdfsKerberos(boolean hdfsKerberos) {
+    this.hdfsKerberos = hdfsKerberos;
   }
 }

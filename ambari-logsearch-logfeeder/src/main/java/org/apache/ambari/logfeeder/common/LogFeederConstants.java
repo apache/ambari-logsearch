@@ -132,6 +132,8 @@ public class LogFeederConstants {
   public static final String HDFS_PORT = "logfeeder.hdfs.port";
   public static final String HDFS_FILE_PERMISSIONS = "logfeeder.hdfs.file.permissions";
   public static final String HDFS_KERBEROS = "logfeeder.hdfs.kerberos";
+  public static final String HDFS_KERBEROS_KEYTAB = "logfeeder.hdfs.keytab";
+  public static final String HDFS_KERBEROS_PRINCIPAL = "logfeeder.hdfs.principal";
 
   public static final String S3_ENDPOINT = "logfeeder.s3.endpoint";
   public static final String S3_ENDPOINT_DEFAULT = "https://s3.amazonaws.com";
