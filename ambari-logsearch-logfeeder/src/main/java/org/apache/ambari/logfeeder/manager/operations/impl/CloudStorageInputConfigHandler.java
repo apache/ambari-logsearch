@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Holds input/filter/output operations in cloud Log Feeder mode.
  */
-public class CloudStorageInputConfigHandler implements InputConfigHandler {
+public class CloudStorageInputConfigHandler extends AbstractInputConfigHandler {
 
   private static final Logger logger = LogManager.getLogger(CloudStorageInputConfigHandler.class);
 
@@ -49,6 +49,7 @@ public class CloudStorageInputConfigHandler implements InputConfigHandler {
 
   @Override
   public void loadInputs(String serviceName, InputConfigHolder inputConfigHolder, InputConfig inputConfig) {
+    final boolean useFilters = inputConfigHolder.getLogFeederProps().isCloudStorageUseFilters();
     for (InputDescriptor inputDescriptor : inputConfigHolder.getInputConfigList()) {
       if (inputDescriptor == null) {
         logger.warn("Input descriptor is smpty. Skipping...");
@@ -72,9 +73,11 @@ public class CloudStorageInputConfigHandler implements InputConfigHandler {
       input.setType(source);
       input.setLogType(LogFeederConstants.CLOUD_PREFIX + inputDescriptor.getType());
       input.loadConfig(inputDescriptor);
-      FilterDummy filter = new FilterDummy();
-      filter.setOutputManager(inputConfigHolder.getOutputManager());
-      input.setFirstFilter(filter);
+      if (!useFilters) {
+        FilterDummy filter = new FilterDummy();
+        filter.setOutputManager(inputConfigHolder.getOutputManager());
+        input.setFirstFilter(filter);
+      }
       input.setCloudInput(true);
 
       if (input.isEnabled()) {
@@ -86,6 +89,9 @@ public class CloudStorageInputConfigHandler implements InputConfigHandler {
       } else {
         logger.info("Input is disabled. So ignoring it. " + input.getShortDescription());
       }
+    }
+    if (useFilters) {
+      loadFilters(serviceName, inputConfigHolder);
     }
   }
 

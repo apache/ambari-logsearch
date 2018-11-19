@@ -18,7 +18,10 @@
  */
 package org.apache.ambari.logfeeder.output.cloud;
 
+import org.apache.ambari.logfeeder.common.IdGeneratorHelper;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
+import org.apache.ambari.logfeeder.output.OutputLineEnricher;
+import org.apache.ambari.logfeeder.output.OutputLineFilter;
 import org.apache.ambari.logfeeder.plugin.common.MetricData;
 import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
@@ -33,6 +36,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Handle output operations for sending cloud inputs to a cloud storage destination
@@ -47,10 +51,25 @@ public class CloudStorageOutputManager extends OutputManager {
   private CloudStorageOutput storageOutput = null;
 
   private List<Output> outputList = new ArrayList<>();
+  private final AtomicBoolean useFilters = new AtomicBoolean(false);
+
+  private final MetricData messageTruncateMetric = new MetricData(null, false);
+  private final OutputLineEnricher outputLineEnricher = new OutputLineEnricher();
+  private final OutputLineFilter outputLineFilter = new OutputLineFilter();
 
   @Override
   public void write(Map<String, Object> jsonObj, InputMarker marker) {
-    write(LogFeederUtil.getGson().toJson(jsonObj), marker);
+    if (useFilters.get()) {
+      outputLineEnricher.enrichFields(jsonObj, marker, messageTruncateMetric);
+      if (!outputLineFilter.apply(jsonObj, marker.getInput())) {
+        if (jsonObj.get("id") == null) {
+          jsonObj.put("id", IdGeneratorHelper.generateUUID(jsonObj, storageOutput.getIdFields()));
+        }
+        write(LogFeederUtil.getGson().toJson(jsonObj), marker);
+      }
+    } else {
+      write(LogFeederUtil.getGson().toJson(jsonObj), marker);
+    }
   }
 
   @Override
@@ -82,6 +101,12 @@ public class CloudStorageOutputManager extends OutputManager {
     storageOutput = new CloudStorageOutput(logFeederProps);
     storageOutput.init(logFeederProps);
     add(storageOutput);
+    useFilters.set(logFeederProps.isCloudStorageUseFilters());
+    if (useFilters.get()) {
+      logger.info("Using filters are enabled for cloud log outputs");
+    } else {
+      logger.info("Using filters are disabled for cloud log outputs");
+    }
   }
 
   @Override

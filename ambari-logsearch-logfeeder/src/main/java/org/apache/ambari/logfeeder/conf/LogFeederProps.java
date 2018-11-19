@@ -289,6 +289,16 @@ public class LogFeederProps implements LogFeederProperties {
   @Value("${"+ LogFeederConstants.HDFS_USER + ":}")
   private String logfeederHdfsUser;
 
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_USE_FILTERS,
+    description = "Use filters for inputs (with filters the output format will be JSON)",
+    examples = {"true"},
+    defaultValue = "false",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_USE_FILTERS + ":false}")
+  private boolean cloudStorageUseFilters;
+
   @Inject
   private LogEntryCacheConfig logEntryCacheConfig;
 
@@ -520,6 +530,14 @@ public class LogFeederProps implements LogFeederProperties {
 
   public void setCustomFs(String customFs) {
     this.customFs = customFs;
+  }
+
+  public boolean isCloudStorageUseFilters() {
+    return cloudStorageUseFilters;
+  }
+
+  public void setCloudStorageUseFilters(boolean cloudStorageUseFilters) {
+    this.cloudStorageUseFilters = cloudStorageUseFilters;
   }
 
   public String getCloudBasePath() {

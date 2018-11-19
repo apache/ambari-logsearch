@@ -76,7 +76,7 @@ public class CloudStorageUploader extends Thread {
     try {
       final String archiveLogDir = String.join(File.separator, logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir(), uploaderType, "archived");
       if (new File(archiveLogDir).exists()) {
-        String[] extensions = {"log", "gz"};
+        String[] extensions = {"log", "json", "gz"};
         Collection<File> filesToUpload = FileUtils.listFiles(new File(archiveLogDir), extensions, true);
         if (filesToUpload.isEmpty()) {
           logger.debug("Not found any files to upload.");

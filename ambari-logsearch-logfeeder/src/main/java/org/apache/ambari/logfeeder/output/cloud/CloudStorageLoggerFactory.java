@@ -48,8 +48,11 @@ public class CloudStorageLoggerFactory {
   private static final String ARCHIVED_FOLDER = "archived";
   private static final String DATE_PATTERN_SUFFIX_GZ = "-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log.gz";
   private static final String DATE_PATTERN_SUFFIX = "-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log";
+  private static final String JSON_DATE_PATTERN_SUFFIX_GZ = "-%d{yyyy-MM-dd-HH-mm-ss-SSS}.json.gz";
+  private static final String JSON_DATE_PATTERN_SUFFIX = "-%d{yyyy-MM-dd-HH-mm-ss-SSS}.json";
 
   public static Logger createLogger(Input input, LoggerContext loggerContext, LogFeederProps logFeederProps) {
+    boolean useJsonFormat = logFeederProps.isCloudStorageUseFilters();
     String type = input.getLogType().replace(LogFeederConstants.CLOUD_PREFIX, "");
     String uniqueThreadName = input.getThread().getName();
     Configuration config = loggerContext.getConfiguration();
@@ -59,8 +62,15 @@ public class CloudStorageLoggerFactory {
     String archiveLogDir = Paths.get(baseDir, destination, ARCHIVED_FOLDER, type).toFile().getAbsolutePath();
 
     boolean useGzip = logFeederProps.getRolloverConfig().isUseGzip();
-    String archiveFilePattern = useGzip ? DATE_PATTERN_SUFFIX_GZ : DATE_PATTERN_SUFFIX;
-    String fileName = String.join(File.separator, activeLogDir, type + ".log");
+    final String archiveFilePattern;
+    if (useJsonFormat) {
+      archiveFilePattern = useGzip ? JSON_DATE_PATTERN_SUFFIX_GZ : JSON_DATE_PATTERN_SUFFIX;
+    } else {
+      archiveFilePattern = useGzip ? DATE_PATTERN_SUFFIX_GZ : DATE_PATTERN_SUFFIX;
+    }
+
+    String logSuffix = useJsonFormat ? ".json" : ".log";
+    String fileName = String.join(File.separator, activeLogDir, type + logSuffix);
     String filePattern = String.join(File.separator, archiveLogDir, type + archiveFilePattern);
     PatternLayout layout = PatternLayout.newBuilder()
       .withPattern(PatternLayout.DEFAULT_CONVERSION_PATTERN).build();
