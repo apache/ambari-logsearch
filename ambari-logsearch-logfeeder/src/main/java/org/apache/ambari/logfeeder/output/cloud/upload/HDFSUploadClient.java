@@ -84,6 +84,7 @@ public class HDFSUploadClient implements UploadClient {
       }
     }
     logger.info("HDFS client - will use '{}' permission for uploaded files", hdfsOutputConfig.getHdfsFilePermissions());
+    LogFeederHDFSUtil.overrideFileSystemConfigs(logFeederProps, configuration);
     this.fs = LogFeederHDFSUtil.buildFileSystem(configuration);
   }
 

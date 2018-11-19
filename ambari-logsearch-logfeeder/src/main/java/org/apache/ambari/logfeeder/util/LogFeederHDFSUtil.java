@@ -19,7 +19,10 @@
 package org.apache.ambari.logfeeder.util;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
 
+import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -92,6 +95,22 @@ public class LogFeederHDFSUtil {
         fileSystem.close();
       } catch (IOException e) {
         logger.error(e.getLocalizedMessage(), e.getCause());
+      }
+    }
+  }
+
+  /**
+   * Override Hadoop configuration object based on logfeeder.properties configurations (with keys that starts with "fs." or "hadoop.*")
+   * @param logFeederProps global property holder
+   * @param configuration hadoop configuration holder
+   */
+  public static void overrideFileSystemConfigs(LogFeederProps logFeederProps, Configuration configuration) {
+    Properties properties = logFeederProps.getProperties();
+    for (Map.Entry<Object, Object> prop : properties.entrySet()) {
+      String propertyName = prop.getKey().toString();
+      if (propertyName.startsWith("fs.")) {
+        logger.info("Override {} configuration (by logfeeder.properties)", propertyName);
+        configuration.set(propertyName, prop.getValue().toString());
       }
     }
   }
