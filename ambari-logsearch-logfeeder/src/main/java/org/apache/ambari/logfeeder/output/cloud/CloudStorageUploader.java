@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 /**
@@ -74,10 +75,11 @@ public class CloudStorageUploader extends Thread {
    */
   void doUpload() {
     try {
-      final String archiveLogDir = String.join(File.separator, logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir(), uploaderType, "archived");
-      if (new File(archiveLogDir).exists()) {
+      final File archiveLogDir = Paths.get(logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir(),
+        uploaderType, clusterName, hostName, "archived").toFile();
+      if (archiveLogDir.exists()) {
         String[] extensions = {"log", "json", "gz"};
-        Collection<File> filesToUpload = FileUtils.listFiles(new File(archiveLogDir), extensions, true);
+        Collection<File> filesToUpload = FileUtils.listFiles(archiveLogDir, extensions, true);
         if (filesToUpload.isEmpty()) {
           logger.debug("Not found any files to upload.");
         } else {

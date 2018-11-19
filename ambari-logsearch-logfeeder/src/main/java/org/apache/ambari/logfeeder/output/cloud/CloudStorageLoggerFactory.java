@@ -57,8 +57,8 @@ public class CloudStorageLoggerFactory {
     String type = input.getLogType().replace(LogFeederConstants.CLOUD_PREFIX, "");
     String uniqueThreadName = input.getThread().getName();
     Configuration config = loggerContext.getConfiguration();
-    String destination = logFeederProps.getCloudStorageDestination().getText();
     String baseDir = logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir();
+    String destination = logFeederProps.getCloudStorageDestination().getText();
     String clusterHostnameBaseDir = Paths.get(baseDir, destination, logFeederProps.getClusterName(), LogFeederUtil.hostName).toFile().getAbsolutePath();
     String activeLogDir = Paths.get(clusterHostnameBaseDir, ACTIVE_FOLDER, type).toFile().getAbsolutePath();
     String archiveLogDir = Paths.get(clusterHostnameBaseDir, ARCHIVED_FOLDER, type).toFile().getAbsolutePath();
