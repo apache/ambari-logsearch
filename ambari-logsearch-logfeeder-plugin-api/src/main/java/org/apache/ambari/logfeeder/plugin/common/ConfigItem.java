@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public abstract class ConfigItem<PROP_TYPE extends LogFeederProperties> implements Cloneable, Serializable {
 
-  private static final Logger logger = LogManager.getLogger(ConfigItem.class);
+  private static final Logger logger = LogManager.getLogger("logfeeder.metrics");
 
   private final static String GSON_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
   private static Gson gson = new GsonBuilder().setDateFormat(GSON_DATE_FORMAT).create();
