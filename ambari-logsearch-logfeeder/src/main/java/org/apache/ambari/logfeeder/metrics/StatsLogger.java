@@ -30,7 +30,7 @@ import java.util.List;
 
 public class StatsLogger extends Thread {
 
-  private static final Logger logger = LogManager.getLogger(StatsLogger.class);
+  private static final Logger logger = LogManager.getLogger("logfeeder.metrics");
 
   private static final int CHECKPOINT_CLEAN_INTERVAL_MS = 24 * 60 * 60 * 60 * 1000; // 24 hours
 
