@@ -30,6 +30,8 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * HDFS client that uses core-site.xml file from the classpath to load the configuration.
  * Can connect to S3 / GCS / WASB / ADLS if the core-site.xml is configured to use one of those cloud storages
@@ -44,7 +46,7 @@ public class HDFSUploadClient implements UploadClient {
   private final boolean externalHdfs;
   private final HdfsOutputConfig hdfsOutputConfig;
   private final FsPermission fsPermission;
-  private Configuration configuration;
+  private final AtomicReference<Configuration> configurationRef = new AtomicReference<>();
 
   public HDFSUploadClient(HdfsOutputConfig hdfsOutputConfig, boolean externalHdfs) {
     this.hdfsOutputConfig = hdfsOutputConfig;
@@ -54,6 +56,7 @@ public class HDFSUploadClient implements UploadClient {
 
   @Override
   public void init(LogFeederProps logFeederProps) {
+    final Configuration configuration;
     if (externalHdfs) {
       configuration = LogFeederHDFSUtil.buildHdfsConfiguration(hdfsOutputConfig.getHdfsHost(), String.valueOf(hdfsOutputConfig.getHdfsPort()), "hdfs");
       logger.info("Using external HDFS client as core-site.xml is not located on the classpath.");
@@ -83,12 +86,13 @@ public class HDFSUploadClient implements UploadClient {
       }
     }
     logger.info("HDFS client - will use '{}' permission for uploaded files", hdfsOutputConfig.getHdfsFilePermissions());
-    LogFeederHDFSUtil.overrideFileSystemConfigs(logFeederProps, configuration);
+    configurationRef.set(configuration);
+    LogFeederHDFSUtil.overrideFileSystemConfigs(logFeederProps, configurationRef.get());
   }
 
   @Override
   public void upload(String source, String target) throws Exception {
-    final FileSystem fs = LogFeederHDFSUtil.buildFileSystem(configuration);
+    final FileSystem fs = LogFeederHDFSUtil.buildFileSystem(configurationRef.get());
     LogFeederHDFSUtil.copyFromLocal(source, target, fs, true, true, this.fsPermission);
   }
 
