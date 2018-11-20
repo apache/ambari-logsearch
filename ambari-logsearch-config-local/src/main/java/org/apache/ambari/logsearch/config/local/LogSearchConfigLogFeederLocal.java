@@ -111,7 +111,7 @@ public class LogSearchConfigLogFeederLocal extends LogSearchConfigLocal implemen
       } catch (Exception e) {
         final String errorMessage;
         if (tries < 3) {
-          errorMessage = String.format("Cannot parse input config: %s, will retry in a few seconds again (tries: %s)", inputConfig, String.valueOf(tries));
+          errorMessage = String.format("Cannot parse input config: '%s', will retry in a few seconds again (tries: %s)", inputConfig, String.valueOf(tries));
           logger.error(errorMessage, e);
           try {
             Thread.sleep(2000);

@@ -44,7 +44,7 @@ public class HDFSUploadClient implements UploadClient {
   private final boolean externalHdfs;
   private final HdfsOutputConfig hdfsOutputConfig;
   private final FsPermission fsPermission;
-  private FileSystem fs;
+  private Configuration configuration;
 
   public HDFSUploadClient(HdfsOutputConfig hdfsOutputConfig, boolean externalHdfs) {
     this.hdfsOutputConfig = hdfsOutputConfig;
@@ -54,7 +54,6 @@ public class HDFSUploadClient implements UploadClient {
 
   @Override
   public void init(LogFeederProps logFeederProps) {
-    final Configuration configuration;
     if (externalHdfs) {
       configuration = LogFeederHDFSUtil.buildHdfsConfiguration(hdfsOutputConfig.getHdfsHost(), String.valueOf(hdfsOutputConfig.getHdfsPort()), "hdfs");
       logger.info("Using external HDFS client as core-site.xml is not located on the classpath.");
@@ -85,17 +84,16 @@ public class HDFSUploadClient implements UploadClient {
     }
     logger.info("HDFS client - will use '{}' permission for uploaded files", hdfsOutputConfig.getHdfsFilePermissions());
     LogFeederHDFSUtil.overrideFileSystemConfigs(logFeederProps, configuration);
-    this.fs = LogFeederHDFSUtil.buildFileSystem(configuration);
   }
 
   @Override
   public void upload(String source, String target) throws Exception {
+    final FileSystem fs = LogFeederHDFSUtil.buildFileSystem(configuration);
     LogFeederHDFSUtil.copyFromLocal(source, target, fs, true, true, this.fsPermission);
   }
 
   @Override
   public void close() {
-    LogFeederHDFSUtil.closeFileSystem(fs);
   }
 
 }
