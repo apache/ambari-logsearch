@@ -22,7 +22,6 @@ import org.apache.ambari.logsearch.configurer.SslConfigurer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Property;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.ServerConnector;
