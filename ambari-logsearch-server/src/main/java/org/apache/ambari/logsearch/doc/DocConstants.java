@@ -119,9 +119,9 @@ public class DocConstants {
   }
 
   public class EventHistoryOperationDescriptions {
-    public static final String SAVE_EVENT_HISTORY_DATA_OD = "Save event history data";
-    public static final String DELETE_EVENT_HISTORY_DATA_OD = "Delete event history data";
-    public static final String GET_EVENT_HISTORY_DATA_OD = "Get event history data";
+    public static final String SAVE_METADATA_OD = "Save metadata";
+    public static final String DELETE_METADATA_OD = "Delete metadata";
+    public static final String GET_METADATA_OD = "Get event metadata";
     public static final String GET_ALL_USER_NAMES_OD = "Get all user names";
   }
 
@@ -138,6 +138,6 @@ public class DocConstants {
     public static final String STATUS_OD = "Get statuses for collections (not health state - show true if something already done)";
     public static final String SERVICE_LOGS_STATUS_OD = "Get statuses for service log collection (not health state - show true if something already done)";
     public static final String AUDIT_LOGS_STATUS_OD = "Get statuses for collections (not health state - show true if something already done)";
-    public static final String EVENT_HISTORY_STATUS_OD = "Get statuses for history collection (not health state - show true if something already done)";
+    public static final String METADATA_STATUS_OD = "Get statuses for metadata collection (not health state - show true if something already done)";
   }
 }

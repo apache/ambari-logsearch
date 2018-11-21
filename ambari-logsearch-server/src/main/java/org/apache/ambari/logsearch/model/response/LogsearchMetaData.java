@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import java.util.List;
 
-public class EventHistoryData {
+public class LogsearchMetaData {
 
   @ApiModelProperty
   private String id;
@@ -43,7 +43,7 @@ public class EventHistoryData {
   @ApiModelProperty
   private String rowType;
 
-  public EventHistoryData() {
+  public LogsearchMetaData() {
     id = String.valueOf(new Date().getTime());
   }
 

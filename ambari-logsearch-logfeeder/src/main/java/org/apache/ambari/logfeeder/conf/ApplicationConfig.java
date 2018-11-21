@@ -136,7 +136,7 @@ public class ApplicationConfig {
   public LogLevelFilterManager logLevelFilterManager() throws Exception {
     if (logFeederProps.isSolrFilterStorage()) {
       SolrClient solrClient = new LogFeederSolrClientFactory().createSolrClient(
-        logFeederProps.getSolrZkConnectString(), logFeederProps.getSolrUrls(), "history");
+        logFeederProps.getSolrZkConnectString(), logFeederProps.getSolrUrls(), logFeederProps.getSolrMetadataCollection());
       return new LogLevelFilterManagerSolr(solrClient);
     } else if (logFeederProps.isUseLocalConfigs() && logFeederProps.isZkFilterStorage()) {
       final HashMap<String, String> map = new HashMap<>();

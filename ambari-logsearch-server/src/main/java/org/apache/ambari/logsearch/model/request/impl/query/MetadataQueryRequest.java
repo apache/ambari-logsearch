@@ -23,7 +23,7 @@ import org.apache.ambari.logsearch.model.request.impl.EventHistoryRequest;
 
 import javax.ws.rs.QueryParam;
 
-public class EventHistoryQueryRequest extends CommonSearchQueryRequest implements EventHistoryRequest {
+public class MetadataQueryRequest extends CommonSearchQueryRequest implements EventHistoryRequest {
 
   @QueryParam(LogSearchConstants.REQUEST_PARAM_FILTER_NAME)
   private String filterName;

@@ -37,16 +37,6 @@ public class SolrServiceLogPropsConfig extends SolrConnectionPropsConfig {
   )
   private String collection;
 
-  @Value("${logsearch.service.logs.split.interval.mins:none}")
-  @LogSearchPropertyDescription(
-    name = "logsearch.service.logs.split.interval.mins",
-    description = "Will create multiple collections and use alias. (not supported right now, use implicit routingif the value is not none)",
-    examples = {"none", "15"},
-    defaultValue = "none",
-    sources = {LOGSEARCH_PROPERTIES_FILE}
-  )
-  private String splitInterval;
-
   @Value("${logsearch.solr.service.logs.config.name:hadoop_logs}")
   @LogSearchPropertyDescription(
     name = "logsearch.solr.service.logs.config.name",
@@ -85,16 +75,6 @@ public class SolrServiceLogPropsConfig extends SolrConnectionPropsConfig {
   @Override
   public void setCollection(String collection) {
     this.collection = collection;
-  }
-
-  @Override
-  public String getSplitInterval() {
-    return splitInterval;
-  }
-
-  @Override
-  public void setSplitInterval(String splitInterval) {
-    this.splitInterval = splitInterval;
   }
 
   @Override

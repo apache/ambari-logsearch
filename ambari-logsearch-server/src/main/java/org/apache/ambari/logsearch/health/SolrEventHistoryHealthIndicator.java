@@ -18,7 +18,7 @@
  */
 package org.apache.ambari.logsearch.health;
 
-import org.apache.ambari.logsearch.dao.EventHistorySolrDao;
+import org.apache.ambari.logsearch.dao.MetadataSolrDao;
 import org.springframework.data.solr.core.SolrTemplate;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ import javax.inject.Named;
 public class SolrEventHistoryHealthIndicator extends AbstractSolrHealthIndicator {
 
   @Inject
-  private EventHistorySolrDao eventHistorySolrDao;
+  private MetadataSolrDao eventHistorySolrDao;
 
   @Override
   public SolrTemplate getSolrTemplate() {

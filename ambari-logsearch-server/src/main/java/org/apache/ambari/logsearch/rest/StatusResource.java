@@ -19,7 +19,7 @@
 package org.apache.ambari.logsearch.rest;
 
 import static org.apache.ambari.logsearch.doc.DocConstants.StatusOperationDescriptions.AUDIT_LOGS_STATUS_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.StatusOperationDescriptions.EVENT_HISTORY_STATUS_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.StatusOperationDescriptions.METADATA_STATUS_OD;
 import static org.apache.ambari.logsearch.doc.DocConstants.StatusOperationDescriptions.SERVICE_LOGS_STATUS_OD;
 import static org.apache.ambari.logsearch.doc.DocConstants.StatusOperationDescriptions.STATUS_OD;
 
@@ -54,7 +54,7 @@ public class StatusResource {
   private SolrCollectionState solrAuditLogsState;
 
   @Inject
-  @Named("solrEventHistoryState")
+  @Named("solrMetadataState")
   private SolrCollectionState solrEventHistoryState;
 
   @GET
@@ -64,7 +64,7 @@ public class StatusResource {
     Map<String, SolrCollectionState> response = new HashMap<>();
     response.put("serviceLogs", solrServiceLogsState);
     response.put("auditLogs", solrAuditLogsState);
-    response.put("eventHistory", solrEventHistoryState);
+    response.put("metadata", solrEventHistoryState);
     return response;
   }
 
@@ -85,9 +85,9 @@ public class StatusResource {
   }
 
   @GET
-  @Path("/history")
+  @Path("/metadata")
   @Produces({"application/json"})
-  @ApiOperation(EVENT_HISTORY_STATUS_OD)
+  @ApiOperation(METADATA_STATUS_OD)
   public SolrCollectionState getSolrEventHistoryStatus() {
     return solrEventHistoryState;
   }

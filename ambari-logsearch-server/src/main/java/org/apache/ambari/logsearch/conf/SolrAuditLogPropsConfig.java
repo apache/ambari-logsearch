@@ -87,16 +87,6 @@ public class SolrAuditLogPropsConfig implements SolrPropsConfig {
   )
   private String aliasNameIn;
 
-  @Value("${logsearch.audit.logs.split.interval.mins:none}")
-  @LogSearchPropertyDescription(
-    name = "logsearch.audit.logs.split.interval.mins",
-    description = "Will create multiple collections and use alias. (not supported right now, use implicit routingif the value is not none)",
-    examples = {"none", "15"},
-    defaultValue = "none",
-    sources = {LOGSEARCH_PROPERTIES_FILE}
-  )
-  private String splitInterval;
-
   @Value("${logsearch.collection.audit.logs.numshards:1}")
   @LogSearchPropertyDescription(
     name = "logsearch.collection.audit.logs.numshards",
@@ -204,16 +194,6 @@ public class SolrAuditLogPropsConfig implements SolrPropsConfig {
   @Override
   public void setReplicationFactor(Integer replicationFactor) {
     this.replicationFactor = replicationFactor;
-  }
-
-  @Override
-  public String getSplitInterval() {
-    return splitInterval;
-  }
-
-  @Override
-  public void setSplitInterval(String splitInterval) {
-    this.splitInterval = splitInterval;
   }
 
   @Override

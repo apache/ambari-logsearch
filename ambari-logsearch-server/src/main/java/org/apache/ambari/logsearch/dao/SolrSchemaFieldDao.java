@@ -21,7 +21,7 @@ package org.apache.ambari.logsearch.dao;
 import org.apache.ambari.logsearch.common.LogSearchConstants;
 import org.apache.ambari.logsearch.common.LogType;
 import org.apache.ambari.logsearch.common.MessageEnums;
-import org.apache.ambari.logsearch.conf.SolrEventHistoryPropsConfig;
+import org.apache.ambari.logsearch.conf.SolrMetadataPropsConfig;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -68,7 +68,7 @@ public class SolrSchemaFieldDao {
   private AuditSolrDao auditSolrDao;
   
   @Inject
-  private SolrEventHistoryPropsConfig solrEventHistoryPropsConfig;
+  private SolrMetadataPropsConfig solrEventHistoryPropsConfig;
   
   private int retryCount;
   private int skipCount;

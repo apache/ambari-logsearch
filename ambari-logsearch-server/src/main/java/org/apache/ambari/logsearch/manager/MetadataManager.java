@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.ambari.logsearch.common.LogSearchContext;
-import org.apache.ambari.logsearch.dao.EventHistorySolrDao;
+import org.apache.ambari.logsearch.dao.MetadataSolrDao;
 import org.apache.ambari.logsearch.model.request.impl.EventHistoryRequest;
-import org.apache.ambari.logsearch.model.response.EventHistoryData;
-import org.apache.ambari.logsearch.model.response.EventHistoryDataListResponse;
+import org.apache.ambari.logsearch.model.response.LogsearchMetaData;
+import org.apache.ambari.logsearch.model.response.LogSearchMetaDataListResponse;
 import org.apache.ambari.logsearch.util.SolrUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -53,16 +53,16 @@ import static org.apache.ambari.logsearch.solr.SolrConstants.EventHistoryConstan
 import static org.apache.ambari.logsearch.solr.SolrConstants.EventHistoryConstants.SHARE_NAME_LIST;
 
 @Named
-public class EventHistoryManager extends JsonManagerBase {
+public class MetadataManager extends JsonManagerBase {
 
-  private static final Logger logger = LogManager.getLogger(EventHistoryManager.class);
+  private static final Logger logger = LogManager.getLogger(MetadataManager.class);
 
   @Inject
-  private EventHistorySolrDao eventHistorySolrDao;
+  private MetadataSolrDao metadataSolrDao;
   @Inject
   private ConversionService conversionService;
 
-  public String saveEvent(EventHistoryData eventHistoryData) {
+  public String saveMetadata(LogsearchMetaData eventHistoryData) {
     String filterName = eventHistoryData.getFiltername();
 
     SolrInputDocument solrInputDoc = new SolrInputDocument();
@@ -83,7 +83,7 @@ public class EventHistoryManager extends JsonManagerBase {
       solrInputDoc.addField(SHARE_NAME_LIST, shareNameList);
     }
 
-    eventHistorySolrDao.addDocs(solrInputDoc);
+    metadataSolrDao.addDocs(solrInputDoc);
     return convertObjToString(solrInputDoc);
   }
 
@@ -97,30 +97,30 @@ public class EventHistoryManager extends JsonManagerBase {
       solrQuery.addFilterQuery(USER_NAME + ":" + LogSearchContext.getCurrentUsername());
       SolrUtil.setRowCount(solrQuery, 0);
       try {
-        Long numFound = eventHistorySolrDao.process(solrQuery).getResults().getNumFound();
+        Long numFound = metadataSolrDao.process(solrQuery).getResults().getNumFound();
         if (numFound > 0) {
           return true;
         }
       } catch (SolrException e) {
-        logger.error("Error while checking if event history data is unique.", e);
+        logger.error("Error while checking if metadata is unique.", e);
       }
     }
     return false;
   }
 
-  private boolean isValid(EventHistoryData vHistory) {
-    return StringUtils.isNotBlank(vHistory.getFiltername())
-        && StringUtils.isNotBlank(vHistory.getRowType())
-        && StringUtils.isNotBlank(vHistory.getValues());
+  private boolean isValid(LogsearchMetaData mData) {
+    return StringUtils.isNotBlank(mData.getFiltername())
+        && StringUtils.isNotBlank(mData.getRowType())
+        && StringUtils.isNotBlank(mData.getValues());
   }
 
-  public void deleteEvent(String id) {
-    eventHistorySolrDao.deleteEventHistoryData(id);
+  public void deleteMetadata(String id) {
+    metadataSolrDao.deleteEventHistoryData(id);
   }
 
   @SuppressWarnings("unchecked")
-  public EventHistoryDataListResponse getEventHistory(EventHistoryRequest request) {
-    EventHistoryDataListResponse response = new EventHistoryDataListResponse();
+  public LogSearchMetaDataListResponse getMetadata(EventHistoryRequest request) {
+    LogSearchMetaDataListResponse response = new LogSearchMetaDataListResponse();
     String rowType = request.getRowType();
     if (StringUtils.isBlank(rowType)) {
       throw new MalformedInputException("Row type was not specified");
@@ -129,12 +129,12 @@ public class EventHistoryManager extends JsonManagerBase {
     SolrQuery evemtHistoryQuery = conversionService.convert(request, SolrQuery.class);
     evemtHistoryQuery.addFilterQuery(String.format("%s:%s OR %s:%s", USER_NAME, LogSearchContext.getCurrentUsername(),
         SHARE_NAME_LIST, LogSearchContext.getCurrentUsername()));
-    SolrDocumentList solrList = eventHistorySolrDao.process(evemtHistoryQuery).getResults();
+    SolrDocumentList solrList = metadataSolrDao.process(evemtHistoryQuery).getResults();
 
-    Collection<EventHistoryData> configList = new ArrayList<>();
+    Collection<LogsearchMetaData> configList = new ArrayList<>();
 
     for (SolrDocument solrDoc : solrList) {
-      EventHistoryData eventHistoryData = new EventHistoryData();
+      LogsearchMetaData eventHistoryData = new LogsearchMetaData();
       eventHistoryData.setFiltername("" + solrDoc.get(FILTER_NAME));
       eventHistoryData.setId("" + solrDoc.get(ID));
       eventHistoryData.setValues("" + solrDoc.get(VALUES));
@@ -151,8 +151,8 @@ public class EventHistoryManager extends JsonManagerBase {
       configList.add(eventHistoryData);
     }
 
-    response.setName("historyList");
-    response.setEventHistoryDataList(configList);
+    response.setName("metadataList");
+    response.setMetadataList(configList);
 
     response.setStartIndex(Integer.parseInt(request.getStartIndex()));
     response.setPageSize(Integer.parseInt(request.getPageSize()));
@@ -168,7 +168,7 @@ public class EventHistoryManager extends JsonManagerBase {
     SolrQuery userListQuery = new SolrQuery();
     userListQuery.setQuery("*:*");
     SolrUtil.setFacetField(userListQuery, USER_NAME);
-    QueryResponse queryResponse = eventHistorySolrDao.process(userListQuery);
+    QueryResponse queryResponse = metadataSolrDao.process(userListQuery);
     if (queryResponse == null) {
       return userList;
     }

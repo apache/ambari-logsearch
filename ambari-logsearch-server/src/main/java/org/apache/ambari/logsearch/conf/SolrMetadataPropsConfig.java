@@ -25,52 +25,42 @@ import org.springframework.context.annotation.Configuration;
 import static org.apache.ambari.logsearch.common.LogSearchConstants.LOGSEARCH_PROPERTIES_FILE;
 
 @Configuration
-public class SolrEventHistoryPropsConfig extends SolrConnectionPropsConfig {
+public class SolrMetadataPropsConfig extends SolrConnectionPropsConfig {
 
-  @Value("${logsearch.solr.collection.history:history}")
+  @Value("${logsearch.solr.collection.metadata:logsearch_metadata}")
   @LogSearchPropertyDescription(
-    name = "logsearch.solr.collection.history",
-    description = "Name of Log Search event history collection.",
-    examples = {"history"},
-    defaultValue = "history",
+    name = "logsearch.solr.collection.metadata",
+    description = "Name of Log Search metadata collection.",
+    examples = {"logsearch_metadata"},
+    defaultValue = "logsearch_metadata",
     sources = {LOGSEARCH_PROPERTIES_FILE}
   )
   private String collection;
 
-  @Value("${logsearch.history.split.interval.mins:none}")
+  @Value("${logsearch.solr.metadata.config.name:logsearch_metadata}")
   @LogSearchPropertyDescription(
-    name = "logsearch.history.split.interval.mins",
-    description = "Will create multiple collections and use alias. (not supported right now, use implicit routingif the value is not none)",
-    examples = {"none", "15"},
-    defaultValue = "none",
-    sources = {LOGSEARCH_PROPERTIES_FILE}
-  )
-  private String splitInterval;
-
-  @Value("${logsearch.solr.history.config.name:history}")
-  @LogSearchPropertyDescription(
-    name = "logsearch.solr.history.config.name",
-    description = "Solr configuration name of the event history collection.",
-    examples = {"history"},
-    defaultValue = "history",
+    name = "logsearch.solr.metadata.config.name",
+    description = "Solr configuration name of the logsearch metadata collection.",
+    examples = {"logsearch_metadata"},
+    defaultValue = "logsearch_metadata",
     sources = {LOGSEARCH_PROPERTIES_FILE}
   )
   private String configName;
 
-  @Value("${logsearch.collection.history.numshards:1}")
+  @Value("${logsearch.collection.metadata.numshards:1}")
   @LogSearchPropertyDescription(
-    name = "logsearch.collection.history.numshards",
-    description = "Number of Solr shards for event history collection (bootstrapping).",
+    name = "logsearch.collection.metadata.numshards",
+    description = "Number of Solr shards for logsearch metadta collection (bootstrapping).",
     examples = {"2"},
     defaultValue = "1",
     sources = {LOGSEARCH_PROPERTIES_FILE}
   )
   private Integer numberOfShards;
 
-  @Value("${logsearch.collection.history.replication.factor:2}")
+  @Value("${logsearch.collection.metadata.replication.factor:2}")
   @LogSearchPropertyDescription(
-    name = "logsearch.collection.history.replication.factor",
-    description = "Solr replication factor for event history collection (bootstrapping).",
+    name = "logsearch.collection.metadata.replication.factor",
+    description = "Solr replication factor for event metadata collection (bootstrapping).",
     examples = {"3"},
     defaultValue = "2",
     sources = {LOGSEARCH_PROPERTIES_FILE}
@@ -80,7 +70,7 @@ public class SolrEventHistoryPropsConfig extends SolrConnectionPropsConfig {
   @Value("${logsearch.schema.fields.populate.interval.mins:1}")
   @LogSearchPropertyDescription(
     name = "logsearch.schema.fields.populate.interval.mins",
-    description = "Interval in minutes for populating schema fiels for event history collections.",
+    description = "Interval in minutes for populating schema fiels for metadata collections.",
     examples = {"10"},
     defaultValue = "1",
     sources = {LOGSEARCH_PROPERTIES_FILE}
@@ -95,16 +85,6 @@ public class SolrEventHistoryPropsConfig extends SolrConnectionPropsConfig {
   @Override
   public void setCollection(String collection) {
     this.collection = collection;
-  }
-
-  @Override
-  public String getSplitInterval() {
-    return splitInterval;
-  }
-
-  @Override
-  public void setSplitInterval(String splitInterval) {
-    this.splitInterval = splitInterval;
   }
 
   @Override

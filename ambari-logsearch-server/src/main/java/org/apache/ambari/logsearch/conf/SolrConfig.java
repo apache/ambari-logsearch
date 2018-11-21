@@ -21,7 +21,7 @@ package org.apache.ambari.logsearch.conf;
 import org.apache.ambari.logsearch.conf.global.SolrAuditLogsState;
 import org.apache.ambari.logsearch.conf.global.SolrCollectionState;
 import org.apache.ambari.logsearch.conf.global.SolrServiceLogsState;
-import org.apache.ambari.logsearch.conf.global.SolrEventHistoryState;
+import org.apache.ambari.logsearch.conf.global.SolrMetadataState;
 import org.apache.ambari.logsearch.dao.SolrSchemaFieldDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,9 +46,9 @@ public class SolrConfig {
     return new SolrAuditLogsState();
   }
 
-  @Bean(name = "solrEventHistoryState")
+  @Bean(name = "solrMetadataState")
   public SolrCollectionState solrEventHistoryState() {
-    return new SolrEventHistoryState();
+    return new SolrMetadataState();
   }
 
   @Bean
