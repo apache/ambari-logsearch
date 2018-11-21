@@ -148,11 +148,15 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
     zkConnectString = getStringValue("zk_connect_string");
     List<String> solrUrlsList = getListValue("solr_urls");
 
-    if (StringUtils.isBlank(zkConnectString) && CollectionUtils.isEmpty(solrUrlsList)) {
+    if (StringUtils.isBlank(zkConnectString)
+      && CollectionUtils.isEmpty(solrUrlsList)
+      && StringUtils.isBlank(logFeederProps.getSolrUrlsStr())) {
       throw new Exception("For solr output the zk_connect_string or solr_urls property need to be set");
     }
 
-    if (CollectionUtils.isNotEmpty(solrUrlsList)) {
+    if (StringUtils.isNotBlank(logFeederProps.getSolrUrlsStr())) {
+      solrUrls = logFeederProps.getSolrUrls();
+    } else if (CollectionUtils.isNotEmpty(solrUrlsList)) {
       solrUrls = solrUrlsList.toArray(new String[0]);
     }
 
@@ -405,7 +409,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
           //Send successful, will return 
           result = true;
           break;
-        } catch (IOException | SolrException exception) {
+        } catch (IOException | SolrException | SolrServerException exception ) {
           // Transient error, lets block till it is available
           try {
             logger.warn("Solr is not reachable. Going to retry after " + RETRY_INTERVAL + " seconds. " + "output="
@@ -415,11 +419,11 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
             // ignore
           }
         } catch (Throwable serverException) {
-          // Something unknown happened. Let's not block because of this error. 
+          // Something unknown happened. Let's not block because of this error.
           // Clear the buffer
           String logMessageKey = this.getClass().getSimpleName() + "_SOLR_UPDATE_EXCEPTION";
           LogFeederUtil.logErrorMessageByInterval(logMessageKey, "Error sending log message to server. Dropping logs",
-              serverException, logger, Level.ERROR);
+            serverException, logger, Level.ERROR);
           resetLocalBuffer();
           break;
         }
