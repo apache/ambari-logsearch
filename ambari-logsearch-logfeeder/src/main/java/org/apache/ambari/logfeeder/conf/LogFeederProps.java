@@ -252,6 +252,16 @@ public class LogFeederProps implements LogFeederProperties {
   private Integer cloudStorageUploaderIntervalSeconds;
 
   @LogSearchPropertyDescription(
+    name = LogFeederConstants.CLOUD_STORAGE_UPLOADER_TIMEOUT_MINTUES,
+    description = "Timeout value for uploading task to cloud storage in minutes.",
+    examples = {"10"},
+    defaultValue = "60",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_UPLOADER_TIMEOUT_MINTUES + ":60}")
+  private Integer cloudStorageUploaderTimeoutMinutes;
+
+  @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_USE_HDFS_CLIENT,
     description = "Use hdfs client with cloud connectors instead of the core clients for shipping data to cloud storage",
     examples = {"true"},
@@ -497,6 +507,14 @@ public class LogFeederProps implements LogFeederProperties {
 
   public void setCloudStorageUploaderIntervalSeconds(Integer cloudStorageUploaderIntervalSeconds) {
     this.cloudStorageUploaderIntervalSeconds = cloudStorageUploaderIntervalSeconds;
+  }
+
+  public Integer getCloudStorageUploaderTimeoutMinutes() {
+    return cloudStorageUploaderTimeoutMinutes;
+  }
+
+  public void setCloudStorageUploaderTimeoutMinutes(Integer cloudStorageUploaderTimeoutMinutes) {
+    this.cloudStorageUploaderTimeoutMinutes = cloudStorageUploaderTimeoutMinutes;
   }
 
   public boolean isUseCloudHdfsClient() {
