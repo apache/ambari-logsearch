@@ -67,6 +67,16 @@ public class LogSearchHttpConfig {
   @Value("${logsearch.session.timeout:30}")
   private Integer sessionTimeout;
 
+  @LogSearchPropertyDescription(
+    name = "logsearch.jetty.access.log.enabled",
+    description = "Enable jetty access logs",
+    examples = {"true"},
+    defaultValue = "false",
+    sources = {LOGSEARCH_PROPERTIES_FILE}
+  )
+  @Value("${logsearch.jetty.access.log.enabled:false}")
+  private boolean useAccessLogs;
+
   public String getProtocol() {
     return protocol;
   }
@@ -97,5 +107,13 @@ public class LogSearchHttpConfig {
 
   public void setSessionTimeout(Integer sessionTimeout) {
     this.sessionTimeout = sessionTimeout;
+  }
+
+  public boolean isUseAccessLogs() {
+    return useAccessLogs;
+  }
+
+  public void setUseAccessLogs(boolean useAccessLogs) {
+    this.useAccessLogs = useAccessLogs;
   }
 }
