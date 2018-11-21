@@ -26,6 +26,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ambari.logsearch.common.LogSearchLdapAuthorityMapper;
 import org.apache.ambari.logsearch.common.StatusMessage;
@@ -64,6 +66,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.header.Header;
+import org.springframework.security.web.header.HeaderWriter;
+import org.springframework.security.web.header.writers.HstsHeaderWriter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.security.web.header.writers.XContentTypeOptionsHeaderWriter;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -79,6 +88,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Inject
   private LogSearchHttpHeaderConfig logSearchHttpHeaderConfig;
+
+  @Inject
+  private LogSearchHttpConfig logSearchHttpConfig;
 
   @Inject
   private SolrServiceLogPropsConfig solrServiceLogPropsConfig;
@@ -117,6 +129,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
+      .headers()
+        .addHeaderWriter(
+          new LogSearchCompositeHeaderWriter("https".equals(logSearchHttpConfig.getProtocol()),
+            new XXssProtectionHeaderWriter(),
+            new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.DENY),
+            new XContentTypeOptionsHeaderWriter(),
+            new StaticHeadersWriter("Pragma", "no-cache"),
+            new StaticHeadersWriter("Cache-Control", "no-store")))
+      .and()
       .csrf().disable()
       .authorizeRequests()
         .requestMatchers(requestMatcher())
@@ -350,6 +371,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       cookies.add(authPropsConfig.getCookieName());
     }
     return cookies.toArray(new String[0]);
+  }
+
+  class LogSearchCompositeHeaderWriter implements HeaderWriter {
+
+    private final boolean sslEnabled;
+    private final HeaderWriter[] additionalHeaderWriters;
+    private final HstsHeaderWriter hstsHeaderWriter;
+
+    LogSearchCompositeHeaderWriter(boolean sslEnabled, HeaderWriter... additionalHeaderWriters) {
+      this.sslEnabled = sslEnabled;
+      this.additionalHeaderWriters = additionalHeaderWriters;
+      this.hstsHeaderWriter = new HstsHeaderWriter();
+    }
+
+    @Override
+    public void writeHeaders(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+      for (HeaderWriter headerWriter : additionalHeaderWriters) {
+        headerWriter.writeHeaders(httpServletRequest, httpServletResponse);
+      }
+      if (sslEnabled) {
+        hstsHeaderWriter.writeHeaders(httpServletRequest, httpServletResponse);
+      }
+    }
   }
 
 }
