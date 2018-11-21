@@ -108,6 +108,7 @@ public class LogFeederConstants {
   public static final String CLOUD_STORAGE_MODE = "logfeeder.cloud.storage.mode";
   public static final String CLOUD_STORAGE_DESTINATION = "logfeeder.cloud.storage.destination";
   public static final String CLOUD_STORAGE_UPLOAD_ON_SHUTDOWN = "logfeeder.cloud.storage.upload.on.shutdown";
+  public static final String CLOUD_STORAGE_UPLOADER_TIMEOUT_MINUTUES = "logfeeder.cloud.storage.uploader.timeout.minutes";
   public static final String CLOUD_STORAGE_UPLOADER_INTERVAL_SECONDS = "logfeeder.cloud.storage.uploader.interval.seconds";
   public static final String CLOUD_STORAGE_BUCKET = "logfeeder.cloud.storage.bucket";
   public static final String CLOUD_STORAGE_BUCKET_BOOTSTRAP = "logfeeder.cloud.storage.bucket.bootstrap";

@@ -28,6 +28,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Periodically checks a folder (contains archived logs) and if it finds any .log or .gz files, it will try to upload them to cloud storage by an upload client (cloud specific)
@@ -41,6 +45,7 @@ public class CloudStorageUploader extends Thread {
   private final String clusterName;
   private final String hostName;
   private final String uploaderType;
+  private final ExecutorService executorService;
 
   public CloudStorageUploader(String name, UploadClient uploadClient, LogFeederProps logFeederProps) {
     super(name);
@@ -49,6 +54,7 @@ public class CloudStorageUploader extends Thread {
     this.uploaderType = logFeederProps.getCloudStorageDestination().getText();
     this.clusterName = logFeederProps.getClusterName();
     this.hostName = LogFeederUtil.hostName;
+    this.executorService = Executors.newSingleThreadExecutor();
   }
 
   @Override
@@ -58,7 +64,7 @@ public class CloudStorageUploader extends Thread {
     do {
       try {
         try {
-          doUpload();
+          doUpload(logFeederProps.getCloudStorageUploaderTimeoutMinutes());
         } catch (Exception e) {
           logger.error("An error occurred during Uploader operation - " + uploaderType, e);
         }
@@ -73,7 +79,7 @@ public class CloudStorageUploader extends Thread {
   /**
    * Finds .log and .gz files and upload them to cloud storage by an uploader client
    */
-  void doUpload() {
+  void doUpload(int timeout) {
     try {
       final File archiveLogDir = Paths.get(logFeederProps.getRolloverConfig().getRolloverArchiveBaseDir(),
         uploaderType, clusterName, hostName, "archived").toFile();
@@ -88,7 +94,16 @@ public class CloudStorageUploader extends Thread {
             String outputPath = String.format("%s/%s/%s/%s/%s", basePath, clusterName, hostName, file.getParentFile().getName(), file.getName())
               .replaceAll("//", "/");
             logger.info("Upload will start: input: {}, output: {}", file.getAbsolutePath(), outputPath);
-            uploadClient.upload(file.getAbsolutePath(), outputPath);
+            Future<?> future = executorService.submit(() -> {
+              try {
+                uploadClient.upload(file.getAbsolutePath(), outputPath);
+              } catch (InterruptedException ie) {
+                logger.error("Cloud upload thread interrupted", ie);
+              } catch (Exception e) {
+                logger.error("Exception during cloud upload", e);
+              }
+            });
+            future.get(timeout, TimeUnit.MINUTES);
           }
         }
       } else {

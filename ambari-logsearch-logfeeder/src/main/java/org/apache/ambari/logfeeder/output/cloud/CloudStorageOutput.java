@@ -129,7 +129,7 @@ public class CloudStorageOutput extends Output<LogFeederProps, InputMarker> {
     uploader.interrupt();
     if (logFeederProps.isCloudStorageUploadOnShutdown()) {
       logger.info("Do last upload before shutdown.");
-      uploader.doUpload();
+      uploader.doUpload(2); // hard-coded 2 minutes timeout on shutdown
     }
   }
 
