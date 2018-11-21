@@ -52,8 +52,8 @@ Configutation:
       DefaultRollOverStrategy:
         max: 10
     - name: AuditFile_Appender
-      fileName: ${log-path}/logsearch-audit.json
-      filePattern: "logsearch-audit.json.%d{yyyy-MM-dd-hh-mm}.gz"
+      fileName: ${log-path}/logsearch-solr-audit.json
+      filePattern: "logsearch-solr-audit.json.%d{yyyy-MM-dd-hh-mm}.gz"
       ignoreExceptions: false
       LogSearchJsonLayout:
         charset: UTF-8
@@ -63,8 +63,8 @@ Configutation:
       DefaultRollOverStrategy:
         max: 10
     - name: PerformanceFile_Appender
-      fileName: ${log-path}/logsearch-performance.json
-      filePattern: "logsearch-perf.json.%d{yyyy-MM-dd-hh-mm}.gz"
+      fileName: ${log-path}/logsearch-solr-performance.json
+      filePattern: "logsearch-solr-performance.json.%d{yyyy-MM-dd-hh-mm}.gz"
       LogSearchJsonLayout:
         charset: UTF-8
       Policies:
