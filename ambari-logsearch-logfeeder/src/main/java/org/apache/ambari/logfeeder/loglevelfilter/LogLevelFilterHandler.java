@@ -30,7 +30,7 @@ import org.apache.ambari.logsearch.config.zookeeper.LogLevelFilterManagerZK;
 import org.apache.ambari.logsearch.config.zookeeper.LogSearchConfigZKHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -133,7 +133,7 @@ public class LogLevelFilterHandler implements LogLevelFilterMonitor {
   }
 
   public boolean isAllowed(String jsonBlock, InputMarker inputMarker, List<String> defaultLogLevels) {
-    if (org.apache.commons.lang3.StringUtils.isEmpty(jsonBlock)) {
+    if (StringUtils.isEmpty(jsonBlock)) {
       return DEFAULT_VALUE;
     }
     Map<String, Object> jsonObj = LogFeederUtil.toJSONObject(jsonBlock);
@@ -160,8 +160,8 @@ public class LogLevelFilterHandler implements LogLevelFilterMonitor {
 
     String hostName = (String) jsonObj.get(LogFeederConstants.SOLR_HOST);
     String logId = (String) jsonObj.get(LogFeederConstants.SOLR_COMPONENT);
-    String level = (String) jsonObj.get(LogFeederConstants.SOLR_LEVEL);
-    if (org.apache.commons.lang3.StringUtils.isNotBlank(hostName) && org.apache.commons.lang3.StringUtils.isNotBlank(logId) && org.apache.commons.lang3.StringUtils.isNotBlank(level)) {
+    String level = (String) jsonObj.getOrDefault(LogFeederConstants.SOLR_LEVEL, LogFeederConstants.LOG_LEVEL_UNKNOWN);
+    if (StringUtils.isNotBlank(hostName) && StringUtils.isNotBlank(logId) && StringUtils.isNotBlank(level)) {
       return isAllowed(hostName, logId, level, defaultLogLevels);
     } else {
       return DEFAULT_VALUE;

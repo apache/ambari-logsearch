@@ -19,6 +19,7 @@
 package org.apache.ambari.logfeeder.output;
 
 import com.google.common.hash.Hashing;
+import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.plugin.common.MetricData;
 import org.apache.ambari.logfeeder.plugin.input.Input;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
@@ -42,7 +43,7 @@ public class OutputLineEnricher {
 
   private static final int MAX_OUTPUT_SIZE = 32765; // 32766-1
 
-  public void enrichFields(final Map<String, Object> jsonObj, final InputMarker inputMarker, final MetricData messageTruncateMetric) {
+  public Map<String, Object> enrichFields(final Map<String, Object> jsonObj, final InputMarker inputMarker, final MetricData messageTruncateMetric) {
     Input input = inputMarker.getInput();
     // Update the block with the context fields
     for (Map.Entry<String, String> entry : input.getInputDescriptor().getAddFields().entrySet()) {
@@ -79,12 +80,17 @@ public class OutputLineEnricher {
       (Integer) inputMarker.getAllProperties().get("line_number") > 0) {
       jsonObj.put("logfile_line_number", inputMarker.getAllProperties().get("line_number"));
     }
+    if (!jsonObj.containsKey("level")) {
+      jsonObj.put("level", LogFeederConstants.LOG_LEVEL_UNKNOWN);
+    }
     if (jsonObj.containsKey("log_message")) {
       // TODO: Let's check size only for log_message for now
       String logMessage = (String) jsonObj.get("log_message");
       logMessage = truncateLongLogMessage(messageTruncateMetric, jsonObj, input, logMessage);
       jsonObj.put("message_md5", "" + Hashing.md5().hashBytes(logMessage.getBytes()).asLong());
     }
+
+    return jsonObj;
   }
 
   @SuppressWarnings("unchecked")

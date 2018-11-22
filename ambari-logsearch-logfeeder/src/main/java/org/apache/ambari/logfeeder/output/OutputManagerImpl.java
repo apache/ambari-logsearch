@@ -82,10 +82,10 @@ public class OutputManagerImpl extends OutputManager {
   @SuppressWarnings("unchecked")
   public void write(Map<String, Object> jsonObj, InputMarker inputMarker) {
     jsonObj.put("seq_num", docCounter++);
-    if (docCounter == Long.MIN_VALUE) {
+    if (docCounter == Long.MAX_VALUE) {
       docCounter = 1;
     }
-    outputLineEnricher.enrichFields(jsonObj, inputMarker, messageTruncateMetric);
+    jsonObj = outputLineEnricher.enrichFields(jsonObj, inputMarker, messageTruncateMetric);
     Input input = inputMarker.getInput();
     List<String> defaultLogLevels = getDefaultLogLevels(input);
     if (logLevelFilterHandler.isAllowed(jsonObj, inputMarker, defaultLogLevels)
