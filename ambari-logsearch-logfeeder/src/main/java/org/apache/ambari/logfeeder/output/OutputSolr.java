@@ -20,6 +20,7 @@
 package org.apache.ambari.logfeeder.output;
 
 import org.apache.ambari.logfeeder.common.IdGeneratorHelper;
+import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.common.LogFeederSolrClientFactory;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;

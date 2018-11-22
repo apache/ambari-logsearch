@@ -60,7 +60,7 @@ public class CloudStorageOutputManager extends OutputManager {
   @Override
   public void write(Map<String, Object> jsonObj, InputMarker marker) {
     if (useFilters.get()) {
-      outputLineEnricher.enrichFields(jsonObj, marker, messageTruncateMetric);
+      jsonObj = outputLineEnricher.enrichFields(jsonObj, marker, messageTruncateMetric);
       if (!outputLineFilter.apply(jsonObj, marker.getInput())) {
         if (jsonObj.get("id") == null) {
           jsonObj.put("id", IdGeneratorHelper.generateUUID(jsonObj, storageOutput.getIdFields()));
