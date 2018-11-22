@@ -209,7 +209,7 @@ function start() {
 }
 
 function stop() {
-  LOGSEARCH_STOP_WAIT=3
+  LOGSEARCH_STOP_WAIT=${LOGSEARCH_STOP_WAIT:-10}
   if [ -f "$LOGSEARCH_PID_FILE" ]; then
     LOGSEARCH_PID=`cat "$LOGSEARCH_PID_FILE"`
   fi

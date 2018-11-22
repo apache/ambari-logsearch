@@ -228,7 +228,7 @@ function start() {
 }
 
 function stop() {
-  LOGFEEDER_STOP_WAIT=3
+  LOGFEEDER_STOP_WAIT=${LOGFEEDER_STOP_WAIT:-60}
   if [ -f "$LOGFEEDER_PID_FILE" ]; then
     LOGFEEDER_PID=`cat "$LOGFEEDER_PID_FILE"`
   fi
