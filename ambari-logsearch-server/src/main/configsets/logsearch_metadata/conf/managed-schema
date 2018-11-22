@@ -17,7 +17,7 @@
 -->
 
 <!-- Solr managed schema - automatically generated - DO NOT EDIT -->
-<schema name="history" version="1.6">
+<schema name="logsearch_metadata" version="1.6">
 
   <uniqueKey>id</uniqueKey>
 

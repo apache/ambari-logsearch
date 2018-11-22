@@ -99,7 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private SolrAuditLogPropsConfig solrAuditLogPropsConfig;
 
   @Inject
-  private SolrEventHistoryPropsConfig solrEventHistoryPropsConfig;
+  private SolrMetadataPropsConfig solrEventHistoryPropsConfig;
 
   @Inject
   @Named("solrServiceLogsState")
@@ -110,8 +110,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private SolrCollectionState solrAuditLogsState;
 
   @Inject
-  @Named("solrEventHistoryState")
-  private SolrCollectionState solrEventHistoryState;
+  @Named("solrMetadataState")
+  private SolrCollectionState solrMetadataState;
 
   @Inject
   @Named("logLevelFilterManagerState")
@@ -153,7 +153,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .addFilterAfter(logsearchKRBAuthenticationFilter(), LogsearchTrustedProxyFilter.class)
       .addFilterBefore(logsearchUsernamePasswordAuthenticationFilter(), LogsearchKRBAuthenticationFilter.class)
       .addFilterAfter(securityContextFormationFilter(), FilterSecurityInterceptor.class)
-      .addFilterAfter(logsearchEventHistoryFilter(), LogsearchSecurityContextFormationFilter.class)
+      .addFilterAfter(logsearchMetadataFilter(), LogsearchSecurityContextFormationFilter.class)
       .addFilterAfter(logsearchAuditLogFilter(), LogsearchSecurityContextFormationFilter.class)
       .addFilterAfter(logsearchServiceLogFilter(), LogsearchSecurityContextFormationFilter.class)
       .addFilterAfter(logSearchConfigStateFilter(), LogsearchSecurityContextFormationFilter.class)
@@ -298,8 +298,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return new LogsearchFilter(auditLogsRequestMatcher(), new GlobalStateProvider(solrAuditLogsState, solrAuditLogPropsConfig));
   }
 
-  private LogsearchFilter logsearchEventHistoryFilter() {
-    return new LogsearchFilter(eventHistoryRequestMatcher(), new GlobalStateProvider(solrEventHistoryState, solrEventHistoryPropsConfig));
+  private LogsearchFilter logsearchMetadataFilter() {
+    return new LogsearchFilter(metadataRequestMatcher(), new GlobalStateProvider(solrMetadataState, solrEventHistoryPropsConfig));
   }
 
   private LogsearchFilter logSearchConfigStateFilter() {
@@ -348,8 +348,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return new AntPathRequestMatcher("/api/v1/audit/logs/**");
   }
 
-  public RequestMatcher eventHistoryRequestMatcher() {
-    return new AntPathRequestMatcher("/api/v1/history/**");
+  public RequestMatcher metadataRequestMatcher() {
+    return new AntPathRequestMatcher("/api/v1/metadata/**");
   }
 
   public RequestMatcher logsearchConfigRequestMatcher() {

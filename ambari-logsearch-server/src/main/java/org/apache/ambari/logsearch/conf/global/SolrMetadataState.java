@@ -21,7 +21,7 @@ package org.apache.ambari.logsearch.conf.global;
 import javax.inject.Named;
 
 @Named
-public class SolrEventHistoryState implements SolrCollectionState {
+public class SolrMetadataState implements SolrCollectionState {
 
   private volatile boolean znodeReady;
   private volatile boolean solrCollectionReady;

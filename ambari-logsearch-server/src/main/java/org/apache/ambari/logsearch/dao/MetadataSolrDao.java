@@ -30,7 +30,7 @@ import org.apache.ambari.logsearch.common.LogSearchContext;
 import org.apache.ambari.logsearch.common.LogType;
 import org.apache.ambari.logsearch.conf.SolrClientsHolder;
 import org.apache.ambari.logsearch.conf.SolrPropsConfig;
-import org.apache.ambari.logsearch.conf.SolrEventHistoryPropsConfig;
+import org.apache.ambari.logsearch.conf.SolrMetadataPropsConfig;
 import org.apache.ambari.logsearch.conf.global.SolrCollectionState;
 import org.apache.ambari.logsearch.configurer.SolrCollectionConfigurer;
 import org.apache.logging.log4j.LogManager;
@@ -43,48 +43,48 @@ import org.apache.solr.common.SolrInputDocument;
 import org.springframework.data.solr.core.SolrTemplate;
 
 @Named
-public class EventHistorySolrDao extends SolrDaoBase {
+public class MetadataSolrDao extends SolrDaoBase {
 
-  private static final Logger logger = LogManager.getLogger(EventHistorySolrDao.class);
+  private static final Logger logger = LogManager.getLogger(MetadataSolrDao.class);
 
   private static final Logger LOG_PERFORMANCE = LogManager.getLogger("org.apache.ambari.logsearch.performance");
 
   @Inject
-  private SolrEventHistoryPropsConfig solrEventHistoryPropsConfig;
+  private SolrMetadataPropsConfig solrMetadataPropsConfig;
 
-  private SolrTemplate eventHistorySolrTemplate;
+  private SolrTemplate metadataSolrTemplate;
 
   @Inject
-  @Named("solrEventHistoryState")
-  private SolrCollectionState solrEventHistoryState;
+  @Named("solrMetadataState")
+  private SolrCollectionState solrMetadataState;
 
   @Inject
   private SolrClientsHolder solrClientsHolder;
 
-  public EventHistorySolrDao() {
+  public MetadataSolrDao() {
     super(LogType.SERVICE);
   }
 
   @Override
   public SolrTemplate getSolrTemplate() {
-    return eventHistorySolrTemplate;
+    return metadataSolrTemplate;
   }
 
   @Override
   public void setSolrTemplate(SolrTemplate solrTemplate) {
-    this.eventHistorySolrTemplate = solrTemplate;
+    this.metadataSolrTemplate = solrTemplate;
   }
 
   @PostConstruct
   public void postConstructor() {
-    String solrUrl = solrEventHistoryPropsConfig.getSolrUrl();
-    String zkConnectString = solrEventHistoryPropsConfig.getZkConnectString();
-    String collection = solrEventHistoryPropsConfig.getCollection();
+    String solrUrl = solrMetadataPropsConfig.getSolrUrl();
+    String zkConnectString = solrMetadataPropsConfig.getZkConnectString();
+    String collection = solrMetadataPropsConfig.getCollection();
 
     try {
       new SolrCollectionConfigurer(this, false, solrClientsHolder, SolrClientsHolder.CollectionType.HISTORY).start();
     } catch (Exception e) {
-      logger.error("error while connecting to Solr for history logs : solrUrl=" + solrUrl + ", zkConnectString=" + zkConnectString +
+      logger.error("error while connecting to Solr for metadata collection : solrUrl=" + solrUrl + ", zkConnectString=" + zkConnectString +
           ", collection=" + collection, e);
     }
   }
@@ -123,11 +123,11 @@ public class EventHistorySolrDao extends SolrDaoBase {
 
   @Override
   public SolrCollectionState getSolrCollectionState() {
-    return solrEventHistoryState;
+    return solrMetadataState;
   }
 
   @Override
   public SolrPropsConfig getSolrPropsConfig() {
-    return solrEventHistoryPropsConfig;
+    return solrMetadataPropsConfig;
   }
 }

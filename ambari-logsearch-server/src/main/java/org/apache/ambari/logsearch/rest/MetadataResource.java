@@ -19,10 +19,10 @@
 
 package org.apache.ambari.logsearch.rest;
 
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.DELETE_EVENT_HISTORY_DATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.DELETE_METADATA_OD;
 import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.GET_ALL_USER_NAMES_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.GET_EVENT_HISTORY_DATA_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.SAVE_EVENT_HISTORY_DATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.GET_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.SAVE_METADATA_OD;
 
 import java.util.List;
 
@@ -36,44 +36,44 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.apache.ambari.logsearch.manager.EventHistoryManager;
-import org.apache.ambari.logsearch.model.request.impl.query.EventHistoryQueryRequest;
-import org.apache.ambari.logsearch.model.response.EventHistoryData;
-import org.apache.ambari.logsearch.model.response.EventHistoryDataListResponse;
+import org.apache.ambari.logsearch.manager.MetadataManager;
+import org.apache.ambari.logsearch.model.request.impl.query.MetadataQueryRequest;
+import org.apache.ambari.logsearch.model.response.LogsearchMetaData;
+import org.apache.ambari.logsearch.model.response.LogSearchMetaDataListResponse;
 import org.springframework.context.annotation.Scope;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
-@Api(value = "history", description = "Event history operations", authorizations = {@Authorization(value = "basicAuth")})
-@Path("history")
+@Api(value = "metadata", description = "Log Search metadata operations", authorizations = {@Authorization(value = "basicAuth")})
+@Path("metadata")
 @Named
 @Scope("request")
-public class EventHistoryResource {
+public class MetadataResource {
 
   @Inject
-  private EventHistoryManager eventHistoryManager;
+  private MetadataManager metadataManager;
 
   @POST
   @Produces({"application/json"})
-  @ApiOperation(SAVE_EVENT_HISTORY_DATA_OD)
-  public String saveEvent(EventHistoryData eventHistoryData) {
-    return eventHistoryManager.saveEvent(eventHistoryData);
+  @ApiOperation(SAVE_METADATA_OD)
+  public String saveMetadata(LogsearchMetaData metadata) {
+    return metadataManager.saveMetadata(metadata);
   }
 
   @DELETE
   @Path("/{id}")
-  @ApiOperation(DELETE_EVENT_HISTORY_DATA_OD)
-  public void deleteEvent(@PathParam("id") String id) {
-    eventHistoryManager.deleteEvent(id);
+  @ApiOperation(DELETE_METADATA_OD)
+  public void deleteMetadata(@PathParam("id") String id) {
+    metadataManager.deleteMetadata(id);
   }
 
   @GET
   @Produces({"application/json"})
-  @ApiOperation(GET_EVENT_HISTORY_DATA_OD)
-  public EventHistoryDataListResponse getEventHistory(@BeanParam EventHistoryQueryRequest request) {
-    return eventHistoryManager.getEventHistory(request);
+  @ApiOperation(GET_METADATA_OD)
+  public LogSearchMetaDataListResponse getMetadataList(@BeanParam MetadataQueryRequest request) {
+    return metadataManager.getMetadata(request);
   }
 
   @GET
@@ -81,7 +81,7 @@ public class EventHistoryResource {
   @Produces({"application/json"})
   @ApiOperation(GET_ALL_USER_NAMES_OD)
   public List<String> getAllUserName() {
-    return eventHistoryManager.getAllUserName();
+    return metadataManager.getAllUserName();
   }
 
 }

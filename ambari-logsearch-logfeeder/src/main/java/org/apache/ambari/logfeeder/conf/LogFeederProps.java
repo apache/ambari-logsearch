@@ -212,6 +212,15 @@ public class LogFeederProps implements LogFeederProperties {
   private String solrUrlsStr;
 
   @LogSearchPropertyDescription(
+    name = LogFeederConstants.SOLR_METADATA_COLLECTION,
+    description = "Metadata collection name that could contain log level filters or input configurations.",
+    examples = {"logsearch_metadata"},
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.SOLR_METADATA_COLLECTION + ":logsearch_metadata}")
+  private String solrMetadataCollection;
+
+  @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_MODE,
     description = "Option to support sending logs to cloud storage. You can choose between supporting only cloud storage, non-cloud storage or both",
     examples = {"default", "cloud", "hybrid"},
@@ -547,6 +556,14 @@ public class LogFeederProps implements LogFeederProperties {
 
   public void setCloudBasePath(String cloudBasePath) {
     this.cloudBasePath = cloudBasePath;
+  }
+
+  public String getSolrMetadataCollection() {
+    return solrMetadataCollection;
+  }
+
+  public void setSolrMetadataCollection(String solrMetadataCollection) {
+    this.solrMetadataCollection = solrMetadataCollection;
   }
 
   public String[] getSolrUrls() {
