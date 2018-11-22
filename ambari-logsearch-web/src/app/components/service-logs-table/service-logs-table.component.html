@@ -95,7 +95,7 @@
                   {{log.logtime | amTz: timeZone | amDateFormat: timeFormat}}
                 </time>
               </td>
-              <td *ngIf="isColumnDisplayed('level')" [ngClass]="'log-level ' + log.level.toLowerCase()">
+              <td *ngIf="isColumnDisplayed('level')" [ngClass]="'log-level ' + (log.level ? log.level.toLowerCase() : '')">
                 <log-level [logEntry]="log"></log-level>
               </td>
               <td *ngIf="isColumnDisplayed('type')" [ngClass]="'log-type'">
@@ -138,7 +138,7 @@
                 <dropdown-button iconClass="fa fa-ellipsis-v action" [hideCaret]="true" [options]="logActions"
                                  [listItemArguments]="[log]" [showSelectedValue]="false"></dropdown-button>
               </div>
-              <div *ngIf="isColumnDisplayed('level')" [ngClass]="'log-level ' + log.level.toLowerCase()">
+              <div *ngIf="isColumnDisplayed('level')" [ngClass]="'log-level ' + (log.level ? log.level.toLowerCase() : '')">
                 <log-level [logEntry]="log"></log-level>
               </div>
               <div *ngIf="isColumnDisplayed('type')" [ngClass]="'log-type'" [title]="log.type">
