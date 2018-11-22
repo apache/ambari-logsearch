@@ -22,7 +22,7 @@
         <span *ngIf="iconClass" [ngClass]="iconClass"></span>
         <span *ngIf="label && (!hasSelection || isMultipleChoice || showCommonLabelWithSelection)"
               [class.label-before-selection]="isSelectionDisplayable">
-          {{label}}
+          {{label}}<span *ngIf="showTotalSelection && totalSelection" class="total-selection">({{totalSelection}})</span>
         </span>
       </span>
       <span *ngIf="isSelectionDisplayable">

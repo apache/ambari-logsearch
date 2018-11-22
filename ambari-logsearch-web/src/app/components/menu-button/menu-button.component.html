@@ -21,7 +21,7 @@
     (mousedown)="onMouseDown($event)">
     <i *ngIf="iconClass" [ngClass]="['icon', iconClass]"></i>
     <i *ngIf="hasCaret" [ngClass]="['fa ', caretClass ]"></i>
-    <span *ngIf="label" class="menu-button-label">{{label}}</span>
+    <span *ngIf="label" class="menu-button-label">{{label}}<span *ngIf="showTotalSelection && totalSelection" class="total-selection">({{totalSelection}})</span></span>
   </a>
   <ul data-component="dropdown-list" *ngIf="hasSubItems" [items]="subItems"
       (selectedItemChange)="onDropdownItemChange($event)" [isMultipleChoice]="isMultipleChoice"
