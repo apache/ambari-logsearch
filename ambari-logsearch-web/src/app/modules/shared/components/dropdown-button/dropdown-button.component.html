@@ -22,8 +22,9 @@
         <span *ngIf="iconClass" [ngClass]="iconClass"></span>
         <span *ngIf="label && (!hasSelection || isMultipleChoice || showCommonLabelWithSelection)"
               [class.label-before-selection]="isSelectionDisplayable">
-          {{label}}<span *ngIf="showTotalSelection && totalSelection" class="total-selection">({{totalSelection}})</span>
+          {{label}}
         </span>
+        <span *ngIf="showTotalSelection && totalSelection" class="total-selection badge">{{totalSelection}}</span>
       </span>
       <span *ngIf="isSelectionDisplayable">
         <span class="selected-item-label" *ngFor="let item of selectedItems">{{ item.label | translate }}</span>
