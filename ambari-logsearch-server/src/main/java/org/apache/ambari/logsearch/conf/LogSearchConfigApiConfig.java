@@ -50,7 +50,7 @@ public class LogSearchConfigApiConfig {
   public boolean solrFilterStorage;
 
   @LogSearchPropertyDescription(
-    name = "logsearch.config.api.filter.zk-only.enabled",
+    name = "logsearch.config.api.filter.zk.enabled",
     description = "Use zookeeper as a log level filter storage",
     examples = {"true"},
     defaultValue = "false",

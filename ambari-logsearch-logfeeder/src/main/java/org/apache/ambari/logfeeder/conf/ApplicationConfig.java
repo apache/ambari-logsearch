@@ -136,7 +136,8 @@ public class ApplicationConfig {
   public LogLevelFilterManager logLevelFilterManager() throws Exception {
     if (logFeederProps.isSolrFilterStorage()) {
       SolrClient solrClient = new LogFeederSolrClientFactory().createSolrClient(
-        logFeederProps.getSolrZkConnectString(), logFeederProps.getSolrUrls(), logFeederProps.getSolrMetadataCollection());
+        logFeederProps.getSolrZkConnectString(), logFeederProps.getSolrUrls(), logFeederProps.getSolrMetadataCollection(),
+        logFeederProps.isSolrCloudDiscover());
       return new LogLevelFilterManagerSolr(solrClient);
     } else if (logFeederProps.isUseLocalConfigs() && logFeederProps.isZkFilterStorage()) {
       final HashMap<String, String> map = new HashMap<>();
@@ -156,7 +157,7 @@ public class ApplicationConfig {
     if (logFeederProps.isSolrFilterStorage() && logFeederProps.isSolrFilterMonitor()) {
       LogLevelFilterUpdater logLevelFilterUpdater = new LogLevelFilterUpdaterSolr(
         "filter-updater-solr", logLevelFilterHandler(),
-        30, (LogLevelFilterManagerSolr) logLevelFilterManager(), logFeederProps.getClusterName());
+        logFeederProps.getSolrFilterMonitorInterval(), (LogLevelFilterManagerSolr) logLevelFilterManager(), logFeederProps.getClusterName());
       logLevelFilterUpdater.start();
       return logLevelFilterUpdater;
     }

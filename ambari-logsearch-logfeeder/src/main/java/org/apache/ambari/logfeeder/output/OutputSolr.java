@@ -111,6 +111,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
   private boolean implicitRouting = false;
   private int lastSlotByMin = -1;
   private boolean skipLogtime = false;
+  private boolean discoverSolrNodes = false;
   private List<String> idFields = new ArrayList<>();
 
   private BlockingQueue<OutputData> outgoingBuffer = null;
@@ -178,6 +179,8 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
       throw new IllegalStateException("Collection property is mandatory");
     }
 
+    discoverSolrNodes = logFeederProps.isSolrCloudDiscover();
+
     maxBufferSize = getIntValue("flush_size", DEFAULT_MAX_BUFFER_SIZE);
     if (maxBufferSize < 1) {
       logger.warn("maxBufferSize is less than 1. Making it 1");
@@ -219,7 +222,7 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
   }
 
   private SolrClient getSolrClient(int count) throws Exception, MalformedURLException {
-    SolrClient solrClient = new LogFeederSolrClientFactory().createSolrClient(zkConnectString, solrUrls, collection);
+    SolrClient solrClient = new LogFeederSolrClientFactory().createSolrClient(zkConnectString, solrUrls, collection, discoverSolrNodes);
     pingSolr(count, solrClient);
     return solrClient;
   }
