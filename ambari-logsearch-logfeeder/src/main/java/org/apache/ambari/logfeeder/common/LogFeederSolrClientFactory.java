@@ -117,21 +117,25 @@ public class LogFeederSolrClientFactory {
   private List<String> waitUntilAvailableBaseUrls(CloudSolrClient discoverClient, String collection) {
     final List<String> baseUrls = new ArrayList<>();
     while(true) {
-      ZkStateReader zkStateReader = discoverClient.getZkStateReader();
-      ClusterState clusterState = zkStateReader.getClusterState();
-      if (clusterState != null) {
-        DocCollection docCollection = clusterState.getCollection(collection);
-        if (docCollection != null) {
-          List<Replica> replicas = docCollection.getReplicas();
-          if (replicas != null && !replicas.isEmpty()) {
-            for (Replica replica : replicas) {
-              String baseUrl = replica.getBaseUrl();
-              if (!baseUrls.contains(baseUrl)) {
-                baseUrls.add(baseUrl);
+      try {
+        ZkStateReader zkStateReader = discoverClient.getZkStateReader();
+        ClusterState clusterState = zkStateReader.getClusterState();
+        if (clusterState != null) {
+          DocCollection docCollection = clusterState.getCollection(collection);
+          if (docCollection != null) {
+            List<Replica> replicas = docCollection.getReplicas();
+            if (replicas != null && !replicas.isEmpty()) {
+              for (Replica replica : replicas) {
+                String baseUrl = replica.getBaseUrl();
+                if (!baseUrls.contains(baseUrl)) {
+                  baseUrls.add(baseUrl);
+                }
               }
             }
           }
         }
+      } catch (Exception e) {
+        logger.error("Error during getting Solr node data by discovery solr loud client", e);
       }
       if (baseUrls.isEmpty()) {
         logger.info("Not found any base urls yet for '{}' collection. Retrying ...", collection);
