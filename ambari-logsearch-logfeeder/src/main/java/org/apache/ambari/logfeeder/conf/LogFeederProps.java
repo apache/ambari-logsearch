@@ -194,6 +194,16 @@ public class LogFeederProps implements LogFeederProperties {
   public boolean solrFilterMonitor;
 
   @LogSearchPropertyDescription(
+    name = LogFeederConstants.MONITOR_SOLR_FILTER_INTERVAL_PROPERTY,
+    description = "Time interval (in seconds) between monitoring input config filter definitions from Solr.",
+    examples = {"60"},
+    defaultValue = "30",
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
+  )
+  @Value("${" + LogFeederConstants.MONITOR_SOLR_FILTER_INTERVAL_PROPERTY + ":30}")
+  public Integer solrFilterMonitorInterval;
+
+  @LogSearchPropertyDescription(
     name = LogFeederConstants.SOLR_ZK_CONNECTION_STRING,
     description = "Zookeeper connection string for Solr.",
     examples = {"localhost1:2181,localhost2:2181/mysolr_znode"},
@@ -210,6 +220,16 @@ public class LogFeederProps implements LogFeederProperties {
   )
   @Value("${" + LogFeederConstants.SOLR_URLS + ":}")
   private String solrUrlsStr;
+
+  @LogSearchPropertyDescription(
+    name = LogFeederConstants.SOLR_CLOUD_DISCOVER,
+    description = "On startup, with a Solr Cloud client, the Solr nodes will be discovered, then LBHttpClient will be built from that.",
+    examples = {"true"},
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE},
+    defaultValue = "false"
+  )
+  @Value("${" + LogFeederConstants.SOLR_CLOUD_DISCOVER + ":false}")
+  private boolean solrCloudDiscover;
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.SOLR_METADATA_COLLECTION,
@@ -446,6 +466,14 @@ public class LogFeederProps implements LogFeederProperties {
     this.solrFilterMonitor = solrFilterMonitor;
   }
 
+  public Integer getSolrFilterMonitorInterval() {
+    return solrFilterMonitorInterval;
+  }
+
+  public void setSolrFilterMonitorInterval(Integer solrFilterMonitorInterval) {
+    this.solrFilterMonitorInterval = solrFilterMonitorInterval;
+  }
+
   public String getSolrUrlsStr() {
     return this.solrUrlsStr;
   }
@@ -564,6 +592,14 @@ public class LogFeederProps implements LogFeederProperties {
 
   public void setSolrMetadataCollection(String solrMetadataCollection) {
     this.solrMetadataCollection = solrMetadataCollection;
+  }
+
+  public boolean isSolrCloudDiscover() {
+    return solrCloudDiscover;
+  }
+
+  public void setSolrCloudDiscover(boolean solrCloudDiscover) {
+    this.solrCloudDiscover = solrCloudDiscover;
   }
 
   public String[] getSolrUrls() {

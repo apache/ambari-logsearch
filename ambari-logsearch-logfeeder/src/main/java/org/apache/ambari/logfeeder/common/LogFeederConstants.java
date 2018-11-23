@@ -102,8 +102,11 @@ public class LogFeederConstants {
   public static final String MONITOR_SOLR_FILTER_STORAGE_PROPERTY = "logfeeder.configs.filter.solr.monitor.enabled";
   public static final boolean MONITOR_SOLR_FILTER_STORAGE_DEFAULT = true;
 
+  public static final String MONITOR_SOLR_FILTER_INTERVAL_PROPERTY = "logfeeder.configs.filter.solr.monitor.interval";
+
   public static final String SOLR_ZK_CONNECTION_STRING = "logfeeder.solr.zk_connect_string";
   public static final String SOLR_URLS = "logfeeder.solr.urls";
+  public static final String SOLR_CLOUD_DISCOVER = "logfeeder.solr.cloud.client.discover";
   public static final String SOLR_METADATA_COLLECTION = "logfeeder.solr.metadata.collection";
 
   public static final String CLOUD_STORAGE_MODE = "logfeeder.cloud.storage.mode";
