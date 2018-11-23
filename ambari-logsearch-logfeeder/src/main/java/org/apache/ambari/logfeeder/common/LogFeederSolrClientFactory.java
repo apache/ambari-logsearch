@@ -119,24 +119,20 @@ public class LogFeederSolrClientFactory {
     while(true) {
       ZkStateReader zkStateReader = discoverClient.getZkStateReader();
       ClusterState clusterState = zkStateReader.getClusterState();
-      if (clusterState == null) {
-        continue;
-      }
-      DocCollection docCollection = clusterState.getCollection(collection);
-      if (docCollection == null) {
-        continue;
-      }
-      List<Replica> replicas = docCollection.getReplicas();
-      if (replicas == null || replicas.isEmpty()) {
-        continue;
-      }
-      for (Replica replica : replicas) {
-        String baseUrl = replica.getBaseUrl();
-        if (!baseUrls.contains(baseUrl)) {
-          baseUrls.add(baseUrl);
+      if (clusterState != null) {
+        DocCollection docCollection = clusterState.getCollection(collection);
+        if (docCollection != null) {
+          List<Replica> replicas = docCollection.getReplicas();
+          if (replicas != null && !replicas.isEmpty()) {
+            for (Replica replica : replicas) {
+              String baseUrl = replica.getBaseUrl();
+              if (!baseUrls.contains(baseUrl)) {
+                baseUrls.add(baseUrl);
+              }
+            }
+          }
         }
       }
-
       if (baseUrls.isEmpty()) {
         logger.info("Not found any base urls yet for '{}' collection. Retrying ...", collection);
         try {
