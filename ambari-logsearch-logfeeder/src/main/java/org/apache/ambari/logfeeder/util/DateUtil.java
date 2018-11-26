@@ -18,31 +18,18 @@
  */
 package org.apache.ambari.logfeeder.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DateUtil {
   private static final Logger logger = LogManager.getLogger(DateUtil.class);
   
   private DateUtil() {
     throw new UnsupportedOperationException();
-  }
-  
-  public static String dateToString(Date date, String dateFormat) {
-    if (date == null || dateFormat == null || dateFormat.isEmpty()) {
-      return "";
-    }
-    try {
-      SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-      return formatter.format(date).toString();
-    } catch (Exception e) {
-      logger.error("Error in coverting dateToString  format :" + dateFormat, e);
-    }
-    return "";
   }
 
   private final static String SOLR_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
