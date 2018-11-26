@@ -16,22 +16,23 @@
  * limitations under the License.
  */
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {ListItem} from '@app/classes/list-item';
 import {LogsTableComponent} from '@app/classes/components/logs-table/logs-table-component';
 import {LogsContainerService} from '@app/services/logs-container.service';
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { Observable } from 'rxjs/Observable';
-import { createAuditLogsFieldComponentFieldsSelectorByComponentName } from '@app/store/selectors/audit-logs-fields.selectors';
-import { LogField } from '@app/classes/object';
+import { selectAuditLogsFieldState } from '@app/store/selectors/audit-logs-fields.selectors';
+import { LogField, AuditLogsFieldSet } from '@app/classes/object';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'audit-logs-table',
   templateUrl: './audit-logs-table.component.html',
   styleUrls: ['./audit-logs-table.component.less']
 })
-export class AuditLogsTableComponent extends LogsTableComponent {
+export class AuditLogsTableComponent extends LogsTableComponent implements OnInit, OnDestroy {
 
   @Input()
   commonFieldNames: string[];
@@ -41,6 +42,12 @@ export class AuditLogsTableComponent extends LogsTableComponent {
   readonly timeFormat = 'YYYY-MM-DD HH:mm:ss';
 
   private readonly logsType = 'auditLogs';
+
+  private localCopyOfFields: AuditLogsFieldSet;
+
+  private destroyed$: Subject<boolean> = new Subject();
+
+  private fields$: Observable<AuditLogsFieldSet> = this.store.select(selectAuditLogsFieldState);
 
   get displayedCommonColumns(): string[] {
     return this.commonFieldNames.reduce(
@@ -56,6 +63,14 @@ export class AuditLogsTableComponent extends LogsTableComponent {
       .map((column: ListItem) => column.value);
   }
 
+  get filters(): any {
+    return this.logsContainer.filters;
+  }
+
+  get timeZone(): string {
+    return this.logsContainer.timeZone;
+  }
+
   constructor(
     private logsContainer: LogsContainerService,
     private store: Store<AppStore>
@@ -63,12 +78,17 @@ export class AuditLogsTableComponent extends LogsTableComponent {
     super();
   }
 
-  get filters(): any {
-    return this.logsContainer.filters;
+  ngOnInit() {
+    this.fields$.takeUntil(this.destroyed$).subscribe(this.handleFieldsData);
   }
 
-  get timeZone(): string {
-    return this.logsContainer.timeZone;
+  ngOnDestroy() {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+
+  handleFieldsData = (auditLogFields: AuditLogsFieldSet) => {
+    this.localCopyOfFields = auditLogFields;
   }
 
   getColumnByName(name: string): ListItem | undefined {
@@ -81,11 +101,6 @@ export class AuditLogsTableComponent extends LogsTableComponent {
 
   isCommonField(fieldName: string): boolean {
     return this.commonFieldNames.indexOf(fieldName) > -1;
-  }
-
-  fieldIsAvailableForComponent(field: string, componentName: string): Observable<boolean> {
-    return this.store.select(createAuditLogsFieldComponentFieldsSelectorByComponentName(componentName))
-      .map((logFields: LogField[]) => logFields.some((logField: LogField) => logField.name === field));
   }
 
 }

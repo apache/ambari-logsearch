@@ -33,7 +33,7 @@
     </span>
   </button>
   <ul data-component="dropdown-list" (selectedItemChange)="updateSelection($event)"
-    [ngClass]="{'dropdown-menu': true, 'dropdown-menu-right': isRightAlign}"
+    [ngClass]="{'dropdown-menu': true, 'dropdown-menu-right': isRightAlign}" [closeOnSelection]="closeOnSelection"
     [items]="options" [actionArguments]="listItemArguments" [isMultipleChoice]="isMultipleChoice"
-    [useClearToDefaultSelection]="useClearToDefaultSelection"></ul>
+    [useClearToDefaultSelection]="useClearToDefaultSelection" [useLocalFilter]="useDropDownLocalFilter"></ul>
 </div>

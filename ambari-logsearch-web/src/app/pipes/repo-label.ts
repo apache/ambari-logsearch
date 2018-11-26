@@ -16,37 +16,22 @@
  * limitations under the License.
  */
 
-import {LogLevel} from '@app/classes/string';
+import { Pipe, PipeTransform } from '@angular/core';
+import { AppStore } from '@app/classes/models/store';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { createSelectAuditLogReposLabelByRepoName } from '@app/store/selectors/audit-log-repos.selectors';
 
-export type HomogeneousObject<T> = {[key: string]: T};
+@Pipe({
+  name: 'repoLabel'
+})
+export class RepoLabelPipe implements PipeTransform {
 
-export interface LogLevelObject {
-  name: LogLevel;
-  label: string;
-  color: string;
-}
-
-/**
- * This is an interface for the service and audit log fields.
- */
-export interface LogField {
-  group?: string; // eg.: HDFS, Ambari, etc this prop is only used in Audit logs
-  label: string;
-  name: string;
-  filterable: boolean; // it can be used in a filter query
-  visible: boolean; // visible by default in the log list
-}
-
-/**
- * This is an interface for the service and audit log fields.
- */
-export interface AuditLogsFieldSet {
-  defaults: LogField[],
-  overrides: {
-    [key: string]: LogField[]
+  constructor(private store: Store<AppStore>) {
   }
+
+  transform(name: string): Observable<string> {
+    return this.store.select(createSelectAuditLogReposLabelByRepoName(name));
+  }
+
 }
-export enum AuditLogsFieldsSetRootKeys {
-  DEFAULTS = 'defaults',
-  OVERRIDES = 'overrides'
-};

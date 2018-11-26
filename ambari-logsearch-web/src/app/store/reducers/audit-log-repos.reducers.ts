@@ -1,3 +1,5 @@
+import { AuditLogReposActions, AuditLogReposActionTypes } from "../actions/audit-log-repos.actions";
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,37 +18,21 @@
  * limitations under the License.
  */
 
-import {LogLevel} from '@app/classes/string';
-
-export type HomogeneousObject<T> = {[key: string]: T};
-
-export interface LogLevelObject {
-  name: LogLevel;
-  label: string;
-  color: string;
-}
-
-/**
- * This is an interface for the service and audit log fields.
- */
-export interface LogField {
-  group?: string; // eg.: HDFS, Ambari, etc this prop is only used in Audit logs
-  label: string;
+export interface AuditLogRepo {
   name: string;
-  filterable: boolean; // it can be used in a filter query
-  visible: boolean; // visible by default in the log list
-}
+  label: string;
+};
 
-/**
- * This is an interface for the service and audit log fields.
- */
-export interface AuditLogsFieldSet {
-  defaults: LogField[],
-  overrides: {
-    [key: string]: LogField[]
+export const initialState = [];
+
+export function reducer(state = initialState, action: AuditLogReposActions) {
+  switch (action.type) {
+    case AuditLogReposActionTypes.SET: {
+      const components: AuditLogRepo[] = action.payload;
+      return components || [];
+    }
+    default: {
+      return state;
+    }
   }
 }
-export enum AuditLogsFieldsSetRootKeys {
-  DEFAULTS = 'defaults',
-  OVERRIDES = 'overrides'
-};

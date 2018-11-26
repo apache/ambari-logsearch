@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-import { Input } from '@angular/core';
+import { Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ListItem } from '@app/classes/list-item';
 import { ServiceLog } from '@app/classes/models/service-log';
 import { AuditLog } from '@app/classes/models/audit-log';
 
-export class LogsTableComponent {
+export class LogsTableComponent implements OnInit {
   @Input()
   logs: ServiceLog[] | AuditLog[] = [];
 
@@ -39,11 +39,17 @@ export class LogsTableComponent {
     return this.columns ? this.columns.filter((column: ListItem): boolean => column.isChecked) : [];
   };
 
-  get columnLabels(): {[key: string]: string} {
-    return (this.columns || []).reduce( (labels, column):{[key: string]: string}  => {
+  columnLabels: {[key: string]: string} = {};
+
+  ngOnInit() {
+    this.mapColumnLabelsToLocalCopy(this.columns);
+  }
+
+  mapColumnLabelsToLocalCopy(columns) {
+    this.columnLabels = (columns || []).reduce( (labels, column): {[key: string]: string}  => {
       return {
         ...labels,
-        [column.value]: column.label
+        [column.value]: column.label || column.value
       };
     }, {});
   }

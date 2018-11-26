@@ -20,9 +20,18 @@
   display: block;
  /deep/ tabs {
     display: block;
-    margin: 0 0 1rem 0;
+    margin: 0;
     ul.nav.nav-tabs {
       margin: 0;
+      > li.active > a,
+      > li.active > a:focus,
+      > li.active > a:hover {
+        background-color: transparent;
+      }
     }
+  }
+  /deep/ audit-logs-table {
+    position: relative;
+    top: -2rem;
   }
 }

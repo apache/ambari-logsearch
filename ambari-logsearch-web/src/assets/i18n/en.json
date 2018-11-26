@@ -48,6 +48,7 @@
 
   "filter.clusters": "Clusters",
   "filter.components": "Components",
+  "filter.repos": "Audit Source",
   "filter.levels": "Levels",
   "filter.include": "Include",
   "filter.exclude": "Exclude",
@@ -238,8 +239,8 @@
   "logs.policy": "Policy",
   "logs.proxyUsers": "Proxy Users",
   "logs.reason": "Reason",
-  "logs.repo": "Repo",
-  "logs.repoType": "Repo Type",
+  "logs.repo": "Audit Source",
+  "logs.repoType": "Audit Source Type",
   "logs.reqCallerId": "Req Caller Id",
   "logs.reqContext": "Req Context",
   "logs.reqData": "Req Data",
@@ -360,7 +361,9 @@
   "dataAvaibilityState.clustersDataState.label": "Loading clusters",
   "dataAvaibilityState.hostsDataState.label": "Loading hosts",
   "dataAvaibilityState.componentsDataState.label": "Loading components",
+  "dataAvaibilityState.logFieldsDataState.label": "Loading fields definitions",
   "dataAvaibilityState.hasError.message": "We were not able to load the data. Please check your internet connection and reload the page!",
+
 
   "urlParamsLabels": {
     "clusters": "Clusters",

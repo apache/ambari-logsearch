@@ -100,7 +100,6 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.logsContainerService.loadColumnsNames();
     // set te logsType when the activeLogsType state has changed
     this.subscriptions.push(
       this.appState.getParameter('activeLogsType').subscribe((value: LogsType) => this.logsType = value)

@@ -42,7 +42,6 @@
       height: @dashrow-row-height;
       overflow-x: auto;
       overflow-y: hidden;
-      padding: 0 2rem 0 5rem;
       .dashrow-column-group {
         align-items: stretch;
         display: flex;
@@ -51,12 +50,15 @@
         }
         &.dashrow-column-group-fixed-left {
           background-color: @white;
-          box-shadow: 1rem 0rem 1rem -1rem fadeout(@fluid-gray-2, .5);
+          box-shadow: @dashrow-fixed-group-side-box-shadow;
           left: 0;
+          margin-right: 1rem;
+          padding: 0 2rem 0 5rem;
           z-index: 1;
         }
         &.dashrow-column-group-fixed-right {
-          box-shadow: 1rem 0rem -1rem 1rem fadeout(@fluid-gray-2, .5);
+          box-shadow: 1rem 0rem -1rem 1rem fadeout(@fluid-gray-2, .3);
+          margin-left: 1rem;
           right: 0;
           z-index: 1;
         }

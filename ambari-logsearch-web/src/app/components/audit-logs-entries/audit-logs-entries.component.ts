@@ -19,11 +19,15 @@ import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { GraphEmittedEvent } from '@app/classes/graph';
 import { ListItem } from '@app/classes/list-item';
-import { HomogeneousObject } from '@app/classes/object';
+import { HomogeneousObject, AuditLogsFieldSet, LogField, AuditLogsFieldsSetRootKeys } from '@app/classes/object';
 import { AuditLog } from '@app/classes/models/audit-log';
 import { LogTypeTab } from '@app/classes/models/log-type-tab';
 import { LogsContainerService } from '@app/services/logs-container.service';
 import { commonFieldNames } from '@app/classes/models/audit-log';
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { selectAuditLogsFieldState } from '@app/store/selectors/audit-logs-fields.selectors';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'audit-logs-entries',
@@ -92,8 +96,31 @@ export class AuditLogsEntriesComponent {
    */
   private selectedResource = '';
 
-  constructor(private logsContainer: LogsContainerService) {
-  }
+  fields$: Observable<AuditLogsFieldSet> = this.store.select(selectAuditLogsFieldState);
+
+  columns$: Observable<ListItem[]> = this.fields$.map((fieldSet: AuditLogsFieldSet): ListItem[] => {
+    let columns: {[key: string]: string} = {// flattening the audit logs field set to field-name: field-label map
+      ...this.getNameLabelMapFromLogFieldList(fieldSet[AuditLogsFieldsSetRootKeys.DEFAULTS]),
+      ...(Object.keys(fieldSet[AuditLogsFieldsSetRootKeys.OVERRIDES]).reduce(
+        (currentColumns: {[key: string]: string}, componentName: string) => ({
+          ...currentColumns,
+          ...this.getNameLabelMapFromLogFieldList(fieldSet[AuditLogsFieldsSetRootKeys.OVERRIDES][componentName])
+        }), {}
+      ))
+    };
+    return Object.keys(columns).reduce((listItems: ListItem[], fieldName: string): ListItem[] => ([ // creating ListItem too feed the dropdown
+      ...listItems,
+      {
+        value: fieldName,
+        label: columns[fieldName]
+      }
+    ]), []);
+  });
+
+  constructor(
+    private logsContainer: LogsContainerService,
+    private store: Store<AppStore>
+  ) {}
 
   get topResourcesGraphData(): HomogeneousObject<HomogeneousObject<number>> {
     return this.logsContainer.topResourcesGraphData;
@@ -109,6 +136,15 @@ export class AuditLogsEntriesComponent {
 
   get contextMenuItems(): ListItem[] {
     return this.logsContainer.queryContextMenuItems;
+  }
+
+  getNameLabelMapFromLogFieldList(logFieldList: LogField[]): {[key: string]: string} {
+    return logFieldList.reduce(
+      (map: {[key: string]: string}, field: LogField) => ({
+        ...map,
+        [field.name]: field.label || field.name
+      }), {}
+    );
   }
 
   setActiveTab(tab: LogTypeTab): void {
