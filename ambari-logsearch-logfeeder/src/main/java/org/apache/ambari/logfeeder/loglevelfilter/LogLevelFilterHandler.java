@@ -18,7 +18,17 @@
  */
 package org.apache.ambari.logfeeder.loglevelfilter;
 
-import com.google.gson.Gson;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.apache.ambari.logfeeder.common.LogFeederConstants;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
@@ -37,16 +47,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.gson.Gson;
 
 /**
  * Manage log level filter object and cache them. (in memory)
@@ -54,18 +55,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LogLevelFilterHandler implements LogLevelFilterMonitor {
   private static final Logger logger = LogManager.getLogger(LogLevelFilterHandler.class);
 
-  private static final String TIMEZONE = "GMT";
   private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
   private static final boolean DEFAULT_VALUE = true;
 
-  private static ThreadLocal<DateFormat> formatter = new ThreadLocal<DateFormat>() {
-    protected DateFormat initialValue() {
-      SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-      dateFormat.setTimeZone(TimeZone.getTimeZone(TIMEZONE));
-      return dateFormat;
-    }
-  };
+  private static ThreadLocal<DateFormat> formatter = ThreadLocal.withInitial(() -> new SimpleDateFormat(DATE_FORMAT));
 
   @Inject
   private LogFeederProps logFeederProps;
@@ -83,7 +77,6 @@ public class LogLevelFilterHandler implements LogLevelFilterMonitor {
 
   @PostConstruct
   public void init() throws Exception {
-    TimeZone.setDefault(TimeZone.getTimeZone(TIMEZONE));
     if (logFeederProps.isZkFilterStorage() && logFeederProps.isUseLocalConfigs()) {
       LogLevelFilterManagerZK filterManager = (LogLevelFilterManagerZK) config.getLogLevelFilterManager();
       CuratorFramework client = filterManager.getClient();
