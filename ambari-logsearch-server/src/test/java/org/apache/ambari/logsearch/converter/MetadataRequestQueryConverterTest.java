@@ -18,7 +18,7 @@
  */
 package org.apache.ambari.logsearch.converter;
 
-import org.apache.ambari.logsearch.model.request.impl.EventHistoryRequest;
+import org.apache.ambari.logsearch.model.request.impl.MetadataRequest;
 import org.apache.ambari.logsearch.model.request.impl.query.MetadataQueryRequest;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.Before;
@@ -26,19 +26,19 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class EventHistoryRequestQueryConverterTest extends AbstractRequestConverterTest {
+public class MetadataRequestQueryConverterTest extends AbstractRequestConverterTest {
 
-  private EventHistoryRequestQueryConverter underTest;
+  private MetadataRequestQueryConverter underTest;
 
   @Before
   public void setUp() {
-    underTest = new EventHistoryRequestQueryConverter();
+    underTest = new MetadataRequestQueryConverter();
   }
 
   @Test
   public void testConvert() {
     // GIVEN
-    EventHistoryRequest request = new MetadataQueryRequest();
+    MetadataRequest request = new MetadataQueryRequest();
     request.setRowType("myRowType"); // TODO: validate these 3 fields @Valid on EventHistoryRequest object -> not null
     request.setFilterName("myFilterName");
     request.setClusters("cl1,cl2");

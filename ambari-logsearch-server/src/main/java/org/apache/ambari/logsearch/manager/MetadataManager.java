@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.apache.ambari.logsearch.common.LogSearchContext;
 import org.apache.ambari.logsearch.dao.MetadataSolrDao;
-import org.apache.ambari.logsearch.model.request.impl.EventHistoryRequest;
+import org.apache.ambari.logsearch.model.request.impl.MetadataRequest;
 import org.apache.ambari.logsearch.model.response.LogsearchMetaData;
 import org.apache.ambari.logsearch.model.response.LogSearchMetaDataListResponse;
 import org.apache.ambari.logsearch.util.SolrUtil;
@@ -62,23 +62,23 @@ public class MetadataManager extends JsonManagerBase {
   @Inject
   private ConversionService conversionService;
 
-  public String saveMetadata(LogsearchMetaData eventHistoryData) {
-    String filterName = eventHistoryData.getFiltername();
+  public String saveMetadata(LogsearchMetaData metadata) {
+    String filterName = metadata.getFiltername();
 
     SolrInputDocument solrInputDoc = new SolrInputDocument();
-    if (!isValid(eventHistoryData)) {
+    if (!isValid(metadata)) {
       throw new MalformedInputException("No FilterName Specified");
     }
 
     if (isNotUnique(filterName)) {
-      throw new AlreadyExistsException(String.format("Name '%s' already exists", eventHistoryData.getFiltername()));
+      throw new AlreadyExistsException(String.format("Name '%s' already exists", metadata.getFiltername()));
     }
-    solrInputDoc.addField(ID, eventHistoryData.getId());
+    solrInputDoc.addField(ID, metadata.getId());
     solrInputDoc.addField(USER_NAME, LogSearchContext.getCurrentUsername());
-    solrInputDoc.addField(VALUES, eventHistoryData.getValues());
+    solrInputDoc.addField(VALUES, metadata.getValues());
     solrInputDoc.addField(FILTER_NAME, filterName);
-    solrInputDoc.addField(ROW_TYPE, eventHistoryData.getRowType());
-    List<String> shareNameList = eventHistoryData.getShareNameList();
+    solrInputDoc.addField(ROW_TYPE, metadata.getRowType());
+    List<String> shareNameList = metadata.getShareNameList();
     if (CollectionUtils.isNotEmpty(shareNameList)) {
       solrInputDoc.addField(SHARE_NAME_LIST, shareNameList);
     }
@@ -119,36 +119,36 @@ public class MetadataManager extends JsonManagerBase {
   }
 
   @SuppressWarnings("unchecked")
-  public LogSearchMetaDataListResponse getMetadata(EventHistoryRequest request) {
+  public LogSearchMetaDataListResponse getMetadata(MetadataRequest request) {
     LogSearchMetaDataListResponse response = new LogSearchMetaDataListResponse();
     String rowType = request.getRowType();
     if (StringUtils.isBlank(rowType)) {
       throw new MalformedInputException("Row type was not specified");
     }
 
-    SolrQuery evemtHistoryQuery = conversionService.convert(request, SolrQuery.class);
-    evemtHistoryQuery.addFilterQuery(String.format("%s:%s OR %s:%s", USER_NAME, LogSearchContext.getCurrentUsername(),
+    SolrQuery metadataQueryQuery = conversionService.convert(request, SolrQuery.class);
+    metadataQueryQuery.addFilterQuery(String.format("%s:%s OR %s:%s", USER_NAME, LogSearchContext.getCurrentUsername(),
         SHARE_NAME_LIST, LogSearchContext.getCurrentUsername()));
-    SolrDocumentList solrList = metadataSolrDao.process(evemtHistoryQuery).getResults();
+    SolrDocumentList solrList = metadataSolrDao.process(metadataQueryQuery).getResults();
 
     Collection<LogsearchMetaData> configList = new ArrayList<>();
 
     for (SolrDocument solrDoc : solrList) {
-      LogsearchMetaData eventHistoryData = new LogsearchMetaData();
-      eventHistoryData.setFiltername("" + solrDoc.get(FILTER_NAME));
-      eventHistoryData.setId("" + solrDoc.get(ID));
-      eventHistoryData.setValues("" + solrDoc.get(VALUES));
-      eventHistoryData.setRowType("" + solrDoc.get(ROW_TYPE));
+      LogsearchMetaData metadata = new LogsearchMetaData();
+      metadata.setFiltername("" + solrDoc.get(FILTER_NAME));
+      metadata.setId("" + solrDoc.get(ID));
+      metadata.setValues("" + solrDoc.get(VALUES));
+      metadata.setRowType("" + solrDoc.get(ROW_TYPE));
       try {
         List<String> shareNameList = (List<String>) solrDoc.get(SHARE_NAME_LIST);
-        eventHistoryData.setShareNameList(shareNameList);
+        metadata.setShareNameList(shareNameList);
       } catch (Exception e) {
         // do nothing
       }
 
-      eventHistoryData.setUserName("" + solrDoc.get(USER_NAME));
+      metadata.setUserName("" + solrDoc.get(USER_NAME));
 
-      configList.add(eventHistoryData);
+      configList.add(metadata);
     }
 
     response.setName("metadataList");
