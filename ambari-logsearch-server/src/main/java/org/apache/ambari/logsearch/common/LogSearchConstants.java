@@ -62,6 +62,7 @@ public class LogSearchConstants {
   public static final String SORT = "sort";
 
   // info features constants
+  public static final String LOG_LEVEL_FILTERS_KEY = "log_level_filters";
   public static final String SHIPPER_CONFIG_API_KEY = "metadata_patterns";
   public static final String AUTH_FEATURE_KEY = "auth";
 
