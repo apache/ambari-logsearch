@@ -133,8 +133,9 @@ public class LogSearchConstants {
   public static final String REQUEST_PARAM_SOURCE_LOG_ID = "sourceLogId";
   public static final String REQUEST_PARAM_KEYWORD_TYPE = "keywordType";
   public static final String REQUEST_PARAM_TOKEN = "token";
-  public static final String REQUEST_PARAM_FILTER_NAME = "filterName";
-  public static final String REQUEST_PARAM_ROW_TYPE = "rowType";
+  public static final String REQUEST_PARAM_METADATA_NAME = "name";
+  public static final String REQUEST_PARAM_METADATA_TYPE = "type";
+  public static final String REQUEST_PARAM_METADATA_USER_NAME = "userName";
   public static final String REQUEST_PARAM_UTC_OFFSET = "utcOffset";
   public static final String REQUEST_PARAM_HOSTS = "hostList";
   public static final String REQUEST_PARAM_USERS = "userList";

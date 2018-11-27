@@ -19,15 +19,15 @@
 
 package org.apache.ambari.logsearch.rest;
 
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.DELETE_METADATA_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.GET_ALL_USER_NAMES_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.GET_METADATA_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryOperationDescriptions.SAVE_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.DELETE_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.GET_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.SAVE_METADATA_OD;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -39,7 +39,6 @@ import javax.ws.rs.Produces;
 import org.apache.ambari.logsearch.manager.MetadataManager;
 import org.apache.ambari.logsearch.model.request.impl.query.MetadataQueryRequest;
 import org.apache.ambari.logsearch.model.response.LogsearchMetaData;
-import org.apache.ambari.logsearch.model.response.LogSearchMetaDataListResponse;
 import org.springframework.context.annotation.Scope;
 
 import io.swagger.annotations.Api;
@@ -63,25 +62,16 @@ public class MetadataResource {
   }
 
   @DELETE
-  @Path("/{id}")
   @ApiOperation(DELETE_METADATA_OD)
-  public void deleteMetadata(@PathParam("id") String id) {
-    metadataManager.deleteMetadata(id);
+  public void deleteMetadata(LogsearchMetaData metadata) {
+    metadataManager.deleteMetadata(metadata);
   }
 
   @GET
   @Produces({"application/json"})
   @ApiOperation(GET_METADATA_OD)
-  public LogSearchMetaDataListResponse getMetadataList(@BeanParam MetadataQueryRequest request) {
+  public Collection<LogsearchMetaData> getMetadataList(@Valid @BeanParam MetadataQueryRequest request) {
     return metadataManager.getMetadata(request);
-  }
-
-  @GET
-  @Path("/names")
-  @Produces({"application/json"})
-  @ApiOperation(GET_ALL_USER_NAMES_OD)
-  public List<String> getAllUserName() {
-    return metadataManager.getAllUserName();
   }
 
 }

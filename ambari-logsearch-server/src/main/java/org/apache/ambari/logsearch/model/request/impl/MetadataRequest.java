@@ -19,8 +19,9 @@
 package org.apache.ambari.logsearch.model.request.impl;
 
 import org.apache.ambari.logsearch.common.Marker;
+import org.apache.ambari.logsearch.model.request.ClustersParamDefinition;
 import org.apache.ambari.logsearch.model.request.MetadataParamDefinition;
 
 @Marker
-public interface MetadataRequest extends CommonSearchRequest, MetadataParamDefinition {
+public interface MetadataRequest extends MetadataParamDefinition, ClustersParamDefinition {
 }
