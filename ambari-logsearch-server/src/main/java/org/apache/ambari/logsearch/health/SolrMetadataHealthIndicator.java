@@ -16,11 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logsearch.model.request.impl;
+package org.apache.ambari.logsearch.health;
 
-import org.apache.ambari.logsearch.common.Marker;
-import org.apache.ambari.logsearch.model.request.EventHistoryParamDefinition;
+import org.apache.ambari.logsearch.dao.MetadataSolrDao;
+import org.springframework.data.solr.core.SolrTemplate;
 
-@Marker
-public interface EventHistoryRequest extends CommonSearchRequest, EventHistoryParamDefinition {
+import javax.inject.Inject;
+import javax.inject.Named;
+
+@Named
+public class SolrMetadataHealthIndicator extends AbstractSolrHealthIndicator {
+
+  @Inject
+  private MetadataSolrDao metadataSolrDao;
+
+  @Override
+  public SolrTemplate getSolrTemplate() {
+    return metadataSolrDao.getSolrTemplate();
+  }
 }

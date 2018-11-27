@@ -16,23 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logsearch.model.request;
+package org.apache.ambari.logsearch.model.request.impl;
 
-import io.swagger.annotations.ApiParam;
-import org.apache.ambari.logsearch.common.LogSearchConstants;
+import org.apache.ambari.logsearch.common.Marker;
+import org.apache.ambari.logsearch.model.request.MetadataParamDefinition;
 
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryDescriptions.FILTER_NAME_D;
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryDescriptions.ROW_TYPE_D;
-
-public interface EventHistoryParamDefinition {
-
-  String getFilterName();
-
-  @ApiParam(value = FILTER_NAME_D, name = LogSearchConstants.REQUEST_PARAM_FILTER_NAME)
-  void setFilterName(String filterName);
-
-  String getRowType();
-
-  @ApiParam(value = ROW_TYPE_D, name = LogSearchConstants.REQUEST_PARAM_ROW_TYPE)
-  void setRowType(String rowType);
+@Marker
+public interface MetadataRequest extends CommonSearchRequest, MetadataParamDefinition {
 }

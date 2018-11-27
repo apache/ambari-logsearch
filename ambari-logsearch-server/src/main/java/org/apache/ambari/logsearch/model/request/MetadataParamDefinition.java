@@ -16,22 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logsearch.health;
+package org.apache.ambari.logsearch.model.request;
 
-import org.apache.ambari.logsearch.dao.MetadataSolrDao;
-import org.springframework.data.solr.core.SolrTemplate;
+import io.swagger.annotations.ApiParam;
+import org.apache.ambari.logsearch.common.LogSearchConstants;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryDescriptions.FILTER_NAME_D;
+import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryDescriptions.ROW_TYPE_D;
 
-@Named
-public class SolrEventHistoryHealthIndicator extends AbstractSolrHealthIndicator {
+public interface MetadataParamDefinition {
 
-  @Inject
-  private MetadataSolrDao eventHistorySolrDao;
+  String getFilterName();
 
-  @Override
-  public SolrTemplate getSolrTemplate() {
-    return eventHistorySolrDao.getSolrTemplate();
-  }
+  @ApiParam(value = FILTER_NAME_D, name = LogSearchConstants.REQUEST_PARAM_FILTER_NAME)
+  void setFilterName(String filterName);
+
+  String getRowType();
+
+  @ApiParam(value = ROW_TYPE_D, name = LogSearchConstants.REQUEST_PARAM_ROW_TYPE)
+  void setRowType(String rowType);
 }
