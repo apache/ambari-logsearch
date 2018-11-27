@@ -21,6 +21,8 @@ package org.apache.ambari.logsearch.conf;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 import static org.apache.ambari.logsearch.common.LogSearchConstants.LOGSEARCH_SESSION_ID;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,10 @@ import org.apache.ambari.logsearch.web.filters.LogsearchTrustedProxyFilter;
 import org.apache.ambari.logsearch.web.filters.LogsearchUsernamePasswordAuthenticationFilter;
 import org.apache.ambari.logsearch.web.security.LogsearchAuthenticationProvider;
 import org.apache.ambari.logsearch.web.security.LogsearchLdapAuthenticationProvider;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.support.LdapContextSource;
@@ -66,7 +71,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.HeaderWriter;
 import org.springframework.security.web.header.writers.HstsHeaderWriter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -83,6 +87,8 @@ import com.google.common.collect.Lists;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  private static final Logger logger = LogManager.getLogger(SecurityConfig.class);
+
   @Inject
   private AuthPropsConfig authPropsConfig;
 
@@ -91,6 +97,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Inject
   private LogSearchHttpConfig logSearchHttpConfig;
+
+  @Inject
+  private LogSearchSslConfig logSearchSslConfig;
 
   @Inject
   private SolrServiceLogPropsConfig solrServiceLogPropsConfig;
@@ -178,8 +187,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       if (StringUtils.isNotBlank(authPropsConfig.getLdapAuthConfig().getLdapManagerDn())) {
         ldapContextSource.setUserDn(authPropsConfig.getLdapAuthConfig().getLdapManagerDn());
       }
-      if (StringUtils.isNotBlank(authPropsConfig.getLdapAuthConfig().getLdapManagerPassword())) {
-        ldapContextSource.setPassword(authPropsConfig.getLdapAuthConfig().getLdapManagerPassword());
+      char[] ldapPassword = getLdapManagerPassword();
+      if (ldapPassword != null) {
+        ldapContextSource.setPassword(new String(ldapPassword));
       }
       ldapContextSource.setReferral(authPropsConfig.getLdapAuthConfig().getReferralMethod());
       ldapContextSource.setAnonymousReadOnly(true);
@@ -362,6 +372,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   public RequestMatcher shipperConfigInputRequestMatcher() {
     return new AntPathRequestMatcher("/api/v1/shipper/input/**");
+  }
+
+  private char[] getLdapManagerPassword() {
+    char[] ldapPassword = null;
+    try {
+      String credentialProviderPath = logSearchSslConfig.getCredentialStoreProviderPath();
+      String ldapPasswordEnv = "LOGSEARCH_LDAP_MANAGER_PASSWORD";
+      if (StringUtils.isNotBlank(credentialProviderPath)) {
+        org.apache.hadoop.conf.Configuration config = new org.apache.hadoop.conf.Configuration();
+        config.set(LogSearchSslConfig.CREDENTIAL_STORE_PROVIDER_PATH, credentialProviderPath);
+        ldapPassword = config.getPassword("logsearch.auth.ldap.manager.password");
+      } else if (StringUtils.isNotBlank(authPropsConfig.getLdapAuthConfig().getLdapManagerPasswordFile())){
+        ldapPassword = FileUtils.readFileToString(new File(
+          authPropsConfig.getLdapAuthConfig().getLdapManagerPasswordFile()), Charset.defaultCharset()).toCharArray();
+      } else if (StringUtils.isNotBlank(System.getenv(ldapPasswordEnv))) {
+        ldapPassword = System.getenv(ldapPasswordEnv).toCharArray();
+      } else if (StringUtils.isNotBlank(authPropsConfig.getLdapAuthConfig().getLdapManagerPassword())) {
+        ldapPassword = authPropsConfig.getLdapAuthConfig().getLdapManagerPassword().toCharArray();
+      }
+    } catch (Exception e) {
+      logger.warn("Error during ldap password initialization. LDAP authentication probably won't work if a manager password will be required.", e);
+    }
+    return ldapPassword;
   }
 
   private String[] getCookies() {
