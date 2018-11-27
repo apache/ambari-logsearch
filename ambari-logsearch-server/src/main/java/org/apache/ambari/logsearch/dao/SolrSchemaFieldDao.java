@@ -68,7 +68,7 @@ public class SolrSchemaFieldDao {
   private AuditSolrDao auditSolrDao;
   
   @Inject
-  private SolrMetadataPropsConfig solrEventHistoryPropsConfig;
+  private SolrMetadataPropsConfig solrMetadataPropsConfig;
   
   private int retryCount;
   private int skipCount;
@@ -117,9 +117,9 @@ public class SolrSchemaFieldDao {
       if (schemaResponse != null) {
         extractSchemaFieldsName(lukeResponses, schemaResponse, schemaFieldNameMap, schemaFieldTypeMap);
         logger.debug("Populate fields for collection " + solrClient.getDefaultCollection()+ " was successful, next update it after " +
-            solrEventHistoryPropsConfig.getPopulateIntervalMins() + " minutes");
+            solrMetadataPropsConfig.getPopulateIntervalMins() + " minutes");
         retryCount = 0;
-        skipCount = (solrEventHistoryPropsConfig.getPopulateIntervalMins() * 60) / RETRY_SECOND - 1;
+        skipCount = (solrMetadataPropsConfig.getPopulateIntervalMins() * 60) / RETRY_SECOND - 1;
       }
       else {
         retryCount++;

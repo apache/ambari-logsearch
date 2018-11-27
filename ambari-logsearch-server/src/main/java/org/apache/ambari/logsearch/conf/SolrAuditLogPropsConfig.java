@@ -48,9 +48,9 @@ public class SolrAuditLogPropsConfig implements SolrPropsConfig {
   )
   private String zkConnectString;
 
-  @Value("${logsearch.solr.collection.audit.logs:audit_logs}")
+  @Value("${logsearch.solr.audit.logs.collection:audit_logs}")
   @LogSearchPropertyDescription(
-    name = "logsearch.solr.collection.audit.logs",
+    name = "logsearch.solr.audit.logs.collection",
     description = "Name of Log Search audit collection.",
     examples = {"audit_logs"},
     defaultValue = "audit_logs",
@@ -58,9 +58,9 @@ public class SolrAuditLogPropsConfig implements SolrPropsConfig {
   )
   private String collection;
 
-  @Value("${logsearch.ranger.audit.logs.collection.name:}")
+  @Value("${logsearch.solr.ranger.audit.logs.collection:}")
   @LogSearchPropertyDescription(
-    name = "logsearch.ranger.audit.logs.collection.name",
+    name = "logsearch.solr.ranger.audit.logs.collection",
     description = "Name of Ranger audit collections (can be used if ranger audits managed by the same Solr which is used for Log Search).",
     examples = {"ranger_audits"},
     sources = {LOGSEARCH_PROPERTIES_FILE}
@@ -87,9 +87,9 @@ public class SolrAuditLogPropsConfig implements SolrPropsConfig {
   )
   private String aliasNameIn;
 
-  @Value("${logsearch.collection.audit.logs.numshards:1}")
+  @Value("${logsearch.solr.audit.logs.numshards:1}")
   @LogSearchPropertyDescription(
-    name = "logsearch.collection.audit.logs.numshards",
+    name = "logsearch.solr.audit.logs.numshards",
     description = "Number of Solr shards for audit collection (bootstrapping).",
     examples = {"2"},
     defaultValue = "1",
@@ -97,9 +97,9 @@ public class SolrAuditLogPropsConfig implements SolrPropsConfig {
   )
   private Integer numberOfShards;
 
-  @Value("${logsearch.collection.audit.logs.replication.factor:1}")
+  @Value("${logsearch.solr.audit.logs.replication.factor:1}")
   @LogSearchPropertyDescription(
-    name = "logsearch.collection.audit.logs.replication.factor",
+    name = "logsearch.solr.audit.logs.replication.factor",
     description = "Solr replication factor for audit collection (bootstrapping).",
     examples = {"2"},
     defaultValue = "1",

@@ -27,9 +27,9 @@ import static org.apache.ambari.logsearch.common.LogSearchConstants.LOGSEARCH_PR
 @Configuration
 public class SolrMetadataPropsConfig extends SolrConnectionPropsConfig {
 
-  @Value("${logsearch.solr.collection.metadata:logsearch_metadata}")
+  @Value("${logsearch.solr.metadata.collection:logsearch_metadata}")
   @LogSearchPropertyDescription(
-    name = "logsearch.solr.collection.metadata",
+    name = "logsearch.solr.metadata",
     description = "Name of Log Search metadata collection.",
     examples = {"logsearch_metadata"},
     defaultValue = "logsearch_metadata",
@@ -47,19 +47,19 @@ public class SolrMetadataPropsConfig extends SolrConnectionPropsConfig {
   )
   private String configName;
 
-  @Value("${logsearch.collection.metadata.numshards:1}")
+  @Value("${logsearch.solr.metadata.numshards:2}")
   @LogSearchPropertyDescription(
-    name = "logsearch.collection.metadata.numshards",
+    name = "logsearch.solr.metadata.numshards",
     description = "Number of Solr shards for logsearch metadta collection (bootstrapping).",
-    examples = {"2"},
-    defaultValue = "1",
+    examples = {"3"},
+    defaultValue = "2",
     sources = {LOGSEARCH_PROPERTIES_FILE}
   )
   private Integer numberOfShards;
 
-  @Value("${logsearch.collection.metadata.replication.factor:2}")
+  @Value("${logsearch.solr.metadata.replication.factor:2}")
   @LogSearchPropertyDescription(
-    name = "logsearch.collection.metadata.replication.factor",
+    name = "logsearch.solr.metadata.replication.factor",
     description = "Solr replication factor for event metadata collection (bootstrapping).",
     examples = {"3"},
     defaultValue = "2",
@@ -67,9 +67,9 @@ public class SolrMetadataPropsConfig extends SolrConnectionPropsConfig {
   )
   private Integer replicationFactor;
 
-  @Value("${logsearch.schema.fields.populate.interval.mins:1}")
+  @Value("${logsearch.solr.metadata.schema.fields.populate.interval.mins:1}")
   @LogSearchPropertyDescription(
-    name = "logsearch.schema.fields.populate.interval.mins",
+    name = "logsearch.solr.metadata.schema.fields.populate.interval.mins",
     description = "Interval in minutes for populating schema fiels for metadata collections.",
     examples = {"10"},
     defaultValue = "1",
@@ -116,7 +116,6 @@ public class SolrMetadataPropsConfig extends SolrConnectionPropsConfig {
   public void setReplicationFactor(Integer replicationFactor) {
     this.replicationFactor = replicationFactor;
   }
-  
 
   public Integer getPopulateIntervalMins() {
     return populateIntervalMins;
