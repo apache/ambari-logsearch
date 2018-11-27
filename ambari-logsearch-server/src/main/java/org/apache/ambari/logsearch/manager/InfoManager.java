@@ -81,6 +81,8 @@ public class InfoManager extends JsonManagerBase {
     Map<String, Object> featuresMap = new HashMap<>();
     featuresMap.put(LogSearchConstants.AUTH_FEATURE_KEY, getAuthMap());
     featuresMap.put(LogSearchConstants.SHIPPER_CONFIG_API_KEY, logSearchConfigApiConfig.isConfigApiEnabled());
+    boolean logLevelFiltersEnabled = logSearchConfigApiConfig.isConfigApiEnabled() || logSearchConfigApiConfig.isSolrFilterStorage() || logSearchConfigApiConfig.isZkFilterStorage();
+    featuresMap.put(LogSearchConstants.LOG_LEVEL_FILTERS_KEY, logLevelFiltersEnabled);
     return featuresMap;
   }
 
