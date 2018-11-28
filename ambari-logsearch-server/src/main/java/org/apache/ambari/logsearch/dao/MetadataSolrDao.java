@@ -89,15 +89,15 @@ public class MetadataSolrDao extends SolrDaoBase {
     }
   }
 
-  public UpdateResponse deleteMetadata(String name, String type) {
-    return removeDoc(String.format("name:%s AND type:%s", name, type));
+  public UpdateResponse deleteMetadata(String name, String type, String userName) {
+    return removeDoc(String.format("name:%s AND type:%s AND username:%s", name, type, userName));
   }
 
   private UpdateResponse removeDoc(String query) {
     try {
       UpdateResponse updateResoponse = getSolrClient().deleteByQuery(query);
       getSolrClient().commit();
-      LOG_PERFORMANCE.info("\n Username :- " + LogSearchContext.getCurrentUsername() +
+      LOG_PERFORMANCE.info("Username :- " + LogSearchContext.getCurrentUsername() +
               " Remove Time Execution :- " + updateResoponse.getQTime() + " Total Time Elapsed is :- " + updateResoponse.getElapsedTime());
       return updateResoponse;
     } catch (SolrServerException e) {
@@ -110,7 +110,7 @@ public class MetadataSolrDao extends SolrDaoBase {
   public UpdateResponse addDocs(SolrInputDocument doc) {
     try {
       UpdateResponse updateResoponse = getSolrClient().add(doc);
-      LOG_PERFORMANCE.info("\n Username :- " + LogSearchContext.getCurrentUsername() +
+      LOG_PERFORMANCE.info("Username :- " + LogSearchContext.getCurrentUsername() +
               " Update Time Execution :- " + updateResoponse.getQTime() + " Total Time Elapsed is :- " + updateResoponse.getElapsedTime());
       getSolrClient().commit();
       return updateResoponse;

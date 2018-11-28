@@ -77,7 +77,13 @@ public class MetadataManager extends JsonManagerBase {
     if (!isValid(metaData, true)) {
       throw new MalformedInputException("Name and type should be specified");
     }
-    metadataSolrDao.deleteMetadata(metaData.getName(), metaData.getType());
+    final String userName;
+    if (StringUtils.isNotBlank(metaData.getUserName())) {
+      userName = metaData.getUserName();
+    } else {
+      userName = LogSearchContext.getCurrentUsername();
+    }
+    metadataSolrDao.deleteMetadata(metaData.getName(), metaData.getType(), userName);
   }
 
   @SuppressWarnings("unchecked")
