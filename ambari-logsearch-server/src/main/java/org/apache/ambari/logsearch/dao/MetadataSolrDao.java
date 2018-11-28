@@ -21,6 +21,7 @@ package org.apache.ambari.logsearch.dao;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -33,6 +34,7 @@ import org.apache.ambari.logsearch.conf.SolrPropsConfig;
 import org.apache.ambari.logsearch.conf.SolrMetadataPropsConfig;
 import org.apache.ambari.logsearch.conf.global.SolrCollectionState;
 import org.apache.ambari.logsearch.configurer.SolrCollectionConfigurer;
+import org.apache.curator.shaded.com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -107,9 +109,13 @@ public class MetadataSolrDao extends SolrDaoBase {
     }
   }
 
-  public UpdateResponse addDocs(SolrInputDocument doc) {
+  public UpdateResponse addDoc(SolrInputDocument doc) {
+    return addDocs(ImmutableList.of(doc));
+  }
+
+  public UpdateResponse addDocs(List<SolrInputDocument> docs) {
     try {
-      UpdateResponse updateResoponse = getSolrClient().add(doc);
+      UpdateResponse updateResoponse = getSolrClient().add(docs);
       LOG_PERFORMANCE.info("Username :- " + LogSearchContext.getCurrentUsername() +
               " Update Time Execution :- " + updateResoponse.getQTime() + " Total Time Elapsed is :- " + updateResoponse.getElapsedTime());
       getSolrClient().commit();

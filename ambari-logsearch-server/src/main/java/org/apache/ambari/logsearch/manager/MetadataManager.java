@@ -27,7 +27,6 @@ import java.util.UUID;
 import org.apache.ambari.logsearch.common.LogSearchContext;
 import org.apache.ambari.logsearch.dao.MetadataSolrDao;
 import org.apache.ambari.logsearch.model.request.impl.MetadataRequest;
-import org.apache.ambari.logsearch.model.request.impl.query.MetadataQueryRequest;
 import org.apache.ambari.logsearch.model.response.LogsearchMetaData;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -61,18 +60,20 @@ public class MetadataManager extends JsonManagerBase {
   public String saveMetadata(Collection<LogsearchMetaData> logsearchMetaDataList) {
     List<SolrInputDocument> solrInputDocList = new ArrayList<>();
     for (LogsearchMetaData metaData : logsearchMetaDataList) {
-      solrInputDocList.add(saveOneMetadata(metaData));
+      solrInputDocList.add(createMetadata(metaData));
     }
+    metadataSolrDao.addDocs(solrInputDocList);
     return convertObjToString(solrInputDocList);
   }
 
   public String saveMetadata(LogsearchMetaData metadata) {
-    return convertObjToString(saveOneMetadata(metadata));
+    SolrInputDocument solrInputDocument = createMetadata(metadata);
+    metadataSolrDao.addDoc(solrInputDocument);
+    return convertObjToString(solrInputDocument);
   }
 
-  private SolrInputDocument saveOneMetadata(LogsearchMetaData metadata) {
+  private SolrInputDocument createMetadata(LogsearchMetaData metadata) {
     String name = metadata.getName();
-
     SolrInputDocument solrInputDoc = new SolrInputDocument();
     if (!isValid(metadata, false)) {
       throw new MalformedInputException("Name,type and value should be specified, input:" + ToStringBuilder.reflectionToString(metadata));
@@ -83,8 +84,8 @@ public class MetadataManager extends JsonManagerBase {
     solrInputDoc.addField(VALUE, metadata.getValue());
     solrInputDoc.addField(NAME, name);
     solrInputDoc.addField(TYPE, metadata.getType());
+    logger.info("Created metadata: name: {}, type: {}, user: {}", name, metadata.getType(), userName);
 
-    metadataSolrDao.addDocs(solrInputDoc);
     return solrInputDoc;
   }
 

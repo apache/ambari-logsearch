@@ -19,13 +19,6 @@
 
 package org.apache.ambari.logsearch.rest;
 
-import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.DELETE_METADATA_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.DELETE_METADATA_LIST_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.GET_METADATA_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.GET_METADATA_LIST_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.SAVE_METADATA_LIST_OD;
-import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.SAVE_METADATA_OD;
-
 import java.util.Collection;
 
 import javax.inject.Inject;
@@ -36,7 +29,6 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.apache.ambari.logsearch.manager.MetadataManager;
@@ -47,6 +39,13 @@ import org.springframework.context.annotation.Scope;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
+
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.DELETE_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.DELETE_METADATA_LIST_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.GET_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.GET_METADATA_LIST_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.SAVE_METADATA_LIST_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.SAVE_METADATA_OD;
 
 @Api(value = "metadata", description = "Log Search metadata operations", authorizations = {@Authorization(value = "basicAuth")})
 @Path("metadata")
