@@ -67,6 +67,9 @@ export class DropdownButtonComponent {
   @Input()
   useClearToDefaultSelection = false;
 
+  @Input()
+  showTotalSelection = false;
+
   protected selectedItems: ListItem[] = [];
 
   get selection(): ListItem[] {
