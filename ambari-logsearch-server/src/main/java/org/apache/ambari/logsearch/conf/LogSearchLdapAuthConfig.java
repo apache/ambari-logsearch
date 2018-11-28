@@ -58,6 +58,16 @@ public class LogSearchLdapAuthConfig {
   )
   private String ldapManagerPassword;
 
+  @Value("${logsearch.auth.ldap.manager.password.file:}")
+  @LogSearchPropertyDescription(
+    name = "logsearch.auth.ldap.manager.password.file",
+    description = "File that contains password of the LDAP manager user.",
+    examples = {"/my/path/passwordfile"},
+    defaultValue = "",
+    sources = {LOGSEARCH_PROPERTIES_FILE}
+  )
+  private String ldapManagerPasswordFile;
+
   @Value("${logsearch.auth.ldap.base.dn:}")
   @LogSearchPropertyDescription(
     name = "logsearch.auth.ldap.base.dn",
@@ -278,5 +288,13 @@ public class LogSearchLdapAuthConfig {
 
   public void setReferralMethod(String referralMethod) {
     this.referralMethod = referralMethod;
+  }
+
+  public String getLdapManagerPasswordFile() {
+    return ldapManagerPasswordFile;
+  }
+
+  public void setLdapManagerPasswordFile(String ldapManagerPasswordFile) {
+    this.ldapManagerPasswordFile = ldapManagerPasswordFile;
   }
 }
