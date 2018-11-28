@@ -21,18 +21,24 @@ package org.apache.ambari.logsearch.model.request;
 import io.swagger.annotations.ApiParam;
 import org.apache.ambari.logsearch.common.LogSearchConstants;
 
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryDescriptions.FILTER_NAME_D;
-import static org.apache.ambari.logsearch.doc.DocConstants.EventHistoryDescriptions.ROW_TYPE_D;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataDescriptions.NAME_D;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataDescriptions.TYPE_D;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataDescriptions.USER_NAME_D;
 
 public interface MetadataParamDefinition {
 
-  String getFilterName();
+  String getName();
 
-  @ApiParam(value = FILTER_NAME_D, name = LogSearchConstants.REQUEST_PARAM_FILTER_NAME)
-  void setFilterName(String filterName);
+  @ApiParam(value = NAME_D, name = LogSearchConstants.REQUEST_PARAM_METADATA_NAME)
+  void setName(String name);
 
-  String getRowType();
+  String getType();
 
-  @ApiParam(value = ROW_TYPE_D, name = LogSearchConstants.REQUEST_PARAM_ROW_TYPE)
-  void setRowType(String rowType);
+  @ApiParam(value = TYPE_D, name = LogSearchConstants.REQUEST_PARAM_METADATA_TYPE)
+  void setType(String type);
+
+  String getUserName();
+
+  @ApiParam(value = USER_NAME_D, name = LogSearchConstants.REQUEST_PARAM_METADATA_USER_NAME)
+  void setUserName(String userName);
 }

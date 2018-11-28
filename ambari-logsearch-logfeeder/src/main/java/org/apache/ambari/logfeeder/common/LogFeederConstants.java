@@ -31,10 +31,6 @@ public class LogFeederConstants {
   public static final String SOLR_COMPONENT = "type";
   public static final String SOLR_HOST = "host";
 
-  // Event History Constants History
-  public static final String VALUES = "jsons";
-  public static final String ROW_TYPE = "rowtype";
-
   public static final String IN_MEMORY_TIMESTAMP = "in_memory_timestamp";
 
   public static final String LOGFEEDER_PROPERTIES_FILE = "logfeeder.properties";

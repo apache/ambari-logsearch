@@ -21,7 +21,6 @@ package org.apache.ambari.logsearch.model.response;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
-import java.util.List;
 
 public class LogsearchMetaData {
 
@@ -32,16 +31,13 @@ public class LogsearchMetaData {
   private String userName;
 
   @ApiModelProperty
-  private String filtername;
+  private String name;
 
   @ApiModelProperty
-  private String values;
+  private String value;
 
   @ApiModelProperty
-  private List<String> shareNameList;
-
-  @ApiModelProperty
-  private String rowType;
+  private String type;
 
   public LogsearchMetaData() {
     id = String.valueOf(new Date().getTime());
@@ -63,35 +59,27 @@ public class LogsearchMetaData {
     this.userName = userName;
   }
 
-  public String getFiltername() {
-    return filtername;
+  public String getName() {
+    return name;
   }
 
-  public void setFiltername(String filtername) {
-    this.filtername = filtername;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public List<String> getShareNameList() {
-    return shareNameList;
+  public String getValue() {
+    return value;
   }
 
-  public void setShareNameList(List<String> shareNameList) {
-    this.shareNameList = shareNameList;
+  public void setValue(String value) {
+    this.value = value;
   }
 
-  public String getValues() {
-    return values;
+  public String getType() {
+    return type;
   }
 
-  public void setValues(String values) {
-    this.values = values;
-  }
-
-  public String getRowType() {
-    return rowType;
-  }
-
-  public void setRowType(String rowType) {
-    this.rowType = rowType;
+  public void setType(String type) {
+    this.type = type;
   }
 }

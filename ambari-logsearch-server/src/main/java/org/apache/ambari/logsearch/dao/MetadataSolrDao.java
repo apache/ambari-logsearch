@@ -89,8 +89,8 @@ public class MetadataSolrDao extends SolrDaoBase {
     }
   }
 
-  public UpdateResponse deleteEventHistoryData(String id) {
-    return removeDoc("id:" + id);
+  public UpdateResponse deleteMetadata(String name, String type) {
+    return removeDoc(String.format("name:%s AND type:%s", name, type));
   }
 
   private UpdateResponse removeDoc(String query) {

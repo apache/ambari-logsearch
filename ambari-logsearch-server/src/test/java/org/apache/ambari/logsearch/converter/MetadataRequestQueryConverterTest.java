@@ -39,13 +39,14 @@ public class MetadataRequestQueryConverterTest extends AbstractRequestConverterT
   public void testConvert() {
     // GIVEN
     MetadataRequest request = new MetadataQueryRequest();
-    request.setRowType("myRowType"); // TODO: validate these 3 fields @Valid on EventHistoryRequest object -> not null
-    request.setFilterName("myFilterName");
+    request.setType("myRowType");
+    request.setName("myFilterName");
+    request.setUserName("myUserName");
     request.setClusters("cl1,cl2");
     // WHEN
     SolrQuery queryResult = underTest.convert(request);
     // THEN
-    assertEquals("?q=*%3A*&fq=rowtype%3AmyRowType&fq=filtername%3A*myFilterName*&fq=cluster%3A%28cl1+OR+cl2%29&start=0&rows=10&sort=filtername+asc",
+    assertEquals("?q=*%3A*&fq=type%3AmyRowType&fq=name%3AmyFilterName&fq=cluster_string%3A%28cl1+OR+cl2%29&rows=10000&sort=name+asc",
       queryResult.toQueryString());
   }
 }

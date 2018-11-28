@@ -62,10 +62,10 @@ public class LogLevelFilterManagerSolr implements LogLevelFilterManager {
     if (useClusterParam) {
       doc.addField("cluster_string", clusterName);
     }
-    doc.addField("filtername", logId);
-    doc.addField("rowtype", "log_level_filter");
-    doc.addField("jsons", gson.toJson(filter));
-    doc.addField("username", "default");
+    doc.addField("name", logId);
+    doc.addField("type", "log_level_filter");
+    doc.addField("value", gson.toJson(filter));
+    doc.addField("username", "none");
     logger.debug("Creating log level filter - logid: {}, cluster: {}", logId, clusterName);
     solrClient.add(doc);
   }
@@ -112,16 +112,16 @@ public class LogLevelFilterManagerSolr implements LogLevelFilterManager {
       if (useClusterParam) {
         solrQuery.addFilterQuery("cluster_string:" + clusterName);
       }
-      solrQuery.addFilterQuery("rowtype:log_level_filter");
-      solrQuery.setFields("jsons", "filtername");
+      solrQuery.addFilterQuery("type:log_level_filter");
+      solrQuery.setFields("value", "name");
 
       final QueryResponse response = solrClient.query(solrQuery);
       if (response != null) {
         final SolrDocumentList documents = response.getResults();
         if (documents != null && !documents.isEmpty()) {
           for(SolrDocument document : documents) {
-            String jsons = (String) document.getFieldValue("jsons");
-            String logId = (String) document.getFieldValue("filtername");
+            String jsons = (String) document.getFieldValue("value");
+            String logId = (String) document.getFieldValue("name");
             if (jsons != null) {
               LogLevelFilter logLevelFilter = gson.fromJson(jsons, LogLevelFilter.class);
               logLevelFilterTreeMap.put(logId,logLevelFilter);
@@ -149,13 +149,11 @@ public class LogLevelFilterManagerSolr implements LogLevelFilterManager {
   }
 
   private void waitForSolr(SolrClient solrClient) {
-    boolean solrAvailable = false;
-    while (!solrAvailable) {
+    while (true) {
       try {
         logger.debug("Start solr ping for log level filter collection");
         SolrPingResponse pingResponse = solrClient.ping();
         if (pingResponse.getStatus() == 0) {
-          solrAvailable = true;
           break;
         }
       } catch (Exception e) {

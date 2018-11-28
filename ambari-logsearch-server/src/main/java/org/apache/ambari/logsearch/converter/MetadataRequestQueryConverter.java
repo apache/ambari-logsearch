@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.ambari.logsearch.solr.SolrConstants.CommonLogConstants.CLUSTER;
-import static org.apache.ambari.logsearch.solr.SolrConstants.EventHistoryConstants.FILTER_NAME;
-import static org.apache.ambari.logsearch.solr.SolrConstants.EventHistoryConstants.ROW_TYPE;
+import static org.apache.ambari.logsearch.solr.SolrConstants.MetadataConstants.NAME;
+import static org.apache.ambari.logsearch.solr.SolrConstants.MetadataConstants.TYPE;
 
 @Named
 public class MetadataRequestQueryConverter extends AbstractConverterAware<MetadataRequest, SolrQuery> {
@@ -39,28 +39,18 @@ public class MetadataRequestQueryConverter extends AbstractConverterAware<Metada
   public SolrQuery convert(MetadataRequest metadataRequest) {
     SolrQuery metadataQuery = new SolrQuery();
     metadataQuery.setQuery("*:*");
+    metadataQuery.addFilterQuery(String.format("%s:%s", TYPE, metadataRequest.getType()));
+    if (StringUtils.isNotBlank(metadataRequest.getName())) {
+      metadataQuery.addFilterQuery(String.format("%s:%s", NAME, metadataRequest.getName()));
+    }
 
-    int startIndex = StringUtils.isNotEmpty(metadataRequest.getStartIndex()) && StringUtils.isNumeric(metadataRequest.getStartIndex())
-      ? Integer.parseInt(metadataRequest.getStartIndex()) : 0;
-    int maxRows = StringUtils.isNotEmpty(metadataRequest.getPageSize()) && StringUtils.isNumeric(metadataRequest.getPageSize())
-      ? Integer.parseInt(metadataRequest.getPageSize()) : 10;
-
-    SolrQuery.ORDER order = metadataRequest.getSortType() != null && SolrQuery.ORDER.desc.equals(SolrQuery.ORDER.valueOf(metadataRequest.getSortType()))
-      ? SolrQuery.ORDER.desc : SolrQuery.ORDER.asc;
-    String sortBy = StringUtils.isNotEmpty(metadataRequest.getSortBy()) ? metadataRequest.getSortBy() : FILTER_NAME;
-    String filterName = StringUtils.isBlank(metadataRequest.getFilterName()) ? "*" : "*" + metadataRequest.getFilterName() + "*";
-
-    metadataQuery.addFilterQuery(String.format("%s:%s", ROW_TYPE, metadataRequest.getRowType()));
-    metadataQuery.addFilterQuery(String.format("%s:%s", FILTER_NAME, SolrUtil.makeSearcableString(filterName)));
-    metadataQuery.setStart(startIndex);
-    metadataQuery.setRows(maxRows);
-
-    SolrQuery.SortClause sortOrder = SolrQuery.SortClause.create(sortBy, order);
+    SolrQuery.SortClause sortOrder = SolrQuery.SortClause.create(NAME, SolrQuery.ORDER.asc);
     List<SolrQuery.SortClause> sort = new ArrayList<>();
     sort.add(sortOrder);
+    metadataQuery.setRows(10000);
     metadataQuery.setSorts(sort);
 
-    SolrUtil.addListFilterToSolrQuery(metadataQuery, CLUSTER, metadataRequest.getClusters());
+    SolrUtil.addListFilterToSolrQuery(metadataQuery, CLUSTER + "_string", metadataRequest.getClusters());
 
     return metadataQuery;
   }
