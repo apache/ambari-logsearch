@@ -20,7 +20,10 @@
 package org.apache.ambari.logsearch.rest;
 
 import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.DELETE_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.DELETE_METADATA_LIST_OD;
 import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.GET_METADATA_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.GET_METADATA_LIST_OD;
+import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.SAVE_METADATA_LIST_OD;
 import static org.apache.ambari.logsearch.doc.DocConstants.MetadataOperationDescriptions.SAVE_METADATA_OD;
 
 import java.util.Collection;
@@ -54,10 +57,33 @@ public class MetadataResource {
   @Inject
   private MetadataManager metadataManager;
 
+  @GET
+  @Produces({"application/json"})
+  @ApiOperation(GET_METADATA_OD)
+  public LogsearchMetaData getMetadata(@Valid @BeanParam MetadataQueryRequest request) {
+    return metadataManager.getMetadata(request);
+  }
+
+  @GET
+  @Path("/list")
+  @Produces({"application/json"})
+  @ApiOperation(GET_METADATA_LIST_OD)
+  public Collection<LogsearchMetaData> getMetadataList(@Valid @BeanParam MetadataQueryRequest request) {
+    return metadataManager.getMetadataList(request);
+  }
+
   @POST
   @Produces({"application/json"})
   @ApiOperation(SAVE_METADATA_OD)
   public String saveMetadata(LogsearchMetaData metadata) {
+    return metadataManager.saveMetadata(metadata);
+  }
+
+  @POST
+  @Path("/list")
+  @Produces({"application/json"})
+  @ApiOperation(SAVE_METADATA_LIST_OD)
+  public String saveMetadataList(Collection<LogsearchMetaData> metadata) {
     return metadataManager.saveMetadata(metadata);
   }
 
@@ -67,11 +93,11 @@ public class MetadataResource {
     metadataManager.deleteMetadata(metadata);
   }
 
-  @GET
-  @Produces({"application/json"})
-  @ApiOperation(GET_METADATA_OD)
-  public Collection<LogsearchMetaData> getMetadataList(@Valid @BeanParam MetadataQueryRequest request) {
-    return metadataManager.getMetadata(request);
+  @DELETE
+  @Path("/list")
+  @ApiOperation(DELETE_METADATA_LIST_OD)
+  public void deleteMetadataList(Collection<LogsearchMetaData> metadata) {
+    metadataManager.deleteMetadata(metadata);
   }
 
 }

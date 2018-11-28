@@ -120,9 +120,12 @@ public class DocConstants {
   }
 
   public class MetadataOperationDescriptions {
-    public static final String SAVE_METADATA_OD = "Save metadata";
-    public static final String DELETE_METADATA_OD = "Delete metadata";
     public static final String GET_METADATA_OD = "Get metadata";
+    public static final String GET_METADATA_LIST_OD = "Get metadata list";
+    public static final String SAVE_METADATA_OD = "Save metadata";
+    public static final String SAVE_METADATA_LIST_OD = "Save metadata list";
+    public static final String DELETE_METADATA_OD = "Delete metadata";
+    public static final String DELETE_METADATA_LIST_OD = "Delete metadata list";
   }
 
   public class ShipperConfigOperationDescriptions {

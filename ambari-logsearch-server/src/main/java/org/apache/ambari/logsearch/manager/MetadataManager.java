@@ -21,13 +21,16 @@ package org.apache.ambari.logsearch.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.ambari.logsearch.common.LogSearchContext;
 import org.apache.ambari.logsearch.dao.MetadataSolrDao;
 import org.apache.ambari.logsearch.model.request.impl.MetadataRequest;
+import org.apache.ambari.logsearch.model.request.impl.query.MetadataQueryRequest;
 import org.apache.ambari.logsearch.model.response.LogsearchMetaData;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -55,12 +58,24 @@ public class MetadataManager extends JsonManagerBase {
   @Inject
   private ConversionService conversionService;
 
+  public String saveMetadata(Collection<LogsearchMetaData> logsearchMetaDataList) {
+    List<SolrInputDocument> solrInputDocList = new ArrayList<>();
+    for (LogsearchMetaData metaData : logsearchMetaDataList) {
+      solrInputDocList.add(saveOneMetadata(metaData));
+    }
+    return convertObjToString(solrInputDocList);
+  }
+
   public String saveMetadata(LogsearchMetaData metadata) {
+    return convertObjToString(saveOneMetadata(metadata));
+  }
+
+  private SolrInputDocument saveOneMetadata(LogsearchMetaData metadata) {
     String name = metadata.getName();
 
     SolrInputDocument solrInputDoc = new SolrInputDocument();
     if (!isValid(metadata, false)) {
-      throw new MalformedInputException("Name,type and value should be specified");
+      throw new MalformedInputException("Name,type and value should be specified, input:" + ToStringBuilder.reflectionToString(metadata));
     }
     final String userName = LogSearchContext.getCurrentUsername().toLowerCase();
     solrInputDoc.addField(ID, generateUniqueId(metadata, userName));
@@ -70,12 +85,18 @@ public class MetadataManager extends JsonManagerBase {
     solrInputDoc.addField(TYPE, metadata.getType());
 
     metadataSolrDao.addDocs(solrInputDoc);
-    return convertObjToString(solrInputDoc);
+    return solrInputDoc;
+  }
+
+  public void deleteMetadata(Collection<LogsearchMetaData> metaDataList) {
+    for (LogsearchMetaData metaData : metaDataList) {
+      deleteMetadata(metaData);
+    }
   }
 
   public void deleteMetadata(LogsearchMetaData metaData) {
     if (!isValid(metaData, true)) {
-      throw new MalformedInputException("Name and type should be specified");
+      throw new MalformedInputException("Name and type should be specified, input: " + ToStringBuilder.reflectionToString(metaData));
     }
     final String userName;
     if (StringUtils.isNotBlank(metaData.getUserName())) {
@@ -86,8 +107,21 @@ public class MetadataManager extends JsonManagerBase {
     metadataSolrDao.deleteMetadata(metaData.getName(), metaData.getType(), userName);
   }
 
+  public LogsearchMetaData getMetadata(MetadataRequest request) {
+    Collection<LogsearchMetaData> metadataList = getMetadataObjects(request, true);
+    if (metadataList.isEmpty()) {
+      throw new NotFoundException("Not found any metadata objects with these inputs.");
+    } else {
+      return metadataList.iterator().next();
+    }
+  }
+
+  public Collection<LogsearchMetaData> getMetadataList(MetadataRequest request) {
+    return getMetadataObjects(request, false);
+  }
+
   @SuppressWarnings("unchecked")
-  public Collection<LogsearchMetaData> getMetadata(MetadataRequest request) {
+  private Collection<LogsearchMetaData> getMetadataObjects(MetadataRequest request, boolean requireNameField) {
     SolrQuery metadataQueryQuery = conversionService.convert(request, SolrQuery.class);
 
     final String userName;
@@ -98,6 +132,9 @@ public class MetadataManager extends JsonManagerBase {
     }
     if (StringUtils.isBlank(userName)) {
       throw new IllegalArgumentException("User name is not found for metadata request.");
+    }
+    if (requireNameField && StringUtils.isBlank(request.getName())) {
+      throw new MalformedInputException("Name field is a required request parameter.");
     }
     metadataQueryQuery.addFilterQuery(String.format("%s:%s", USER_NAME, userName.toLowerCase()));
     SolrDocumentList solrList = metadataSolrDao.process(metadataQueryQuery).getResults();
@@ -114,9 +151,7 @@ public class MetadataManager extends JsonManagerBase {
 
       metadataList.add(metadata);
     }
-
     return metadataList;
-
   }
 
   private String generateUniqueId(LogsearchMetaData metaData, String userName) {
