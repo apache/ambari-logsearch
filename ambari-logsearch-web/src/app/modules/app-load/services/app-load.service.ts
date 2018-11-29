@@ -26,7 +26,7 @@ import { HttpClientService } from 'app/services/http-client.service';
 import { ClustersService } from 'app/services/storage/clusters.service';
 import { ServiceLogsFieldsService } from 'app/services/storage/service-logs-fields.service';
 import { AuditLogsFieldsService } from 'app/services/storage/audit-logs-fields.service';
-import { AuditFieldsDefinitionSet, LogField } from 'app/classes/object';
+import { AuditLogsFieldSet, LogField } from 'app/classes/object';
 import { Observable } from 'rxjs/Observable';
 import { HostsService } from 'app/services/storage/hosts.service';
 import { NodeItem } from 'app/classes/models/node-item';
@@ -38,6 +38,7 @@ import { DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-a
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
+import { LoadAuditLogsReposAction } from '@app/store/actions/audit-log-repos.actions';
 
 // @ToDo create a separate data state enrty in the store with keys of the model names
 export enum DataStateStoreKeys {
@@ -51,7 +52,8 @@ export enum DataStateStoreKeys {
 export const baseDataKeys: DataStateStoreKeys[] = [
   DataStateStoreKeys.CLUSTERS_DATA_KEY,
   DataStateStoreKeys.HOSTS_DATA_KEY,
-  DataStateStoreKeys.COMPONENTS_DATA_KEY
+  DataStateStoreKeys.COMPONENTS_DATA_KEY,
+  DataStateStoreKeys.LOG_FIELDS_DATA_KEY
 ];
 
 @Injectable()
@@ -77,15 +79,19 @@ export class AppLoadService {
     Observable.combineLatest(
       this.appStateService.getParameter(DataStateStoreKeys.CLUSTERS_DATA_KEY),
       this.appStateService.getParameter(DataStateStoreKeys.COMPONENTS_DATA_KEY),
-      this.appStateService.getParameter(DataStateStoreKeys.HOSTS_DATA_KEY)
+      this.appStateService.getParameter(DataStateStoreKeys.HOSTS_DATA_KEY),
+      this.appStateService.getParameter(DataStateStoreKeys.LOG_FIELDS_DATA_KEY)
     ).subscribe(this.onDataAvailibilityChange);
 
     this.baseDataAvailibilityState$ = this.dataAvaibilityStateStore.getAll()
       .map((dataAvailabilityState: DataAvaibilityStatesModel): DataAvailabilityValues => {
+
         const values: DataAvailabilityValues[] = Object.keys(dataAvailabilityState)
           .filter((key: DataStateStoreKeys): boolean => baseDataKeys.indexOf(key) > -1)
           .map((key): DataAvailabilityValues => dataAvailabilityState[key]);
+
         let nextDataState: DataAvailabilityValues = DataAvailabilityValues.NOT_AVAILABLE;
+
         if (values.indexOf(DataAvailabilityValues.ERROR) > -1) {
           nextDataState = DataAvailabilityValues.ERROR;
         } else if (values.indexOf(DataAvailabilityValues.LOADING) > -1) {
@@ -93,7 +99,9 @@ export class AppLoadService {
         } else if ( values.filter((value: DataAvailabilityValues) => value !== DataAvailabilityValues.AVAILABLE).length === 0 ) {
           nextDataState = DataAvailabilityValues.AVAILABLE;
         }
+
         return nextDataState;
+
       });
       this.baseDataAvailibilityState$.subscribe(this.onBaseDataAvailabilityChange);
   }
@@ -168,7 +176,7 @@ export class AppLoadService {
     this.hostStoreService.clear();
   }
 
-  loadComponents(): Observable<[{[key: string]: any}, {[key: string]: any}]> {
+  loadServiceLogsComponents(): Observable<[{[key: string]: any}, {[key: string]: any}]> {
     this.setDataAvaibility(DataStateStoreKeys.COMPONENTS_DATA_KEY, DataAvailabilityValues.LOADING);
     const responseComponentsData$: Observable<Response> = this.httpClient.get('components').first()
       .filter((response: Response) => response.ok)
@@ -199,25 +207,30 @@ export class AppLoadService {
     return responses$;
   }
 
+  loadAuditLogsComponents() {
+    this.store.dispatch(new LoadAuditLogsReposAction());
+  }
+
   clearComponents(): void {
     this.componentsStorageService.clear();
   }
 
-  loadFieldsForLogs(): Observable<[LogField[], AuditFieldsDefinitionSet]> {
+  loadFieldsForLogs(): Observable<[LogField[], AuditLogsFieldSet]> {
+    this.setDataAvaibility(DataStateStoreKeys.LOG_FIELDS_DATA_KEY, DataAvailabilityValues.LOADING);
     const serviceLogsFieldsResponse$: Observable<LogField[]> = this.httpClient.get('serviceLogsFields')
       .filter((response: Response) => response.ok)
       .map((response: Response) => {
         return response.json();
       });
-    const auditLogsFieldsResponse$: Observable<AuditFieldsDefinitionSet> = this.httpClient.get('auditLogsFields')
+    const auditLogsFieldsResponse$: Observable<AuditLogsFieldSet> = this.httpClient.get('auditLogsFields')
       .filter((response: Response) => response.ok)
       .map((response: Response) => {
         return response.json();
       });
-    const responses$: Observable<[LogField[], AuditFieldsDefinitionSet]> = Observable.combineLatest(
+    const responses$: Observable<[LogField[], AuditLogsFieldSet]> = Observable.combineLatest(
       serviceLogsFieldsResponse$, auditLogsFieldsResponse$
     );
-    responses$.subscribe(([serviceLogsFieldsResponse, auditLogsFieldsResponse]: [LogField[], AuditFieldsDefinitionSet]) => {
+    responses$.subscribe(([serviceLogsFieldsResponse, auditLogsFieldsResponse]: [LogField[], AuditLogsFieldSet]) => {
       this.serviceLogsFieldsService.addInstances(serviceLogsFieldsResponse);
       this.auditLogsFieldsService.setParameters(auditLogsFieldsResponse);
       this.setDataAvaibility(DataStateStoreKeys.LOG_FIELDS_DATA_KEY, DataAvailabilityValues.AVAILABLE);
@@ -229,7 +242,9 @@ export class AppLoadService {
     if (isAuthorized) {
         this.loadClusters();
         this.loadHosts();
-        this.loadComponents();
+        this.loadServiceLogsComponents();
+        this.loadAuditLogsComponents();
+        this.loadFieldsForLogs();
     } else {
       this.clearClusters();
       this.clearHosts();

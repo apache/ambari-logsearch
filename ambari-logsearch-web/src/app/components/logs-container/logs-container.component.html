@@ -51,12 +51,12 @@
                           [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async"></service-logs-table>
     </ng-container>
     <ng-container *ngSwitchCase="'auditLogs'">
-      <collapsible-panel commonTitle="logs.duration">
+      <collapsible-panel commonTitle="logs.duration" openTitle="logs.hideGraph" collapsedTitle="logs.showGraph">
         <time-line-graph (selectArea)="setCustomTimeRange($event[0], $event[1])" [data]="auditLogsGraphData"
           [allowFractionalYTicks]="false" [skipZeroValuesInTooltip]="false" svgId="audit-logs-graph"
           [class.loading]="logsContainerService.isGraphRequestInProgress$ | async"></time-line-graph>
       </collapsible-panel>
-      <audit-logs-entries [totalCount]="totalCount" [logs]="auditLogs | async" [columns]="auditLogsColumns | async"
+      <audit-logs-entries [totalCount]="totalCount" [logs]="auditLogs | async" [columns]="auditLogsColumns | async" [commonFieldNames]="auditLogsCommonFieldNames"
           [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async"></audit-logs-entries>
     </ng-container>
   </ng-container>

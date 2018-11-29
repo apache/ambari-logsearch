@@ -66,6 +66,17 @@
       [isDisabled]="isServiceLogsFileView$ | async"
       additionalLabelComponentSetter="getDataForComponentsNodeBar"></filter-button>
 
+    <filter-button *ngIf="isFilterConditionDisplayed('repos')"
+      formControlName="repos"
+      [subItems]="filters.repos.options"
+      label="{{filters.repos.label | translate}}"
+      [useDropDownLocalFilter]="true"
+      [isMultipleChoice]="true"
+      [iconClass]="filters.repos.iconClass"
+      [isRightAlign]="true"
+      [class.disabled]="isServiceLogsFileView$ | async"
+      [isDisabled]="isServiceLogsFileView$ | async"></filter-button>
+
     <filter-button *ngIf="isFilterConditionDisplayed('levels')"
       formControlName="levels"
       label="{{filters.levels.label | translate}}"

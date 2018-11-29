@@ -49,6 +49,7 @@ export const defaultFilterSelections = {
     label: 'filter.timeRange.1hr'
   },
   components: [],
+  repos: [],
   levels: [],
   hosts: [],
   auditLogsSorting: {

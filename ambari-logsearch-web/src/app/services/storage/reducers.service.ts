@@ -38,6 +38,7 @@ import {dataAvailabilityStates} from '@app/modules/app-load/stores/data-availabi
 
 import * as auth from '@app/store/reducers/auth.reducers';
 import * as filterHistory from '@app/store/reducers/filter-history.reducers';
+import * as auditLogRepos from '@app/store/reducers/audit-log-repos.reducers';
 
 export const reducers = {
   appSettings,
@@ -59,7 +60,8 @@ export const reducers = {
   logsState,
   dataAvailabilityStates,
   auth: auth.reducer,
-  filterHistory: filterHistory.reducer
+  filterHistory: filterHistory.reducer,
+  auditLogRepos: auditLogRepos.reducer
 };
 
 export function reducer(state: any, action: any) {

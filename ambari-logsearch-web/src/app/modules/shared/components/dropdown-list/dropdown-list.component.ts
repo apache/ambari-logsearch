@@ -71,6 +71,9 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
   @Input()
   filterStr = '';
 
+  @Input()
+  closeOnSelection = true;
+
 
   @ViewChild('selectAll')
   selectAllRef: ElementRef;
@@ -206,6 +209,8 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
   private clearFilter = (event: MouseEvent): void => {
     this.filterRegExp = null;
     this.filterStr = '';
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   private renderAdditionalComponents(): void {
@@ -223,6 +228,12 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
       item.onSelect(...this.actionArguments);
     }
     this.selectedItemChange.emit(item);
+  }
+
+  onItemClick(event: MouseEvent) {
+    if (!this.closeOnSelection) {
+      event.stopPropagation();
+    }
   }
 
   doItemsCheck() {

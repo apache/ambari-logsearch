@@ -18,32 +18,31 @@
 
 import { createSelector, Selector } from 'reselect';
 import { AppStore } from '@app/classes/models/store';
-import { LogField } from '@app/classes/object';
+import { LogField, AuditLogsFieldSet, AuditLogsFieldsSetRootKeys } from '@app/classes/object';
 import { ResponseRootProperties } from '@app/services/storage/audit-logs-fields.service';
 
-export const selectAuditLogsFieldState = (state: AppStore): LogField[] => state.auditLogsFields;
+export const selectAuditLogsFieldState = (state: AppStore): AuditLogsFieldSet => state.auditLogsFields;
 
 export const selectDefaultAuditLogsFields = createSelector(
   selectAuditLogsFieldState,
-  (root) => root && root[ResponseRootProperties.DEFAULTS]
+  (root: AuditLogsFieldSet): LogField[] => root && <LogField[]>root[AuditLogsFieldsSetRootKeys.DEFAULTS]
 );
 
-export const createAuditLogsFieldComponentFieldsSelectorByComponentName = (componentName: string): Selector<AppStore, LogField[]> => (
-    createSelector(
+export const createAuditLogsFieldSetSelector = (componentName?: string) => {
+  return createSelector(
     selectAuditLogsFieldState,
-    (root): LogField[] => {
+    (root: AuditLogsFieldSet): LogField[] => {
       const overrides = root[ResponseRootProperties.OVERRIDES];
-      return (overrides && overrides[componentName]) || root[ResponseRootProperties.DEFAULTS];
+      return (componentName && overrides && overrides[componentName]) || root[ResponseRootProperties.DEFAULTS];
     }
-  )
-);
+  );
+}
 
-export const createAuditLogsFieldLabelSelectorByComponentNameAndFieldName = (
-  componentName: string,
-  fieldName: string
+export const createAuditLogsFieldLabelSelector = (
+  fieldName: string,
+  componentName?: string
 ): Selector<AppStore, string> => createSelector(
-  selectAuditLogsFieldState,
-  createAuditLogsFieldComponentFieldsSelectorByComponentName(componentName),
+  createAuditLogsFieldSetSelector(componentName),
   (fields: LogField[]): string => {
     const field: LogField = fields.find((nextField: LogField) => nextField.name === fieldName);
     return field ? field.label : fieldName;

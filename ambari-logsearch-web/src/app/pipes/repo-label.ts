@@ -16,33 +16,22 @@
  * limitations under the License.
  */
 
-import {Log} from '@app/classes/models/log';
+import { Pipe, PipeTransform } from '@angular/core';
+import { AppStore } from '@app/classes/models/store';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import { createSelectAuditLogReposLabelByRepoName } from '@app/store/selectors/audit-log-repos.selectors';
 
-export const commonFieldNames: string[] = ['evtTime', 'repo', 'reqUser', 'action'];
+@Pipe({
+  name: 'repoLabel'
+})
+export class RepoLabelPipe implements PipeTransform {
 
-export interface AuditLog extends Log {
-  policy?: string;
-  reason?: string;
-  result: number;
-  text?: string;
-  tags?: string[];
-  resource?: string;
-  sess?: string;
-  access?: string;
-  logType: string;
-  tags_str?: string;
-  resType?: string;
-  reqUser: string;
-  reqData?: string;
-  repoType: number;
-  repo: string;
-  proxyUsers?: string[];
-  evtTime: number;
-  enforcer: string;
-  reqContext?: string;
-  cliType?: string;
-  cliIP?: string;
-  agent?: string;
-  agentHost?: string;
-  action?: string;
+  constructor(private store: Store<AppStore>) {
+  }
+
+  transform(name: string): Observable<string> {
+    return this.store.select(createSelectAuditLogReposLabelByRepoName(name));
+  }
+
 }

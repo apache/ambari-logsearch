@@ -51,7 +51,7 @@ import { ListItem } from '@app/classes/list-item';
 import { HomogeneousObject, LogLevelObject } from '@app/classes/object';
 import { DataAvailabilityValues, LogsType, ScrollType  } from '@app/classes/string';
 import { LogTypeTab } from '@app/classes/models/log-type-tab';
-import { AuditFieldsDefinitionSet } from '@app/classes/object';
+import { AuditLogsFieldSet } from '@app/classes/object';
 import { AuditLog } from '@app/classes/models/audit-log';
 import { ServiceLog } from '@app/classes/models/service-log';
 import { BarGraph } from '@app/classes/models/bar-graph';
@@ -70,6 +70,8 @@ import { AppStore } from '@app/classes/models/store';
 import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
 
 import { Subscription } from 'rxjs/Subscription';
+import { AuditLogRepo } from '@app/store/reducers/audit-log-repos.reducers';
+import { selectAuditLogReposState } from '@app/store/selectors/audit-log-repos.selectors';
 
 @Injectable()
 export class LogsContainerService {
@@ -134,6 +136,13 @@ export class LogsContainerService {
       options: [],
       defaultSelection: defaultFilterSelections.components,
       fieldName: 'type'
+    },
+    repos: {
+      label: 'filter.repos',
+      iconClass: 'fa fa-cubes',
+      options: [],
+      defaultSelection: defaultFilterSelections.repos,
+      fieldName: 'repos'
     },
     levels: {
       label: 'filter.levels',
@@ -226,6 +235,7 @@ export class LogsContainerService {
     clusters: ['clusters'],
     timeRange: ['to', 'from'],
     components: ['mustBe'],
+    repos: ['mustBe'],
     levels: ['level'],
     hosts: ['hostList'],
     auditLogsSorting: ['sortType', 'sortBy'],
@@ -256,7 +266,7 @@ export class LogsContainerService {
     auditLogs: {
       logsModel: this.auditLogsStorage,
       fieldsModel: this.auditLogsFieldsStorage,
-      listFilters: ['clusters', 'timeRange', 'auditLogsSorting', 'pageSize', 'page', 'query', 'users'],
+      listFilters: ['clusters', 'timeRange', 'repos', 'auditLogsSorting', 'pageSize', 'page', 'query', 'users'],
       topResourcesFilters: ['clusters', 'timeRange', 'query'],
       graphFilters: ['clusters', 'timeRange', 'query'],
       graphRequestName: 'auditLogsGraph',
@@ -439,6 +449,9 @@ export class LogsContainerService {
     });
     this.clusterSelectionStoreService.getParameter(LogsContainerService.clusterSelectionStoreKey)
       .filter(selection => !!selection).subscribe(this.onClusterSelectionChanged);
+
+    this.store.select(selectAuditLogReposState).subscribe(this.setAuditLogReposFilters);
+    
   }
 
   //
@@ -759,21 +772,6 @@ export class LogsContainerService {
     return graphData;
   }
 
-  loadColumnsNames(): void {
-    this.httpClient.get('serviceLogsFields').subscribe((response: Response): void => {
-      const jsonResponse = response.json();
-      if (jsonResponse) {
-        this.serviceLogsFieldsStorage.addInstances(jsonResponse);
-      }
-    });
-    this.httpClient.get('auditLogsFields').subscribe((response: Response): void => {
-      const jsonResponse: AuditFieldsDefinitionSet = response.json();
-      if (jsonResponse) {
-        this.auditLogsFieldsStorage.setParameters(jsonResponse);
-      }
-    });
-  }
-
   startCaptureTimer(): void {
     this.startCaptureTime = new Date().valueOf();
     const maxCaptureTimeInSeconds = this.maximumCaptureTimeLimit / 1000;
@@ -807,44 +805,25 @@ export class LogsContainerService {
     this.captureSeconds = 0;
   }
 
-  loadClusters(): void {
-
-  }
-
-  loadComponents(): Observable<Response[]> {
-    const requestComponentsData: Observable<Response> = this.httpClient.get('components');
-    const requestComponentsName: Observable<Response> = this.httpClient.get('serviceComponentsName');
-    const requests = Observable.combineLatest(requestComponentsName, requestComponentsData);
-    requests.subscribe(([componentsNamesResponse, componentsDataResponse]: Response[]) => {
-      const componentsNames = componentsNamesResponse.json();
-      const componentsData = componentsDataResponse.json();
-      const components = componentsData && componentsData.vNodeList.map((item): NodeItem => {
-        const component = componentsNames.metadata.find(componentItem => componentItem.name === item.name);
-        return Object.assign(item, {
-          label: component && (component.label || item.name),
-          group: component && component.group && {
-            name: component.group,
-            label: componentsNames.groups[component.group]
-          },
-          value: item.logLevelCount.reduce((currentValue: number, currentItem): number => {
-            return currentValue + Number(currentItem.value);
-          }, 0)
-        });
-      });
-      if (components) {
-        this.utils.pushUniqueValues(this.filters.components.options, components.map(node => this.utils.getListItemFromNode(node, true) ));
-        this.componentsStorage.addInstances(components);
-      }
-    });
-    return requests;
-  }
-
   setComponentsFilters = (components): void => {
     this.filters.components.options = [];
     if (components) {
       this.utils.pushUniqueValues(
         this.filters.components.options,
         components.map(node => this.utils.getListItemFromNode(node, true))
+      );
+    }
+  }
+
+  setAuditLogReposFilters = (items: AuditLogRepo[]): void => {
+    this.filters.repos.options = [];
+    if (items) {
+      this.utils.pushUniqueValues(
+        this.filters.repos.options,
+        items.map(item => ({
+          label: item.label,
+          value: item.name
+        }))
       );
     }
   }

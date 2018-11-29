@@ -28,7 +28,7 @@ import { Graph } from '@app/classes/models/graph';
 import { NodeItem } from '@app/classes/models/node-item';
 import { UserConfig } from '@app/classes/models/user-config';
 import { LogTypeTab } from '@app/classes/models/log-type-tab';
-import { LogField } from '@app/classes/object';
+import { LogField, AuditLogsFieldSet } from '@app/classes/object';
 import { UtilsService } from '@app/services/utils.service';
 import { NotificationInterface } from '@modules/shared/interfaces/notification.interface';
 import { LogsState } from '@app/classes/models/logs-state';
@@ -36,6 +36,7 @@ import { DataAvaibilityStatesModel } from '@app/modules/app-load/models/data-ava
 
 import * as auth from '@app/store/reducers/auth.reducers';
 import * as filterHistory from '@app/store/reducers/filter-history.reducers';
+import * as auditLogRepos from '@app/store/reducers/audit-log-repos.reducers';
 
 const storeActions = {
     'ARRAY.ADD': 'ADD',
@@ -66,13 +67,14 @@ export interface AppStore {
   clusters: string[];
   components: NodeItem[];
   serviceLogsFields: LogField[];
-  auditLogsFields: LogField[];
+  auditLogsFields: AuditLogsFieldSet;
   tabs: LogTypeTab[];
   notifications: NotificationInterface[];
   logsState: LogsState;
   dataAvailabilityStates: DataAvaibilityStatesModel;
   auth: auth.State;
   filterHistory: filterHistory.FilterHistoryState;
+  auditLogRepos: auditLogRepos.AuditLogRepo[];
 }
 
 export class ModelService {

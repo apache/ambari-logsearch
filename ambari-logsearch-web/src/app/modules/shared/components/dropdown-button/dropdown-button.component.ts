@@ -70,6 +70,12 @@ export class DropdownButtonComponent {
   @Input()
   showTotalSelection = false;
 
+  @Input()
+  useDropDownLocalFilter = false;
+
+  @Input()
+  closeOnSelection = true;
+
   protected selectedItems: ListItem[] = [];
 
   get selection(): ListItem[] {

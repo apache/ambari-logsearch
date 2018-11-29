@@ -39,6 +39,8 @@ import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.se
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+import { commonFieldNames as auditLogsCommonFieldNames } from '@app/classes/models/audit-log';
+
 @Component({
   selector: 'logs-container',
   templateUrl: './logs-container.component.html',
@@ -88,6 +90,10 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
 
   isServiceLogsFileView$: Observable<boolean> = this.appState.getParameter('isServiceLogsFileView');
 
+  get auditLogsCommonFieldNames() {
+    return auditLogsCommonFieldNames;
+  }
+
   constructor(
     private appState: AppStateService,
     private tabsStorage: TabsService,
@@ -100,7 +106,6 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.logsContainerService.loadColumnsNames();
     // set te logsType when the activeLogsType state has changed
     this.subscriptions.push(
       this.appState.getParameter('activeLogsType').subscribe((value: LogsType) => this.logsType = value)

@@ -52,6 +52,9 @@ export class HttpClientService extends Http {
       url: 'audit/logs',
       params: opts => new AuditLogsListQueryParams(opts)
     },
+    auditLogsComponents: {
+      url: 'audit/logs/components'
+    },
     auditLogsGraph: {
       url: 'audit/logs/bargraph',
       params: opts => new AuditLogsGraphQueryParams(opts)

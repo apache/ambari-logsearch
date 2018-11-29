@@ -16,33 +16,18 @@
  * limitations under the License.
  */
 
-import {Log} from '@app/classes/models/log';
+import { AppStore } from '@app/classes/models/store';
+import { AuditLogRepo } from '../reducers/audit-log-repos.reducers';
+import { createSelector } from 'reselect';
 
-export const commonFieldNames: string[] = ['evtTime', 'repo', 'reqUser', 'action'];
+export const selectAuditLogReposState = (state: AppStore): AuditLogRepo[] => state.auditLogRepos;
 
-export interface AuditLog extends Log {
-  policy?: string;
-  reason?: string;
-  result: number;
-  text?: string;
-  tags?: string[];
-  resource?: string;
-  sess?: string;
-  access?: string;
-  logType: string;
-  tags_str?: string;
-  resType?: string;
-  reqUser: string;
-  reqData?: string;
-  repoType: number;
-  repo: string;
-  proxyUsers?: string[];
-  evtTime: number;
-  enforcer: string;
-  reqContext?: string;
-  cliType?: string;
-  cliIP?: string;
-  agent?: string;
-  agentHost?: string;
-  action?: string;
+export function createSelectAuditLogReposLabelByRepoName(repoName: string) {
+  return createSelector(
+    selectAuditLogReposState,
+    (repos): string => {
+      const repoWithGivenName: AuditLogRepo = repos.find((repo: AuditLogRepo) => repo.name === repoName);
+      return repoWithGivenName ? repoWithGivenName.label : repoName;
+    }
+  );
 }

@@ -58,6 +58,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
 
+import {ComponentLabelPipe} from '@app/pipes/component-label';
+import { RepoLabelPipe } from '@app/pipes/repo-label';
+import { AuditLogFieldLabelPipe } from '@app/pipes/audit-log-field-label.pipe';
+
 describe('AuditLogsTableComponent', () => {
   let component: AuditLogsTableComponent;
   let fixture: ComponentFixture<AuditLogsTableComponent>;
@@ -65,6 +69,9 @@ describe('AuditLogsTableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        ComponentLabelPipe,
+        RepoLabelPipe,
+        AuditLogFieldLabelPipe,
         AuditLogsTableComponent,
         PaginationComponent,
         DropdownListComponent

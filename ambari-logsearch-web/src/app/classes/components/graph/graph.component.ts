@@ -32,13 +32,26 @@ import {ServiceInjector} from '@app/classes/service-injector';
 import {UtilsService} from '@app/services/utils.service';
 import {Subscription} from 'rxjs/Subscription';
 
+export const graphColors = [
+  '#41bfae',
+  '#79e3d1',
+  '#63c2e5',
+  '#c4aeff',
+  '#b991d9',
+  '#ffb9bf',
+  '#ffae65',
+  '#f6d151',
+  '#a7cf82',
+  '#abdfd5'
+];
+
 export class GraphComponent implements AfterViewInit, OnChanges, OnInit, OnDestroy {
 
   @Input()
   data: HomogeneousObject<HomogeneousObject<number>> = {};
 
   @Input()
-  svgId: string = 'graph-svg';
+  svgId = 'graph-svg';
 
   @Input()
   margin: GraphMarginOptions = {
@@ -164,7 +177,7 @@ export class GraphComponent implements AfterViewInit, OnChanges, OnInit, OnDestr
    * Ordered array of color strings for data representation
    * @type {string[]}
    */
-  protected orderedColors: string[];
+  protected orderedColors: string[] = graphColors;
 
   /**
    * This property is to hold the data of the bar where the mouse is over.
@@ -260,6 +273,7 @@ export class GraphComponent implements AfterViewInit, OnChanges, OnInit, OnDestr
   }
 
   protected setLegendItems(): void {
+    this.setColors();
     if (this.colors && this.labels) {
       this.legendItems = Object.keys(this.labels).map((key: string) => Object.assign({}, {
         label: this.labels[key],
@@ -268,31 +282,27 @@ export class GraphComponent implements AfterViewInit, OnChanges, OnInit, OnDestr
     }
   }
 
-  protected setup(): void {
-    const margin = this.margin;
-    if (this.utils.isEmptyObject(this.colors)) {
-      // set default color scheme for different values if no custom colors specified
+  protected getOrderedColorsByColors(colors: {[key: string]: string}): string[] {
+    const keys = Object.keys(colors);
+    return keys.reduce((orderedColors: string[], key: string): string[] => [...orderedColors, colors[key]], []);
+  }
+
+  protected setColors(): void {
+    if (this.utils.isEmptyObject(this.colors) && this.orderedColors && this.orderedColors.length) {
       const keys = Object.keys(this.labels);
-      const keysCount = keys.length;
-      const specterLength = keysCount > 2 ? keysCount : 3; // length of minimal available spectral scheme is 3
-      let colorsArray;
-      if (keysCount > 2) {
-        colorsArray = Array.from(d3sc.schemeSpectral[keysCount]);
-      } else {
-        const minimalColorScheme = Array.from(d3sc.schemeSpectral[specterLength]);
-        colorsArray = minimalColorScheme.slice(0, keysCount);
-      }
-      this.orderedColors = colorsArray;
       this.colors = keys.reduce((currentObject: HomogeneousObject<string>, currentKey: string, index: number) => {
         return Object.assign(currentObject, {
-          [currentKey]: colorsArray[index]
+          [currentKey]: this.orderedColors[index]
         });
       }, {});
-    } else {
-      const keysWithColors = this.colors,
-        keys = Object.keys(keysWithColors);
-      this.orderedColors = keys.reduce((array: string[], key: string): string[] => [...array, keysWithColors[key]], []);
+    } else if (!this.utils.isEmptyObject(this.colors)) {
+      this.orderedColors = this.getOrderedColorsByColors(this.colors);
     }
+  }
+
+  protected setup(): void {
+    const margin = this.margin;
+    this.setColors();
     this.width = this.graphContainer.clientWidth - margin.left - margin.right;
     const xScale = this.isTimeGraph ? d3.scaleTime() : d3.scaleLinear();
     const yScale = d3.scaleLinear();
@@ -470,6 +480,8 @@ export class GraphComponent implements AfterViewInit, OnChanges, OnInit, OnDestr
       }
       this.tooltipOnTheLeft = left < relativeMousePosition[0];
       this.tooltipPosition = {left, top};
+    } else {
+      this.tooltipPosition = undefined;
     }
   };
 

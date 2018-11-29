@@ -1,3 +1,5 @@
+import { AuditLogReposActions, AuditLogReposActionTypes } from "../actions/audit-log-repos.actions";
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,33 +18,21 @@
  * limitations under the License.
  */
 
-import {Log} from '@app/classes/models/log';
+export interface AuditLogRepo {
+  name: string;
+  label: string;
+};
 
-export const commonFieldNames: string[] = ['evtTime', 'repo', 'reqUser', 'action'];
+export const initialState = [];
 
-export interface AuditLog extends Log {
-  policy?: string;
-  reason?: string;
-  result: number;
-  text?: string;
-  tags?: string[];
-  resource?: string;
-  sess?: string;
-  access?: string;
-  logType: string;
-  tags_str?: string;
-  resType?: string;
-  reqUser: string;
-  reqData?: string;
-  repoType: number;
-  repo: string;
-  proxyUsers?: string[];
-  evtTime: number;
-  enforcer: string;
-  reqContext?: string;
-  cliType?: string;
-  cliIP?: string;
-  agent?: string;
-  agentHost?: string;
-  action?: string;
+export function reducer(state = initialState, action: AuditLogReposActions) {
+  switch (action.type) {
+    case AuditLogReposActionTypes.SET: {
+      const components: AuditLogRepo[] = action.payload;
+      return components || [];
+    }
+    default: {
+      return state;
+    }
+  }
 }

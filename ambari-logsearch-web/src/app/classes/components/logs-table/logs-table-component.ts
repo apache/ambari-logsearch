@@ -16,20 +16,13 @@
  * limitations under the License.
  */
 
-import {OnChanges, SimpleChanges, Input} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {ListItem} from '@app/classes/list-item';
-import {ServiceLog} from '@app/classes/models/service-log';
-import {AuditLog} from '@app/classes/models/audit-log';
+import { Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ListItem } from '@app/classes/list-item';
+import { ServiceLog } from '@app/classes/models/service-log';
+import { AuditLog } from '@app/classes/models/audit-log';
 
-export class LogsTableComponent implements OnChanges {
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.hasOwnProperty('columns')) {
-      this.displayedColumns = this.columns.filter((column: ListItem): boolean => column.isChecked);
-    }
-  }
-
+export class LogsTableComponent implements OnInit {
   @Input()
   logs: ServiceLog[] | AuditLog[] = [];
 
@@ -40,12 +33,33 @@ export class LogsTableComponent implements OnChanges {
   filtersForm: FormGroup;
 
   @Input()
-  totalCount: number = 0;
+  totalCount = 0;
 
-  displayedColumns: ListItem[] = [];
+  get displayedColumns(): ListItem[] {
+    return this.columns ? this.columns.filter((column: ListItem): boolean => column.isChecked) : [];
+  };
+
+  columnLabels: {[key: string]: string} = {};
+
+  ngOnInit() {
+    this.mapColumnLabelsToLocalCopy(this.columns);
+  }
+
+  mapColumnLabelsToLocalCopy(columns) {
+    this.columnLabels = (columns || []).reduce( (labels, column): {[key: string]: string}  => {
+      return {
+        ...labels,
+        [column.value]: column.label || column.value
+      };
+    }, {});
+  }
 
   isColumnDisplayed(key: string): boolean {
     return this.displayedColumns.some((column: ListItem): boolean => column.value === key);
+  }
+
+  getColumnLabel(key: string): string {
+    return this.columnLabels[key] || key;
   }
 
 }
