@@ -56,7 +56,7 @@
           [allowFractionalYTicks]="false" [skipZeroValuesInTooltip]="false" svgId="audit-logs-graph"
           [class.loading]="logsContainerService.isGraphRequestInProgress$ | async"></time-line-graph>
       </collapsible-panel>
-      <audit-logs-entries [totalCount]="totalCount" [logs]="auditLogs | async" [columns]="auditLogsColumns | async"
+      <audit-logs-entries [totalCount]="totalCount" [logs]="auditLogs | async" [columns]="auditLogsColumns | async" [commonFieldNames]="auditLogsCommonFieldNames"
           [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async"></audit-logs-entries>
     </ng-container>
   </ng-container>

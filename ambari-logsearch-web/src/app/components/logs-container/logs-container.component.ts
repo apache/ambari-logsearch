@@ -39,6 +39,8 @@ import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.se
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+import { commonFieldNames as auditLogsCommonFieldNames } from '@app/classes/models/audit-log';
+
 @Component({
   selector: 'logs-container',
   templateUrl: './logs-container.component.html',
@@ -87,6 +89,10 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
   private paramsSyncInProgress: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   isServiceLogsFileView$: Observable<boolean> = this.appState.getParameter('isServiceLogsFileView');
+
+  get auditLogsCommonFieldNames() {
+    return auditLogsCommonFieldNames;
+  }
 
   constructor(
     private appState: AppStateService,

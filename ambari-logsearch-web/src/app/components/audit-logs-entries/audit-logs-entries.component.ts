@@ -23,7 +23,6 @@ import { HomogeneousObject, AuditLogsFieldSet, LogField, AuditLogsFieldsSetRootK
 import { AuditLog } from '@app/classes/models/audit-log';
 import { LogTypeTab } from '@app/classes/models/log-type-tab';
 import { LogsContainerService } from '@app/services/logs-container.service';
-import { commonFieldNames } from '@app/classes/models/audit-log';
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { selectAuditLogsFieldState } from '@app/store/selectors/audit-logs-fields.selectors';
@@ -48,7 +47,8 @@ export class AuditLogsEntriesComponent {
   @Input()
   totalCount = 0;
 
-  commonFieldNames = commonFieldNames;
+  @Input()
+  commonFieldNames: string[] = [];
 
   tabs: LogTypeTab[] = [
     {

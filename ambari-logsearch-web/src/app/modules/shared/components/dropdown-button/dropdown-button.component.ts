@@ -69,6 +69,8 @@ export class DropdownButtonComponent {
 
   @Input()
   showTotalSelection = false;
+
+  @Input()
   useDropDownLocalFilter = false;
 
   @Input()
