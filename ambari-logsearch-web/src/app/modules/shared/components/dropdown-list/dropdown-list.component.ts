@@ -175,20 +175,17 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
   }
 
   selectAll() {
-    this.items.forEach((item: ListItem) => {
-      item.isChecked = true;
-      if (item.onSelect) {
-        item.onSelect(...this.actionArguments);
-      }
-    });
-    this.selectedItemChange.emit(this.items);
+    this.changeSelectedItem(this.items.map((item: ListItem) => ({
+      ...item,
+      isChecked: true
+    })));
   }
 
   unSelectAll() {
-    this.items.forEach((item: ListItem) => {
-      item.isChecked = false;
-    });
-    this.selectedItemChange.emit(this.items);
+    this.changeSelectedItem(this.items.map((item: ListItem) => ({
+      ...item,
+      isChecked: false
+    })));
   }
 
   private onFilterInputKeyUp(event) {
@@ -223,10 +220,12 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
     }
   }
 
-  changeSelectedItem(item: ListItem, event?: MouseEvent): void {
-    if (item.onSelect) {
-      item.onSelect(...this.actionArguments);
-    }
+  changeSelectedItem(item: ListItem | ListItem[], event?: MouseEvent): void {
+    (Array.isArray(item) ? item : [item]).forEach((currentItem: ListItem) => {
+      if (currentItem.onSelect) {
+        currentItem.onSelect(...this.actionArguments)
+      }
+    });
     this.selectedItemChange.emit(item);
   }
 

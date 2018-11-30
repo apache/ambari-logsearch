@@ -19,7 +19,7 @@
       [attr.role]="item.isDivider ? 'separator' : null" [ngClass]="(item.cssClass || '')" (click)="onItemClick($event)">
     <ng-container *ngIf="!item.isDivider">
       <span class="list-item-label" *ngIf="isMultipleChoice">
-        <input type="checkbox" [attr.id]="(instanceId) + '-' + (item.id || item.value)" [(ngModel)]="item.isChecked"
+        <input type="checkbox" [attr.id]="(instanceId) + '-' + (item.id || item.value)" [ngModel]="item.isChecked"
                (change)="changeSelectedItem({value: item.value, isChecked: $event.currentTarget.checked}, $event)">
         <label [attr.for]="(instanceId) + '-' + (item.id || item.value)" class="label-container">
           <span *ngIf="item.iconClass" [ngClass]="item.iconClass"></span>
