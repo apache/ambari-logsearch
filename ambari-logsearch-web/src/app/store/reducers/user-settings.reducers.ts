@@ -16,36 +16,35 @@
  * limitations under the License.
  */
 
-import { Injectable } from '@angular/core';
+import { UserSettingsActions, UserSettingsActionTypes } from '@app/store/actions/user-settings.actions';
+import * as moment from 'moment-timezone';
 
-import { UserSettingsState, initialState, ServerMetaDatum } from '@app/store/reducers/user-settings.reducers';
+export interface ServerMetaDatum {
+  type: string;
+  name: string;
+  value: string;
+};
+ export interface UserSettingsState {
+  timeZone: string;
+  displayShortHostNames: boolean;
+ };
 
-@Injectable()
-export class UserSettingsService {
+ export const initialState: UserSettingsState = {
+  timeZone: moment.tz.guess(),
+  displayShortHostNames: false
+ };
 
-  constructor() { }
-
-  parseMetaDatumValueToStateValue(metaDatum: ServerMetaDatum): any {
-    const {name, value} = metaDatum;
-    switch (name) {
-      case 'displayShortHostNames': {
-        return value === 'true';
-      }
-      default: {
-        return value
-      }
+ export function reducer(state = initialState, action: UserSettingsActions): UserSettingsState {
+  switch (action.type) {
+    case UserSettingsActionTypes.SET : {
+      return {
+        ...state,
+        ...action.payload
+      };
+    }
+    default: {
+      return state;
     }
   }
-
-  parseMetaDataToUserSettingsState(metaData: ServerMetaDatum[]): UserSettingsState {
-    const parsedState = metaData.reduce((currentState, metaDatum: ServerMetaDatum) => ({
-      ...currentState,
-      [metaDatum.name]: this.parseMetaDatumValueToStateValue(metaDatum)
-    }), {});
-    return {
-      ...initialState,
-      ...parsedState
-    }
-  }
-
-}
+ }
+ 

@@ -16,16 +16,17 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnInit, OnDestroy} from '@angular/core';
-import {ListItem} from '@app/classes/list-item';
-import {LogsTableComponent} from '@app/classes/components/logs-table/logs-table-component';
-import {LogsContainerService} from '@app/services/logs-container.service';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { ListItem } from '@app/classes/list-item';
+import { LogsTableComponent } from '@app/classes/components/logs-table/logs-table-component';
+import { LogsContainerService } from '@app/services/logs-container.service';
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { Observable } from 'rxjs/Observable';
 import { selectAuditLogsFieldState } from '@app/store/selectors/audit-logs-fields.selectors';
 import { LogField, AuditLogsFieldSet } from '@app/classes/object';
 import { Subject } from 'rxjs/Subject';
+
 
 @Component({
   selector: 'audit-logs-table',
@@ -66,11 +67,7 @@ export class AuditLogsTableComponent extends LogsTableComponent implements OnIni
   get filters(): any {
     return this.logsContainer.filters;
   }
-
-  get timeZone(): string {
-    return this.logsContainer.timeZone;
-  }
-
+  
   constructor(
     private logsContainer: LogsContainerService,
     private store: Store<AppStore>

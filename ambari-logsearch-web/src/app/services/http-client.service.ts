@@ -105,6 +105,11 @@ export class HttpClientService extends Http {
     },
     shipperClusterServiceConfigurationTest: {
       url: variables => `shipper/input/${variables.cluster}/test`
+    },
+
+    userSettings: {
+      url: 'metadata/list',
+      params: () => ({type: 'user_settings'})
     }
   };
 

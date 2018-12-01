@@ -16,18 +16,25 @@
  * limitations under the License.
  */
 
-import { TestBed, inject } from '@angular/core/testing';
+import { Pipe, PipeTransform } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { Observable } from 'rxjs/Observable';
 
-import { UserSettingsService } from './user-settings.service';
+import { selectDisplayShortHostNames } from '@app/store/selectors/user-settings.selectors';
 
-describe('UserSettingsService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [UserSettingsService]
-    });
-  });
+@Pipe({
+  name: 'hostName'
+})
+export class HostNamePipe implements PipeTransform {
 
-  it('should be created', inject([UserSettingsService], (service: UserSettingsService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+  constructor(private store: Store<AppStore>) {
+  }
+
+  transform(hostName: string): Observable<string> {
+    return this.store.select(selectDisplayShortHostNames).map((displayShortHostNames: boolean): string => (
+      displayShortHostNames ? hostName.split('.')[0] : hostName
+    ));
+  }
+
+}

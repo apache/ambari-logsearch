@@ -16,18 +16,21 @@
  * limitations under the License.
  */
 
-import { TestBed, inject } from '@angular/core/testing';
+import { createSelector, Selector } from 'reselect';
+import { AppStore } from '@app/classes/models/store';
 
-import { UserSettingsService } from './user-settings.service';
+import { UserSettingsState } from '@app/store/reducers/user-settings.reducers';
 
-describe('UserSettingsService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [UserSettingsService]
-    });
-  });
+export const selectUserSettingsState = (state: AppStore): UserSettingsState => state.userSettings;
 
-  it('should be created', inject([UserSettingsService], (service: UserSettingsService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+export const selectDisplayShortHostNames = createSelector(
+  selectUserSettingsState,
+  (userSettings: UserSettingsState): boolean => userSettings.displayShortHostNames
+);
+
+export const selectTimeZone = createSelector(
+  selectUserSettingsState,
+  (userSettings: UserSettingsState): string => {
+    return userSettings.timeZone
+  }
+);

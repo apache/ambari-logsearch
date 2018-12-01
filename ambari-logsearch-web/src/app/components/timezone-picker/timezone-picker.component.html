@@ -16,7 +16,7 @@
 -->
 
 <button class="btn btn-link" (click)="setTimeZonePickerDisplay(true)">
-  {{timeZone | timeZoneAbbr}} <span class="caret"></span>
+  {{(timeZone$ | async) | timeZoneAbbr}} <span class="caret"></span>
 </button>
 <modal *ngIf="isTimeZonePickerDisplayed" [showCloseButton]="false" [isLargeModal]="true"
        (init)="initMap()" (cancel)="setTimeZonePickerDisplay(false)" (submit)="setTimeZone()">

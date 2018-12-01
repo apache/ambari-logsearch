@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+
 import { Component, OnInit, ElementRef, ViewChild, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -38,8 +39,15 @@ import { Subscription } from 'rxjs/Subscription';
 import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
+
+import * as moment from 'moment-timezone';
+
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
 
 import { commonFieldNames as auditLogsCommonFieldNames } from '@app/classes/models/audit-log';
+import { selectTimeZone } from '@app/store/selectors/user-settings.selectors';
 
 @Component({
   selector: 'logs-container',
@@ -85,7 +93,6 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
   @Input()
   routerPath: string[] = ['/logs'];
 
-  private subscriptions: Subscription[] = [];
   private paramsSyncInProgress: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   isServiceLogsFileView$: Observable<boolean> = this.appState.getParameter('isServiceLogsFileView');
@@ -93,6 +100,10 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
   get auditLogsCommonFieldNames() {
     return auditLogsCommonFieldNames;
   }
+
+  timeZone$: Observable<string> = this.store.select(selectTimeZone).startWith(moment.tz.guess());
+
+  destroyed$: Subject<boolean> = new Subject();
 
   constructor(
     private appState: AppStateService,
@@ -102,36 +113,29 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
     private serviceLogsHistogramStorage: ServiceLogsHistogramDataService,
     private auditLogsGraphStorage: AuditLogsGraphDataService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private store: Store<AppStore>
   ) {}
 
   ngOnInit() {
     // set te logsType when the activeLogsType state has changed
-    this.subscriptions.push(
-      this.appState.getParameter('activeLogsType').subscribe((value: LogsType) => this.logsType = value)
-    );
+    this.appState.getParameter('activeLogsType').takeUntil(this.destroyed$).subscribe((value: LogsType) => this.logsType = value)
     // set the hhistogramm data
-    this.subscriptions.push(
-      this.serviceLogsHistogramStorage.getAll().subscribe((data: BarGraph[]): void => {
-        this.serviceLogsHistogramData = this.logsContainerService.getGraphData(data, this.logsContainerService.logLevels.map((
-          level: LogLevelObject
-        ): LogLevel => {
-          return level.name;
-        }));
-      })
-    );
+    this.serviceLogsHistogramStorage.getAll().takeUntil(this.destroyed$).subscribe((data: BarGraph[]): void => {
+      this.serviceLogsHistogramData = this.logsContainerService.getGraphData(data, this.logsContainerService.logLevels.map((
+        level: LogLevelObject
+      ): LogLevel => {
+        return level.name;
+      }));
+    });
     // audit graph data set
-    this.subscriptions.push(
-      this.auditLogsGraphStorage.getAll().subscribe((data: BarGraph[]): void => {
-        this.auditLogsGraphData = this.logsContainerService.getGraphData(data);
-      })
-    );
+    this.auditLogsGraphStorage.getAll().takeUntil(this.destroyed$).subscribe((data: BarGraph[]): void => {
+      this.auditLogsGraphData = this.logsContainerService.getGraphData(data);
+    });
     // service log context flag subscription
-    this.subscriptions.push(
-      this.appState.getParameter('isServiceLogContextView').subscribe((value: boolean): void => {
-        this.isServiceLogContextView = value;
-      })
-    );
+    this.appState.getParameter('isServiceLogContextView').takeUntil(this.destroyed$).subscribe((value: boolean): void => {
+      this.isServiceLogContextView = value;
+    });
 
     this.activatedRoute.params.first().map(params => params.activeTab).subscribe((tabId) => {
       this.logsContainerService.setActiveTabById(tabId);
@@ -139,28 +143,24 @@ export class LogsContainerComponent implements OnInit, OnDestroy {
 
     //// SYNC BETWEEN PARAMS AND FORM
     // sync to filters form when the query params changed (only when there is no other way sync)
-    this.subscriptions.push(
-      this.activatedRoute.params.filter(() => !this.paramsSyncInProgress.getValue())
-        .subscribe(this.onParamsChange)
-    );
+    this.activatedRoute.params.filter(() => !this.paramsSyncInProgress.getValue())
+      .takeUntil(this.destroyed$).subscribe(this.onParamsChange)
     // Sync from form to params on form values change
-    this.subscriptions.push(
-      this.filtersForm.valueChanges
-        .filter(() => !this.logsContainerService.filtersFormSyncInProgress$.getValue())
-        .subscribe(this.onFiltersFormChange)
-    );
+    this.filtersForm.valueChanges
+      .filter(() => !this.logsContainerService.filtersFormSyncInProgress$.getValue())
+      .takeUntil(this.destroyed$)
+      .subscribe(this.onFiltersFormChange);
     //// SYNC BETWEEN PARAMS AND FORM END
 
     //// TAB CHANGE
     // when the activeTabId$ behaviour subject change, this depends on the params' changes
-    this.subscriptions.push(
-      this.activeTabId$.distinctUntilChanged().subscribe(this.onActiveTabIdChange)
-    );
+    this.activeTabId$.distinctUntilChanged().takeUntil(this.destroyed$).subscribe(this.onActiveTabIdChange);
 
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 
   get filtersForm(): FormGroup {

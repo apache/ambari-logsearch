@@ -48,6 +48,7 @@ import {DropdownListComponent} from '@modules/shared/components/dropdown-list/dr
 
 import {ServiceLogsTableComponent, ListLayout} from './service-logs-table.component';
 import {ComponentLabelPipe} from "@app/pipes/component-label";
+import {HostNamePipe} from "@app/pipes/host-name.pipe";
 import {ClusterSelectionService} from '@app/services/storage/cluster-selection.service';
 import {LogsStateService} from '@app/services/storage/logs-state.service';
 import {RoutingUtilsService} from '@app/services/routing-utils.service';
@@ -71,7 +72,8 @@ describe('ServiceLogsTableComponent', () => {
         ServiceLogsTableComponent,
         PaginationComponent,
         DropdownListComponent,
-        ComponentLabelPipe
+        ComponentLabelPipe,
+        HostNamePipe
       ],
       imports: [
         RouterTestingModule,

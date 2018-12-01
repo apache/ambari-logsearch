@@ -111,7 +111,7 @@ export class ServiceLogsTableComponent extends LogsTableComponent implements Aft
 
   readonly timeFormat = 'h:mm:ss A';
 
-  readonly customStyledColumns: string[] = ['level', 'type', 'logtime', 'log_message', 'path'];
+  readonly customStyledColumns: string[] = ['level', 'type', 'logtime', 'log_message', 'path', 'host'];
 
   private readonly messageFilterParameterName = 'log_message';
 
@@ -129,11 +129,7 @@ export class ServiceLogsTableComponent extends LogsTableComponent implements Aft
   get contextMenuItems(): ListItem[] {
     return this.logsContainer.queryContextMenuItems;
   }
-
-  get timeZone(): string {
-    return this.logsContainer.timeZone;
-  }
-
+  
   get filters(): any {
     return this.logsContainer.filters;
   }

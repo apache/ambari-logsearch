@@ -16,10 +16,8 @@
  * limitations under the License.
  */
 
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MockHttpRequestModules, TranslationModules} from '@app/test-config.spec';
+import {TestBed, inject} from '@angular/core/testing';
+import {MockHttpRequestModules, TranslationModules} from "@app/test-config.spec";
 import {StoreModule} from '@ngrx/store';
 import {AuditLogsService, auditLogs} from '@app/services/storage/audit-logs.service';
 import {ServiceLogsService, serviceLogs} from '@app/services/storage/service-logs.service';
@@ -36,43 +34,30 @@ import {ComponentsService, components} from '@app/services/storage/components.se
 import {HostsService, hosts} from '@app/services/storage/hosts.service';
 import {ServiceLogsTruncatedService, serviceLogsTruncated} from '@app/services/storage/service-logs-truncated.service';
 import {TabsService, tabs} from '@app/services/storage/tabs.service';
-import {HistoryManagerService} from '@app/services/history-manager.service';
 import {LogsContainerService} from '@app/services/logs-container.service';
-import {ServerSettingsService} from '@app/services/server-settings.service';
 import {UtilsService} from '@app/services/utils.service';
-import {ModalDialogComponent} from '@app/modules/shared/components/modal-dialog/modal-dialog.component';
-import {TimerSecondsPipe} from '@app/pipes/timer-seconds.pipe';
-import {ComponentLabelPipe} from '@app/pipes/component-label';
 
-import {ActionMenuComponent} from './action-menu.component';
-import { LogIndexFilterComponent } from '@app/components/log-index-filter/log-index-filter.component';
+import {ServerSettingsService} from './server-settings.service';
 import {ClusterSelectionService} from '@app/services/storage/cluster-selection.service';
 import {RouterTestingModule} from '@angular/router/testing';
-import {LogsStateService} from '@app/services/storage/logs-state.service';
 import {RoutingUtilsService} from '@app/services/routing-utils.service';
 import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.service';
+import {LogsStateService} from '@app/services/storage/logs-state.service';
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 import {NotificationService} from '@modules/shared/services/notification.service';
 
-import { DataAvailabilityStatesStore, dataAvailabilityStates } from '@app/modules/app-load/stores/data-availability-state.store';
+import { dataAvailabilityStates, DataAvailabilityStatesStore } from '@app/modules/app-load/stores/data-availability-state.store';
 
-import * as auth from '@app/store/reducers/auth.reducers';
 import { AuthService } from '@app/services/auth.service';
+import * as auth from '@app/store/reducers/auth.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
-import { NotificationEffects } from '@app/store/effects/notification.effects';
 
-describe('ActionMenuComponent', () => {
-  let component: ActionMenuComponent;
-  let fixture: ComponentFixture<ActionMenuComponent>;
-
-  beforeEach(async(() => {
+describe('ServerSettingsService', () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ...TranslationModules,
         StoreModule.provideStore({
           auditLogs,
           serviceLogs,
@@ -91,20 +76,12 @@ describe('ActionMenuComponent', () => {
           auth: auth.reducer
         }),
         EffectsModule.run(AuthEffects),
-        EffectsModule.run(NotificationEffects)
-      ],
-      declarations: [
-        LogIndexFilterComponent,
-        ActionMenuComponent,
-        ModalDialogComponent,
-        TimerSecondsPipe,
-        ComponentLabelPipe
+        ...TranslationModules
       ],
       providers: [
         ...MockHttpRequestModules,
-        HistoryManagerService,
-        LogsContainerService,
         ServerSettingsService,
+        LogsContainerService,
         UtilsService,
         AuditLogsService,
         ServiceLogsService,
@@ -127,19 +104,11 @@ describe('ActionMenuComponent', () => {
         NotificationService,
         DataAvailabilityStatesStore,
         AuthService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-    .compileComponents();
+      ]
+    });
+  });
+
+  it('should be created', inject([ServerSettingsService], (service: ServerSettingsService) => {
+    expect(service).toBeTruthy();
   }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ActionMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create component', () => {
-    expect(component).toBeTruthy();
-  });
 });

@@ -149,6 +149,10 @@
                 <label *ngIf="showLabels">{{getLabelForField('path') | translate}}</label>
                 {{log.path}}
               </div>
+              <div *ngIf="isColumnDisplayed('host')" [ngClass]="'log-host'" [title]="log.host">
+                <label *ngIf="showLabels">{{getLabelForField('host') | translate}}</label>
+                {{log.host | hostName}}
+              </div>
               <ng-container *ngFor="let column of displayedColumns">
                 <div *ngIf="customStyledColumns.indexOf(column.value) === -1" [ngClass]="'log-' + (column.value | lowercase)"
                      [title]="(log[column.value] || '')">

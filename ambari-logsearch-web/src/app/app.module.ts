@@ -41,7 +41,7 @@ import { HttpClientService } from '@app/services/http-client.service';
 import { UtilsService } from '@app/services/utils.service';
 import { LogsContainerService } from '@app/services/logs-container.service';
 import { ComponentGeneratorService } from '@app/services/component-generator.service';
-import { UserSettingsService } from '@app/services/user-settings.service';
+import { ServerSettingsService } from '@app/services/server-settings.service';
 
 import { AppSettingsService } from '@app/services/storage/app-settings.service';
 import { AppStateService } from '@app/services/storage/app-state.service';
@@ -115,11 +115,15 @@ import { LogsBreadcrumbsResolverService } from '@app/services/logs-breadcrumbs-r
 import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.service';
 import { LogsStateService } from '@app/services/storage/logs-state.service';
 import { LoginScreenGuardService } from '@app/services/login-screen-guard.service';
+import { UserSettingsService } from '@app/services/user-settings.service';
 
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { UserSettingsEffects } from '@app/store/effects/user-settings.effects';
 import { FilterHistoryManagerComponent } from './components/filter-history-manager/filter-history-manager.component';
 import { AuditLogReposEffects } from './store/effects/audit-log-repos.effects';
+
+import { HostNamePipe } from '@app/pipes/host-name.pipe';
 
 @NgModule({
   declarations: [
@@ -165,7 +169,8 @@ import { AuditLogReposEffects } from './store/effects/audit-log-repos.effects';
     AuditLogFieldLabelPipe,
     BreadcrumbsComponent,
     ClusterFilterComponent,
-    FilterHistoryManagerComponent
+    FilterHistoryManagerComponent,
+    HostNamePipe
   ],
   imports: [
     BrowserModule,
@@ -198,8 +203,9 @@ import { AuditLogReposEffects } from './store/effects/audit-log-repos.effects';
     AppRoutingModule,
 
     EffectsModule.run(AuthEffects),
-    EffectsModule.run(NotificationEffects),
-    EffectsModule.run(AuditLogReposEffects)
+    EffectsModule.run(AuditLogReposEffects),
+    EffectsModule.run(UserSettingsEffects),
+    EffectsModule.run(NotificationEffects)
 
   ],
   providers: [
@@ -208,7 +214,7 @@ import { AuditLogReposEffects } from './store/effects/audit-log-repos.effects';
     RoutingUtilsService,
     LogsContainerService,
     ComponentGeneratorService,
-    UserSettingsService,
+    ServerSettingsService,
     AppSettingsService,
     AppStateService,
     AuditLogsService,
@@ -232,7 +238,8 @@ import { AuditLogReposEffects } from './store/effects/audit-log-repos.effects';
     ClusterSelectionService,
     LogsFilteringUtilsService,
     LogsStateService,
-    LoginScreenGuardService
+    LoginScreenGuardService,
+    UserSettingsService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

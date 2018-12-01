@@ -16,24 +16,35 @@
  * limitations under the License.
  */
 
-import {Component, OnInit} from '@angular/core';
+import { Component } from '@angular/core';
 import * as $ from 'jquery';
+import * as moment from 'moment-timezone';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { selectTimeZone } from '@app/store/selectors/user-settings.selectors';
+import { SetUserSettingsAction } from '@app/store/actions/user-settings.actions';
+
 import '@vendor/js/WorldMapGenerator.min';
-import {AppSettingsService} from '@app/services/storage/app-settings.service';
-import {UserSettingsService} from '@app/services/user-settings.service';
+import {ServerSettingsService} from '@app/services/server-settings.service';
 
 @Component({
   selector: 'timezone-picker',
   templateUrl: './timezone-picker.component.html',
   styleUrls: ['./timezone-picker.component.less']
 })
-export class TimeZonePickerComponent implements OnInit {
+export class TimeZonePickerComponent {
 
-  constructor(private appSettings: AppSettingsService, private settingsService: UserSettingsService) {
-  }
+  timeZone$: Observable<string> = this.store.select(selectTimeZone).startWith(moment.tz.guess());
 
-  ngOnInit() {
-    this.appSettings.getParameter('timeZone').subscribe((value: string) => this.timeZone = value);
+  destroyed$: Subject<boolean> = new Subject();
+
+  constructor(
+    private store: Store<AppStore>,
+    private settingsService: ServerSettingsService
+  ) {
   }
 
   readonly mapElementId = 'timezone-map';
@@ -58,8 +69,6 @@ export class TimeZonePickerComponent implements OnInit {
 
   isTimeZonePickerDisplayed: boolean = false;
 
-  timeZone: string;
-
   setTimeZonePickerDisplay(isDisplayed: boolean): void {
     this.isTimeZonePickerDisplayed = isDisplayed;
   }
@@ -68,12 +77,17 @@ export class TimeZonePickerComponent implements OnInit {
     this.mapElement = $(`#${this.mapElementId}`);
     this.mapElement.WorldMapGenerator(this.mapOptions);
     this.timeZoneSelect = this.mapElement.find('select');
-    this.timeZoneSelect.removeClass('btn btn-default').addClass('form-control').val(this.timeZone);
+    this.timeZoneSelect.removeClass('btn btn-default').addClass('form-control');
+    this.timeZone$.take(1).subscribe((timeZoneSetting) => {
+      this.timeZoneSelect.val(timeZoneSetting);
+    });
   }
 
   setTimeZone(): void {
     const timeZone = this.timeZoneSelect.val();
-    this.settingsService.setTimeZone(timeZone);
+    this.store.dispatch(new SetUserSettingsAction({
+      timeZone
+    }) );
     this.setTimeZonePickerDisplay(false);
   }
 
