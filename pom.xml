@@ -373,6 +373,7 @@
             <exclude>**/node_modules/**</exclude>
             <exclude>**/dist/**</exclude>
             <exclude>.repository/**</exclude>
+            <exclude>k8s/**</exclude>
           </excludes>
         </configuration>
         <executions>
