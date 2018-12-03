@@ -18,8 +18,8 @@ limitations under the License.
 
 | `Name` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
-<#if logsearchProperies??>
-    <#list logsearchProperies as logsearchProperty>
+<#if logsearchProperties??>
+    <#list logsearchProperties as logsearchProperty>
 |`${logsearchProperty.name}`|${logsearchProperty.description}|${logsearchProperty.defaultValue}|${logsearchProperty.examples}|
     </#list>
 </#if>
