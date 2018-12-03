@@ -44,6 +44,7 @@
         <module>ambari-logsearch-logfeeder-container-registry</module>
         <module>ambari-logsearch-config-local</module>
         <module>ambari-logsearch-config-solr</module>
+        <module>ambari-logsearch-docs</module>
       </modules>
     </profile>
     <profile>
@@ -63,6 +64,7 @@
         <module>ambari-logsearch-logfeeder-container-registry</module>
         <module>ambari-logsearch-config-local</module>
         <module>ambari-logsearch-config-solr</module>
+        <module>ambari-logsearch-docs</module>
       </modules>
     </profile>
     <profile>

@@ -16,44 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logsearch.model.response;
+package org.apache.ambari.logsearch.doc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class PropertyDescriptionData {
+public class PropertyDescriptionData extends AbstractDescriptionData {
+
   private final String name;
-
-  private final String description;
-
-  private final String[] examples;
-
-  private final String defaultValue;
-
   @JsonIgnore
   private final String source;
 
   public PropertyDescriptionData(String name, String description, String[] examples, String defaultValue, String source) {
+    super(description, defaultValue, examples);
     this.name = name;
-    this.description = description;
-    this.examples = examples;
-    this.defaultValue = defaultValue;
     this.source = source;
   }
 
   public String getName() {
     return name;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public String[] getExamples() {
-    return examples;
-  }
-
-  public String getDefaultValue() {
-    return defaultValue;
   }
 
   public String getSource() {
