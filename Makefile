@@ -46,7 +46,10 @@ rpm:
 deb:
 	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
-prop-docs:
+prop-docs: install
+	$(MAVEN_BINARY) -pl ambari-logsearch-docs exec:java -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
+
+prop-docs-only:
 	$(MAVEN_BINARY) -pl ambari-logsearch-docs clean package exec:java -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
 update-version:
