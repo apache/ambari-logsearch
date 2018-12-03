@@ -80,7 +80,7 @@ public class LogSearchConstants {
   public static final String AUDIT_COMPONENT_LABELS_DEFAULTS = "ambari:Ambari,hdfs:Hdfs,RangerAudit:Ranger";
   public static final String AUDIT_FIELD_LABELS_DEFAULTS = "";
   public static final String AUDIT_FIELD_COMMON_LABELS_DEFAULTS = "enforcer:Access Enforcer,access:Access Type,cliIP:Client Ip,cliType:Client Type," +
-    "dst:DST,evtTime:Event Time,ip:IP,logtime:Log Time,sess:Session,ugi:UGI,reqUser:User";
+    "dst:DST,evtTime:Event Time,ip:IP,logtime:Log Time,sess:Session,ugi:UGI,reqUser:User,repo:Audit Source";
   public static final String AUDIT_FIELD_VISIBLE_DEFAULTS = "";
   public static final String AUDIT_FIELD_VISIBLE_COMMON_DEFAULTS = "access,cliIP,evtTime,repo,resource,result,reqUser";
   public static final String AUDIT_FIELD_EXCLUDES_DEFAULTS = "";
