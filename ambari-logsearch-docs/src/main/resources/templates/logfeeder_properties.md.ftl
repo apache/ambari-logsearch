@@ -18,8 +18,8 @@ limitations under the License.
 
 | `Name` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
-<#if logfeederProperies??>
-    <#list logfeederProperies as logfeederProperty>
+<#if logfeederProperties??>
+    <#list logfeederProperties as logfeederProperty>
 |`${logfeederProperty.name}`|${logfeederProperty.description}|${logfeederProperty.defaultValue}|${logfeederProperty.examples}|
     </#list>
 </#if>
