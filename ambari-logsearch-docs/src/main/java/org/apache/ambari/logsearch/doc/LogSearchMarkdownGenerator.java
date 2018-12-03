@@ -56,7 +56,7 @@ public class LogSearchMarkdownGenerator {
   private static final String INPUT_CONFIG_SECTION = "inputConfigSection";
   private static final String FILTER_CONFIG_SECTION = "filterConfigSection";
   private static final String POST_MAP_VALUES_SECTION = "postMapValuesSection";
-  private static final String LOGSEARCH_PROPERTIES_TEMPLATE_KEY = "logsearcProperies";
+  private static final String LOGSEARCH_PROPERTIES_TEMPLATE_KEY = "logsearchProperies";
   private static final String LOGFEEDER_PROPERTIES_TEMPLATE_KEY = "logfeederProperies";
 
   private static final String OUTPUT_DIR_OPTION = "output-dir";
