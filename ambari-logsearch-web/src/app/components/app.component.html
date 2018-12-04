@@ -26,7 +26,10 @@
 <ng-container *ngIf="(authorizationStatus$ | async) !== authorizationStatuses.LOGGED_OUT">
   <data-loading-indicator *ngIf="!(isBaseDataAvailable$ | async) && (isAuthorized$ | async)"></data-loading-indicator>
 
-  <main-container *ngIf="!(isAuthorized$ | async) || (isBaseDataAvailable$ | async)"></main-container>
+  <ng-container *ngIf="!(isAuthorized$ | async) || (isBaseDataAvailable$ | async)">
+    <main-container></main-container>
+    <user-settings></user-settings>
+  </ng-container>
 
   <simple-notifications [options]="notificationServiceOptions"></simple-notifications>
   <div class="request-indicator" [class.open]="httpClient.requestInProgress | async">

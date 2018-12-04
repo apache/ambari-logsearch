@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-import {Component} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {FilterCondition, TimeUnitListItem} from '@app/classes/filtering';
-import {ListItem} from '@app/classes/list-item';
-import {HomogeneousObject} from '@app/classes/object';
-import {LogsContainerService} from '@app/services/logs-container.service';
-import {Router} from '@angular/router';
+import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FilterCondition, TimeUnitListItem } from '@app/classes/filtering';
+import { ListItem } from '@app/classes/list-item';
+import { HomogeneousObject } from '@app/classes/object';
+import { LogsContainerService } from '@app/services/logs-container.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
@@ -38,6 +38,7 @@ export class TopMenuComponent {
   constructor(
     private logsContainer: LogsContainerService,
     private router: Router,
+    private route: ActivatedRoute,
     private store: Store<AppStore>
   ) {}
 
@@ -49,8 +50,14 @@ export class TopMenuComponent {
     return this.logsContainer.filters;
   };
 
-  openSettings = (): void => {};
-
+  openUserSettingsModal = (): void => {
+    this.router.navigate(['.'], {
+      queryParamsHandling: 'merge',
+      queryParams: {showUserSettings: 'show'},
+      relativeTo: this.route.root.firstChild
+    });
+  }
+  
   /**
    * Dispatch the LogOutAction.
    */
@@ -70,7 +77,7 @@ export class TopMenuComponent {
       subItems: [
         {
           label: 'common.settings',
-          onSelect: this.openSettings,
+          onSelect: this.openUserSettingsModal,
           iconClass: 'fa fa-cog'
         },
 

@@ -109,7 +109,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   closeLogIndexFilter(): void {
-    this.route.queryParams.first().subscribe((queryParams) => {
+    this.route.queryParams.take(1).subscribe((queryParams) => {
       const {logIndexFilterSettings, ...params} = queryParams;
       this.router.navigate(['.'], {
         queryParams: params,

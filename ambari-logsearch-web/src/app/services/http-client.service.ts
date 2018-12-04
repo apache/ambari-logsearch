@@ -201,6 +201,7 @@ export class HttpClientService extends Http {
     const req = super.request(this.generateUrl(url), options).first().share()
       .map(response => response)
       .catch((error: any) => {
+        this.requestsPending.next(this.requestsPending.getValue() - 1);
         return handleResponseError(error) ? Observable.of(error) : Observable.throw(error);
       });
     req.subscribe(() => this.requestsPending.next(this.requestsPending.getValue() - 1));

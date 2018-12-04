@@ -42,6 +42,9 @@ import { AuthActionTypes } from '@app/store/actions/auth.actions';
 import { UserSettingsState } from '@app/store/reducers/user-settings.reducers';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
+import { AddNotificationAction, NotificationActions } from '@app/store/actions/notification.actions';
+import { NotificationType } from '@modules/shared/services/notification.service';
+
 @Injectable()
 export class UserSettingsEffects {
   constructor(
@@ -50,7 +53,7 @@ export class UserSettingsEffects {
     private httpClient: HttpClientService,
     private userSettingsService: UserSettingsService
   ) {
-    this.store.select(selectUserSettingsState).skip(1).subscribe((settings) => {
+    this.store.select(selectUserSettingsState).skip(2).subscribe((settings) => {
       this.onUserSettingsStateChanged(settings);
     });
   }
@@ -101,5 +104,21 @@ export class UserSettingsEffects {
         return response.ok ? new SaveUserSettingsSuccessAction(result) : new SaveUserSettingsFailedAction(result);
       });
     });
+
+    @Effect()
+    saveSuccessAction: Observable<NotificationActions> = this.actions$
+      .ofType(UserSettingsActionTypes.SAVE_SUCCESS)
+      .map(() => new AddNotificationAction({
+        type: NotificationType.SUCCESS,
+        message: 'userSettings.saveAction.success'
+      }));
+    
+    @Effect()
+    saveFailedAction: Observable<NotificationActions> = this.actions$
+      .ofType(UserSettingsActionTypes.SAVE_FAILED)
+      .map(() => new AddNotificationAction({
+        type: NotificationType.ERROR,
+        message: 'userSettings.saveAction.error'
+      }));
 
 }

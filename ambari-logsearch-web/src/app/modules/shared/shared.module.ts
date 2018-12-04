@@ -19,7 +19,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule, Title } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Http } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationsService as Angular2NotificationsService } from 'angular2-notifications/src/notifications.service';
@@ -41,12 +41,14 @@ import { DataLoadingIndicatorComponent } from '@app/modules/shared/components/da
 import { ModalDialogComponent } from './components/modal-dialog/modal-dialog.component';
 import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
 import { CircleProgressBarComponent } from './components/circle-progress-bar/circle-progress-bar.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 
 @NgModule({
   imports: [
     BrowserModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     NgObjectPipesModule,
     TranslateModule.forChild({
@@ -66,7 +68,8 @@ import { CircleProgressBarComponent } from './components/circle-progress-bar/cir
     DataLoadingIndicatorComponent,
     ModalDialogComponent,
     LoadingIndicatorComponent,
-    CircleProgressBarComponent
+    CircleProgressBarComponent,
+    UserSettingsComponent
   ],
   providers: [
     Title,
@@ -83,7 +86,8 @@ import { CircleProgressBarComponent } from './components/circle-progress-bar/cir
     DataLoadingIndicatorComponent,
     ModalDialogComponent,
     LoadingIndicatorComponent,
-    CircleProgressBarComponent
+    CircleProgressBarComponent,
+    UserSettingsComponent
   ]
 })
 export class SharedModule { }
