@@ -146,8 +146,7 @@ public class S3OutputConfig {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.S3_MULTIOBJECT_DELETE_ENABLE,
-    description = "When enabled, multiple single-object delete requests are replaced by\n" +
-      "    a single 'delete multiple objects'-request, reducing the number of requests.",
+    description = "When enabled, multiple single-object delete requests are replaced by a single 'delete multiple objects'-request, reducing the number of requests.",
     defaultValue = "true",
     examples = {"false"},
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}

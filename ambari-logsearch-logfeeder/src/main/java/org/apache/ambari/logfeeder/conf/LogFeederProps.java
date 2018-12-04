@@ -91,7 +91,7 @@ public class LogFeederProps implements LogFeederProperties {
     description = "Use implicit routing for Solr Collections.",
     examples = {"true"},
     defaultValue = "false",
-    sources = {LogFeederConstants.SOLR_IMPLICIT_ROUTING_PROPERTY}
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
   @Value("${"+ LogFeederConstants.SOLR_IMPLICIT_ROUTING_PROPERTY + ":false}")
   private boolean solrImplicitRouting;
@@ -245,7 +245,7 @@ public class LogFeederProps implements LogFeederProperties {
     description = "Option to support sending logs to cloud storage. You can choose between supporting only cloud storage, non-cloud storage or both",
     examples = {"default", "cloud", "hybrid"},
     defaultValue = "default",
-    sources = {LogFeederConstants.CLOUD_STORAGE_MODE}
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_MODE + ":default}")
   public LogFeederMode cloudStorageMode;
@@ -255,7 +255,7 @@ public class LogFeederProps implements LogFeederProperties {
     description = "Type of storage that is the destination for cloud output logs.",
     examples = {"hdfs", "s3", "gcs", "adls", "wasb", "none"},
     defaultValue = "none",
-    sources = {LogFeederConstants.CLOUD_STORAGE_DESTINATION}
+    sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
   @Value("${" + LogFeederConstants.CLOUD_STORAGE_DESTINATION + ":none}")
   private CloudStorageDestination cloudStorageDestination;

@@ -16,37 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.ambari.logsearch.model.response;
+package org.apache.ambari.logsearch.doc;
 
-public class ShipperConfigDescriptionData {
+public class ShipperConfigDescriptionData extends AbstractDescriptionData {
+
   private final String path;
 
-  private final String description;
-
-  private final String[] examples;
-
-  private final String defaultValue;
-
   public ShipperConfigDescriptionData(String path, String description, String[] examples, String defaultValue) {
+    super(description, defaultValue, examples);
     this.path = path;
-    this.description = description;
-    this.examples = examples;
-    this.defaultValue = defaultValue;
   }
 
   public String getPath() {
     return path;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public String[] getExamples() {
-    return examples;
-  }
-
-  public String getDefaultValue() {
-    return defaultValue;
   }
 }
