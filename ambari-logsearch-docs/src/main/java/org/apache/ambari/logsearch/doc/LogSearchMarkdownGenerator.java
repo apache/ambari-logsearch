@@ -103,12 +103,12 @@ public class LogSearchMarkdownGenerator {
       System.out.println(String.format("Number of logfeeder.properties configuration descriptors found: %d", propertyDescriptions.get(LOGFEEDER_PROPERTIES).size()));
 
       final List<String> shipperConfigPackagesToScan = Collections.singletonList(CONFIG_API_PACKAGE);
-      ShipperConfigDesritionDataHolder shipperConfigDesritionDataHolder = createShipperConfigDescriptions(shipperConfigPackagesToScan);
+      ShipperConfigDescritionDataHolder shipperConfigDescritionDataHolder = createShipperConfigDescriptions(shipperConfigPackagesToScan);
 
-      System.out.println(String.format("Number of top level section shipper descriptors found: %d", shipperConfigDesritionDataHolder.getTopLevelConfigSections().size()));
-      System.out.println(String.format("Number of input config section shipper descriptors found: %d", shipperConfigDesritionDataHolder.getInputConfigSections().size()));
-      System.out.println(String.format("Number of filter config section shipper descriptors found: %d", shipperConfigDesritionDataHolder.getFilterConfigSections().size()));
-      System.out.println(String.format("Number of mapper section shipper descriptors found: %d", shipperConfigDesritionDataHolder.getPostMapValuesConfigSections().size()));
+      System.out.println(String.format("Number of top level section shipper descriptors found: %d", shipperConfigDescritionDataHolder.getTopLevelConfigSections().size()));
+      System.out.println(String.format("Number of input config section shipper descriptors found: %d", shipperConfigDescritionDataHolder.getInputConfigSections().size()));
+      System.out.println(String.format("Number of filter config section shipper descriptors found: %d", shipperConfigDescritionDataHolder.getFilterConfigSections().size()));
+      System.out.println(String.format("Number of mapper section shipper descriptors found: %d", shipperConfigDescritionDataHolder.getPostMapValuesConfigSections().size()));
 
       final Configuration freemarkerConfiguration = new Configuration();
       final ClassPathResource cpr = new ClassPathResource(TEMPLATES_FOLDER);
@@ -125,7 +125,7 @@ public class LogSearchMarkdownGenerator {
       writeMarkdown(freemarkerConfiguration, LOGFEEDER_PROPERTIES_MARKDOWN_TEMPLATE_FILE, logfeederModels, logfeederPropertiesOutputFile);
 
       final Map<String, Object> shipperConfigModels = new HashMap<>();
-      shipperConfigModels.put(SHIPPER_CONFIG_TEMPLATE_KEY, shipperConfigDesritionDataHolder);
+      shipperConfigModels.put(SHIPPER_CONFIG_TEMPLATE_KEY, shipperConfigDescritionDataHolder);
 
       File shipperConfigsOutputFile = Paths.get(outputDir, SHIPPER_CONFIGURATIONS_MARKDOWN_OUTPUT).toFile();
       writeMarkdown(freemarkerConfiguration, SHIPPER_CONFIGURATIONS_MARKDOWN_TEMPLATE_FILE, shipperConfigModels, shipperConfigsOutputFile);
@@ -152,7 +152,7 @@ public class LogSearchMarkdownGenerator {
     propertyDescriptions.putAll(mapToAdd);
   }
 
-  private static ShipperConfigDesritionDataHolder createShipperConfigDescriptions(List<String> shipperConfigPackagesToScan) {
+  private static ShipperConfigDescritionDataHolder createShipperConfigDescriptions(List<String> shipperConfigPackagesToScan) {
     final List<ShipperConfigDescriptionData> shipperConfigDescription = new ArrayList<>();
     Reflections reflections = new Reflections(shipperConfigPackagesToScan, new FieldAnnotationsScanner());
     Set<Field> fields = reflections.getFieldsAnnotatedWith(ShipperConfigElementDescription.class);
@@ -187,7 +187,7 @@ public class LogSearchMarkdownGenerator {
       .distinct()
       .collect(Collectors.toList());
 
-    return new ShipperConfigDesritionDataHolder(topLevelConfigSections, inputConfigSection, filterConfigSection, postMapValuesConfigSection);
+    return new ShipperConfigDescritionDataHolder(topLevelConfigSections, inputConfigSection, filterConfigSection, postMapValuesConfigSection);
   }
 
   private static List<PropertyDescriptionData> getPropertyDescriptions(List<String> packagesToScan) {
