@@ -46,7 +46,7 @@ public abstract class AbstractDescriptionData {
       if(examples.length > 0){
         stringBuilder.append("<ul>");
         for( String example : examples){
-          stringBuilder.append("<li>").append("`").append(example).append("`");
+          stringBuilder.append("<li>").append("`").append(example).append("`").append("</li>");
         }
         stringBuilder.append("</ul>");
       }
