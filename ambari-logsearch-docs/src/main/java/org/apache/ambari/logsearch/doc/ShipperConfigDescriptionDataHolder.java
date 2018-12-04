@@ -20,16 +20,16 @@ package org.apache.ambari.logsearch.doc;
 
 import java.util.List;
 
-public class ShipperConfigDescritionDataHolder {
+public class ShipperConfigDescriptionDataHolder {
   private final List<ShipperConfigDescriptionData> topLevelConfigSections;
   private final List<ShipperConfigDescriptionData> inputConfigSections;
   private final List<ShipperConfigDescriptionData> filterConfigSections;
   private final List<ShipperConfigDescriptionData> postMapValuesConfigSections;
 
-  public ShipperConfigDescritionDataHolder(List<ShipperConfigDescriptionData> topLevelConfigSections,
-                                           List<ShipperConfigDescriptionData> inputConfigSections,
-                                           List<ShipperConfigDescriptionData> filterConfigSections,
-                                           List<ShipperConfigDescriptionData> postMapValuesConfigSections) {
+  public ShipperConfigDescriptionDataHolder(List<ShipperConfigDescriptionData> topLevelConfigSections,
+                                            List<ShipperConfigDescriptionData> inputConfigSections,
+                                            List<ShipperConfigDescriptionData> filterConfigSections,
+                                            List<ShipperConfigDescriptionData> postMapValuesConfigSections) {
     this.topLevelConfigSections = topLevelConfigSections;
     this.inputConfigSections = inputConfigSections;
     this.filterConfigSections = filterConfigSections;
