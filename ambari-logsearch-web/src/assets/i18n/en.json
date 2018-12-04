@@ -386,6 +386,9 @@
       "valueFalse": "Full hostname",
       "valueTrue": "Short hostname"
     },
+    "timeZone": {
+      "description": "Choose the time zone will be used throughout Log Search"
+    },
     "saveAction": {
       "success": "The user settings has been saved.",
       "error": "Some error happened saving the user settings."

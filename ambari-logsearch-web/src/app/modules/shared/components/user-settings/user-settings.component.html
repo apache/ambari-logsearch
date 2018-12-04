@@ -37,6 +37,8 @@
           <span class="host-name-example">({{hostNameExampleShort$ | async}})</span>
         </label>
       </div>
+      <div class="description">{{'userSettings.timeZone.description' | translate}}</div>
+      <time-zone-map-input [value]="timeZone$ | async" (onChange)="setTimeZoneValue($event)" formControlName="timeZone"></time-zone-map-input>
     </form>
   </section>
 </modal-dialog>

@@ -23,6 +23,7 @@
         <span class="date-time-format" *ngSwitchCase="'evtTime'">{{value | amTz: timeZone | amDateFormat: timeFormat}}</span>
         <span *ngSwitchCase="'repo'">{{value | repoLabel | async}}</span>
         <span *ngSwitchCase="'type'">{{value | componentLabel | async}}</span>
+        <span *ngSwitchCase="'host'">{{value | hostName | async}}</span>
         <span *ngSwitchDefault class="default-format">{{value || ('common.notAvailable' | translate)}}</span>
       </ng-container>
     </div>

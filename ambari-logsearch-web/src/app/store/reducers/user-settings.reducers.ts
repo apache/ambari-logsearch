@@ -31,7 +31,7 @@ export interface ServerMetaDatum {
 
  export const initialState: UserSettingsState = {
   timeZone: moment.tz.guess(),
-  displayShortHostNames: false
+  displayShortHostNames: true
  };
 
  export function reducer(state = initialState, action: UserSettingsActions): UserSettingsState {

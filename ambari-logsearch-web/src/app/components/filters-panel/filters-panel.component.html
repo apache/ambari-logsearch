@@ -23,7 +23,9 @@
                 defaultParameterName="log_message"></search-box>
     <time-range-picker *ngIf="isFilterConditionDisplayed('timeRange')" formControlName="timeRange"
                        class="filter-input"></time-range-picker>
-    <timezone-picker class="filter-input"></timezone-picker>
+    <button class="btn btn-link time-zone-picker-btn" (click)="openTimeZonePicker()">
+      {{(timeZone$ | async) | timeZoneAbbr}} <span class="caret"></span>
+    </button>
     <button class="btn btn-success search-button" type="button" (click)="onSearchBtnClick()">
       <span class="fa fa-search"></span>
     </button>

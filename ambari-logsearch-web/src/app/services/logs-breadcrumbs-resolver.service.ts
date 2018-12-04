@@ -34,7 +34,7 @@ export class LogsBreadcrumbsResolverService implements Resolve<string[]> {
     const activeTabParam: string = this.routingUtilService.getParamFromActivatedRouteSnapshot(route, 'activeTab');
     const breadcrumbs: string[] = ['logs.title'];
     return this.tabStoreService.findInCollection((tab: LogTypeTab) => tab.id === activeTabParam).first().map((tab: LogTypeTab) => {
-      breadcrumbs.push(tab.label);
+      breadcrumbs.push(<string>tab.label);
       return breadcrumbs;
     });
   }

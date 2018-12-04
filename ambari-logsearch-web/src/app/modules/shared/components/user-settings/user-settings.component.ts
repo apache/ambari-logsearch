@@ -82,9 +82,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  handleCloseRequest(clickEvent) {
+  handleCloseRequest = (clickEvent) => {
     clickEvent.preventDefault();
     clickEvent.stopPropagation();
+    this.close();
+  }
+
+  close() {
     this.route.queryParams.take(1).subscribe((queryParams) => {
       const params = { ...queryParams };
       delete params[this.visibilityQueryParamName];
@@ -95,11 +99,11 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  setFormValue(field, value) {
+  setFormValue(field, value, emitEvent = false) {
     if (this.form.controls[field]) {
       this.form.controls[field].setValue(value, {
-        onlySelf: true,
-        emitEvent: false
+        onlySelf: emitEvent,
+        emitEvent
       });
     }
   }
@@ -109,7 +113,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   }
   
   setTimeZoneValue = (value) => {
-    this.setFormValue('timeZone', value);
+    this.setFormValue('timeZone', value, true);
   }
 
   onFormValueChanges = (form) => {

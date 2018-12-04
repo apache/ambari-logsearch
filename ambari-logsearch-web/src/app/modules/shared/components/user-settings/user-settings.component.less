@@ -18,11 +18,18 @@
 
  @import '../../../shared/variables';
 
- :host {
-   /deep/ modal-dialog.user-settings-modal .modal-dialog {
-     max-width: 40vw;
-     .host-name-example {
-       color: @fluid-gray-2;
-     }
-   }
- }
+:host {
+  time-zone-map-input {
+    display: block;
+    margin-top: .5em;
+  }
+  /deep/ modal-dialog.user-settings-modal .modal-dialog {
+    max-width: 40vw;
+    .host-name-example {
+      color: @fluid-gray-2;
+    }
+  }
+  .description {
+    color: @fluid-gray-2;
+  }
+}

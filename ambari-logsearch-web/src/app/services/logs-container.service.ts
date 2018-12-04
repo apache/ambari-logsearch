@@ -72,6 +72,7 @@ import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
 import { Subscription } from 'rxjs/Subscription';
 import { AuditLogRepo } from '@app/store/reducers/audit-log-repos.reducers';
 import { selectAuditLogReposState } from '@app/store/selectors/audit-log-repos.selectors';
+import { selectDisplayShortHostNames } from '@app/store/selectors/user-settings.selectors';
 
 @Injectable()
 export class LogsContainerService {
@@ -451,6 +452,8 @@ export class LogsContainerService {
       .filter(selection => !!selection).subscribe(this.onClusterSelectionChanged);
 
     this.store.select(selectAuditLogReposState).subscribe(this.setAuditLogReposFilters);
+
+    this.store.select(selectDisplayShortHostNames).subscribe(this.setHostFilterOptionsLabelsByUserSetting);
     
   }
 
@@ -855,6 +858,17 @@ export class LogsContainerService {
     return request;
   }
 
+  getHostLabelByUserSetting(host: string, isShortDisplay: boolean): string {
+    return isShortDisplay ? host.split('.')[0] : host;
+  }
+
+  setHostFilterOptionsLabelsByUserSetting = (isShortDisplay: boolean): void => {
+    this.filters.hosts.options = this.filters.hosts.options.map((hostListItem: ListItem): ListItem => ({
+      ...hostListItem,
+      label: this.getHostLabelByUserSetting(hostListItem.value, isShortDisplay)
+    }))
+  }
+
   setCustomTimeRange(startTime: number, endTime: number): void {
     const startTimeMoment = moment(startTime);
     const endTimeMoment = moment(endTime);
@@ -902,16 +916,19 @@ export class LogsContainerService {
   }
 
   openServiceLog(log: ServiceLog): void {
-    this.componentsService.findInCollection(component => (component.name || component.label) === log.type)
-      .map(component => component ? component.label || component.name : name)
-      .first()
-      .subscribe((componentName) => {
+    Observable.combineLatest(
+      this.componentsService.findInCollection(component => (component.name || component.label) === log.type)
+        .map(component => component ? component.label || component.name : name),
+        this.store.select(selectDisplayShortHostNames)
+    )
+      .take(1)
+      .subscribe(([componentName, displayShortHostNames]) => {
         const tab = {
           id: log.id || `${log.host}-${log.type}`,
           logsType: <LogsType>'serviceLogs',
           isCloseable: true,
           isActive: false,
-          label: `${log.host} >> ${componentName || log.type}`,
+          label: `${this.getHostLabelByUserSetting(log.host, displayShortHostNames)} >> ${componentName || log.type}`,
           activeFilters: Object.assign({}, JSON.parse(JSON.stringify(this.filtersForm.value)), {
             components: this.filters.components.options.filter((option: ListItem): boolean => {
               return option.value === log.type;

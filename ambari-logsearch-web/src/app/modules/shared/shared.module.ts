@@ -43,6 +43,8 @@ import { LoadingIndicatorComponent } from './components/loading-indicator/loadin
 import { CircleProgressBarComponent } from './components/circle-progress-bar/circle-progress-bar.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 
+import { TimeZoneMapInputComponent } from './components/time-zone-map-input/time-zone-map-input.component';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -69,7 +71,8 @@ import { UserSettingsComponent } from './components/user-settings/user-settings.
     ModalDialogComponent,
     LoadingIndicatorComponent,
     CircleProgressBarComponent,
-    UserSettingsComponent
+    UserSettingsComponent,
+    TimeZoneMapInputComponent
   ],
   providers: [
     Title,
@@ -87,7 +90,8 @@ import { UserSettingsComponent } from './components/user-settings/user-settings.
     ModalDialogComponent,
     LoadingIndicatorComponent,
     CircleProgressBarComponent,
-    UserSettingsComponent
+    UserSettingsComponent,
+    TimeZoneMapInputComponent
   ]
 })
 export class SharedModule { }

@@ -46,10 +46,9 @@
         <time-histogram (selectArea)="setCustomTimeRange($event[0], $event[1])" [data]="serviceLogsHistogramData"
           [colors]="serviceLogsHistogramColors" [allowFractionalYTicks]="false" [timeZone]="timeZone$ | async"
           svgId="service-logs-histogram" [class.loading]="logsContainerService.isGraphRequestInProgress$ | async"></time-histogram>
-          {{timeZone$ | async}}
       </collapsible-panel>
       <service-logs-table [totalCount]="totalCount" [logs]="serviceLogs | async" [columns]="serviceLogsColumns | async"
-        [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async"></service-logs-table>
+        [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async" [timeZone]="timeZone$ | async"></service-logs-table>
     </ng-container>
     <ng-container *ngSwitchCase="'auditLogs'">
       <collapsible-panel commonTitle="logs.duration" openTitle="logs.hideGraph" collapsedTitle="logs.showGraph">

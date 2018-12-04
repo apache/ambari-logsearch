@@ -14,17 +14,4 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-
-<modal-dialog [visible]="visible$ | async"
-  [showCloseBtn]="true"
-  (onCloseRequest)="onCloseRequest($event)"
-  (onAfterViewInit)="initMap()"
-  class="time-zone-modal">
-  <time-zone-map-input [value]="timeZone$ | async" (onChange)="onTimeZoneSelect($event)" [mapElementId]="mapElementId"></time-zone-map-input>
-  <footer>
-    <button class="btn btn-secondary" (click)="onCloseRequest($event)">{{'modal.cancel' | translate}}</button>
-    <button class="btn btn-primary" (click)="onSaveRequest($event)">
-      {{'modal.save' | translate}}
-    </button>
-  </footer>
-</modal-dialog>
+<div attr.id="{{mapElementId}}" class="time-zone-input"></div>
