@@ -21,8 +21,8 @@ limitations under the License.
 
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
-<#if topLevelSections??>
-    <#list topLevelSections as section>
+<#if shipperConfigs.topLevelSections??>
+    <#list shipperConfigs.topLevelSections as section>
 |`${section.path}`|${section.description}|${section.defaultValue}|${section.examples}|
     </#list>
 </#if>
@@ -32,8 +32,8 @@ limitations under the License.
 
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
-<#if inputConfigSection??>
-    <#list inputConfigSection as section>
+<#if shipperConfigs.inputConfigSections??>
+    <#list shipperConfigs.inputConfigSections as section>
 |`${section.path}`|${section.description}|${section.defaultValue}|${section.examples}|
     </#list>
 </#if>
@@ -42,8 +42,8 @@ limitations under the License.
 
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
-<#if filterConfigSection??>
-    <#list filterConfigSection as section>
+<#if shipperConfigs.filterConfigSections??>
+    <#list shipperConfigs.filterConfigSections as section>
 |`${section.path}`|${section.description}|${section.defaultValue}|${section.examples}|
     </#list>
 </#if>
@@ -52,8 +52,8 @@ limitations under the License.
 
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
-<#if postMapValuesSection??>
-    <#list postMapValuesSection as section>
+<#if shipperConfigs.postMapValuesConfigSections??>
+    <#list shipperConfigs.postMapValuesConfigSections as section>
 |`${section.path}`|${section.description}|${section.defaultValue}|${section.examples}|
     </#list>
 </#if>
