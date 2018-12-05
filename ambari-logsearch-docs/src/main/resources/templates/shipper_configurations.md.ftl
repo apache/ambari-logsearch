@@ -127,7 +127,6 @@ Example:
   ]
 }
 ```
-Built-in input shipper configurations:
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
 <#if shipperConfigs.inputConfigSections??>
@@ -139,6 +138,25 @@ Built-in input shipper configurations:
 ### Filter Descriptor
 
 Filter configurations can be defined in the filter descriptor section.
+- Sample 1 for example (json - simple_service_json):
+```json
+{"level":"WARN","file":"ClientCnxn.java","thread_name":"zkCallback-6-thread-10-SendThread(c6402.ambari.apache.org:2181)","line_number":1102,"log_message":"Session 0x355e0023b38001d for server null, unexpected error, closing socket connection and attempting reconnect\njava.net.SocketException: Network is unreachable\n\tat sun.nio.ch.Net.connect0(Native Method)\n\tat sun.nio.ch.Net.connect(Net.java:454)\n\tat sun.nio.ch.Net.connect(Net.java:446)\n\tat sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:648)\n\tat org.apache.zookeeper.ClientCnxnSocketNIO.registerAndConnect(ClientCnxnSocketNIO.java:277)\n\tat org.apache.zookeeper.ClientCnxnSocketNIO.connect(ClientCnxnSocketNIO.java:287)\n\tat org.apache.zookeeper.ClientCnxn$SendThread.startConnect(ClientCnxn.java:967)\n\tat org.apache.zookeeper.ClientCnxn$SendThread.run(ClientCnxn.java:1003)\n","logger_name":"org.apache.zookeeper.ClientCnxn","logtime":"1468406756757"}
+```
+- Sample 2 for example (grok - simple_service):
+```text
+2016-07-13 10:45:49,640 [WARN] Sample log line 1 - warn level
+that is a multiline
+2016-07-13 10:45:49,640 [ERROR] Sample log line 2 - error level
+2016-07-13 10:45:50,351 [INFO] Sample log line 3 - info level
+```
+- Sample 3 for example (grok + key/value - ambari_audit):
+```text
+2016-10-03T16:26:13.333Z, User(admin), RemoteIp(192.168.64.1), Operation(User login), Roles(
+    Ambari: Ambari Administrator
+), Status(Success)
+2016-10-03T16:26:54.834Z, User(admin), RemoteIp(192.168.64.1), Operation(Repository update), RequestType(PUT), url(http://c6401.ambari.apache.org:8080/api/v1/stacks/HDP/versions/2.5/operating_systems/redhat6/repositories/HDP-UTILS-1.1.0.21), ResultStatus(200 OK), Stack(HDP), Stack version(2.5), OS(redhat6), Repo id(HDP-UTILS-1.1.0.21), Base URL(http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos6)
+2016-10-03T16:26:54.845Z, User(admin), RemoteIp(192.168.64.1), Operation(Repository update), RequestType(PUT), url(http://c6401.ambari.apache.org:8080/api/v1/stacks/HDP/versions/2.5/operating_systems/redhat7/repositories/HDP-2.5), ResultStatus(200 OK), Stack(HDP), Stack version(2.5), OS(redhat7), Repo id(HDP-2.5), Base URL(http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.5.0.0/)
+```
 Example:
 ```json
 {
@@ -154,7 +172,7 @@ Example:
           ]
         }
       }
-    }
+    },
     {
       "filter": "grok",
       "deep_extract": "false",
@@ -167,9 +185,9 @@ Example:
           ]
         }
       },
-      "log4j_format":"%d{ISO8601} %5p [%t] %c{1}:%L - %m%n",
+      "log4j_format":"# can be anything - only use it as marker/helper as it does not supported yet",
       "multiline_pattern":"^(%{TIMESTAMP_ISO8601:logtime})",
-      "message_pattern":"(?m)^%{TIMESTAMP_ISO8601:logtime}%{SPACE}%{LOGLEVEL:level}%{SPACE}\\[%{DATA:thread_name}\\]%{SPACE}%{JAVACLASS:logger_name}:%{INT:line_number}%{SPACE}-%{SPACE}%{GREEDYDATA:log_message}",
+      "message_pattern":"(?m)^%{TIMESTAMP_ISO8601:logtime}%{SPACE}\\[%{LOGLEVEL:level}\\]%{SPACE}%{GREEDYDATA:log_message}}",
       "post_map_values":{
         "logtime":{
           "map_date":{
@@ -226,7 +244,6 @@ Example:
   ]
 }
 ```
-Built-in filter shipper configurations:
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
 <#if shipperConfigs.filterConfigSections??>
@@ -286,7 +303,6 @@ Example:
   ]
 }
 ```
-Built-in mapper shipper configurations:
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
 <#if shipperConfigs.postMapValuesConfigSections??>
@@ -336,7 +352,6 @@ Example:
   ]
 }
 ```
-Built-in output shipper configurations:
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
 |`/output/[]/conditions`|The conditions of which input to filter.|`EMPTY`||
