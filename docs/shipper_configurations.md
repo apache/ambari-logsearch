@@ -66,7 +66,7 @@ Example:
     {
       "type": "simple_service",
       "rowtype": "service",
-      "path": "/var/logs/my/service/service_sample.txt",
+      "path": "/var/logs/my/service/service_sample.log",
       "group": "Ambari",
       "cache_enabled": "true",
       "cache_key_field": "log_message",
@@ -84,7 +84,7 @@ Example:
     {
       "type": "simple_audit_service",
       "rowtype": "audit",
-      "path": "/var/logs/my/service/service_audit_sample.txt",
+      "path": "/var/logs/my/service/service_audit_sample.log",
       "is_enabled": "true",
       "add_fields": {
         "logType": "AmbariAudit",
@@ -97,7 +97,7 @@ Example:
     {
      "type": "wildcard_log_service",
      "rowtype": "service",
-     "path": "/var/logs/my/service/*/service_audit_sample.txt",
+     "path": "/var/logs/my/service/*/service_audit_sample.log",
      "init_default_fields" : "true",
      "detach_interval_min": "50",
      "detach_time_min" : "300",
