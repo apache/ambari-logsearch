@@ -98,7 +98,6 @@
     <logsearch.docker.tag>latest</logsearch.docker.tag>
     <fasterxml-jackson.version>2.9.5</fasterxml-jackson.version>
     <log4j2.version>2.11.1</log4j2.version>
-    <swagger-ui.version>3.19.0</swagger-ui.version>
   </properties>
 
   <licenses>
