@@ -16,20 +16,21 @@
  * limitations under the License.
  */
 
-import { AuditLogReposActions, AuditLogReposActionTypes } from "../actions/audit-log-repos.actions";
+import { ApiFeaturesActions, ApiFeaturesActionTypes } from '../actions/api-features.actions';
 
-export interface AuditLogRepo {
-  name: string;
-  label: string;
+export interface ApiFeatureSet {
+  [key: string]: boolean | {[key: string]: boolean};
 };
 
-export const initialState = [];
+export const initialState = {
+  'metadata_patterns': true,
+  'log_level_filters': true
+};
 
-export function reducer(state = initialState, action: AuditLogReposActions) {
+export function reducer(state = initialState, action: ApiFeaturesActions) {
   switch (action.type) {
-    case AuditLogReposActionTypes.SET: {
-      const components: AuditLogRepo[] = action.payload;
-      return components || [];
+    case ApiFeaturesActionTypes.SET: {
+      return action.payload;
     }
     default: {
       return state;

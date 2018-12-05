@@ -39,6 +39,7 @@ import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
 import { LoadAuditLogsReposAction } from '@app/store/actions/audit-log-repos.actions';
+import { LoadApiFeaturesAction } from '@app/store/actions/api-features.actions';
 
 // @ToDo create a separate data state enrty in the store with keys of the model names
 export enum DataStateStoreKeys {
@@ -104,6 +105,7 @@ export class AppLoadService {
 
       });
       this.baseDataAvailibilityState$.subscribe(this.onBaseDataAvailabilityChange);
+      this.loadApiFeaturesInfo();
   }
 
   onDataAvailibilityChange = (dataAvailabilityStates: DataAvailabilityValues[]): void => {
@@ -236,6 +238,10 @@ export class AppLoadService {
       this.setDataAvaibility(DataStateStoreKeys.LOG_FIELDS_DATA_KEY, DataAvailabilityValues.AVAILABLE);
     });
     return responses$;
+  }
+
+  loadApiFeaturesInfo() {
+    this.store.dispatch( new LoadApiFeaturesAction() );
   }
 
   initOnAuthorization = (isAuthorized): void => {

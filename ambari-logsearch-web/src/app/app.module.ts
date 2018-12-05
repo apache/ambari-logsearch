@@ -122,6 +122,7 @@ import { NotificationEffects } from '@app/store/effects/notification.effects';
 import { UserSettingsEffects } from '@app/store/effects/user-settings.effects';
 import { FilterHistoryManagerComponent } from './components/filter-history-manager/filter-history-manager.component';
 import { AuditLogReposEffects } from './store/effects/audit-log-repos.effects';
+import { ApiFeaturesEffects } from './store/effects/api-features.effects';
 
 import { HostNamePipe } from '@app/pipes/host-name.pipe';
 
@@ -205,7 +206,8 @@ import { HostNamePipe } from '@app/pipes/host-name.pipe';
     EffectsModule.run(AuthEffects),
     EffectsModule.run(AuditLogReposEffects),
     EffectsModule.run(UserSettingsEffects),
-    EffectsModule.run(NotificationEffects)
+    EffectsModule.run(NotificationEffects),
+    EffectsModule.run(ApiFeaturesEffects)
 
   ],
   providers: [

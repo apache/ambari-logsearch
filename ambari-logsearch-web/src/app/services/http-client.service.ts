@@ -110,6 +110,9 @@ export class HttpClientService extends Http {
     userSettings: {
       url: 'metadata/list',
       params: () => ({type: 'user_settings'})
+    },
+    apiFeatures: {
+      url: 'info/features'
     }
   };
 
