@@ -42,6 +42,7 @@ import {LogsContainerService} from '@app/services/logs-container.service';
 import {UtilsService} from '@app/services/utils.service';
 import {PaginationComponent} from '@app/components/pagination/pagination.component';
 import {DropdownListComponent} from '@modules/shared/components/dropdown-list/dropdown-list.component';
+import {HostNamePipe} from "@app/pipes/host-name.pipe";
 
 import {AuditLogsTableComponent} from './audit-logs-table.component';
 import {ClusterSelectionService} from '@app/services/storage/cluster-selection.service';
@@ -57,10 +58,12 @@ import * as auth from '@app/store/reducers/auth.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { reducer as userSettings } from '@app/store/reducers/user-settings.reducers';
 
 import {ComponentLabelPipe} from '@app/pipes/component-label';
 import { RepoLabelPipe } from '@app/pipes/repo-label';
 import { AuditLogFieldLabelPipe } from '@app/pipes/audit-log-field-label.pipe';
+
 
 describe('AuditLogsTableComponent', () => {
   let component: AuditLogsTableComponent;
@@ -74,7 +77,8 @@ describe('AuditLogsTableComponent', () => {
         AuditLogFieldLabelPipe,
         AuditLogsTableComponent,
         PaginationComponent,
-        DropdownListComponent
+        DropdownListComponent,
+        HostNamePipe
       ],
       imports: [
         RouterTestingModule,
@@ -97,7 +101,8 @@ describe('AuditLogsTableComponent', () => {
           clusters,
           components,
           hosts,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects)

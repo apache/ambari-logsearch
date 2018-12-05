@@ -52,6 +52,7 @@ import * as auth from '@app/store/reducers/auth.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import * as userSettings from '@app/store/reducers/user-settings.reducers';
 
 describe('HistoryManagerService', () => {
   beforeEach(() => {
@@ -74,7 +75,8 @@ describe('HistoryManagerService', () => {
           hosts,
           serviceLogsTruncated,
           tabs,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings: userSettings.reducer
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects)

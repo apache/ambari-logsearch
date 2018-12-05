@@ -34,6 +34,7 @@ import { HostsService, hosts } from '@app/services/storage/hosts.service';
 import * as userSettings from '@app/store/reducers/user-settings.reducers';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
 import { UserSettingsEffects } from '@app/store/effects/user-settings.effects';
+import { TimeZoneMapInputComponent } from '@app/modules/shared/components/time-zone-map-input/time-zone-map-input.component';
 
 import { UserSettingsComponent } from './user-settings.component';
 
@@ -66,7 +67,7 @@ describe('UserSettingsComponent', () => {
         NotificationService,
         UserSettingsService
       ],
-      declarations: [ UserSettingsComponent ],
+      declarations: [ UserSettingsComponent, TimeZoneMapInputComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();

@@ -51,6 +51,7 @@ import * as auth from '@app/store/reducers/auth.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import * as userSettings from '@app/store/reducers/user-settings.reducers';
 
 describe('FilterDropdownComponent', () => {
   let component: FilterDropdownComponent;
@@ -99,7 +100,8 @@ describe('FilterDropdownComponent', () => {
           clusters,
           components,
           hosts,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings: userSettings.reducer
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects),

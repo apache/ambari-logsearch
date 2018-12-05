@@ -52,6 +52,9 @@ import { AuthService } from '@app/services/auth.service';
 import * as auth from '@app/store/reducers/auth.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
+import { UserSettingsEffects } from '@app/store/effects/user-settings.effects';
+import { NotificationEffects } from '@app/store/effects/notification.effects';
+import * as userSettings from '@app/store/reducers/user-settings.reducers';
 
 describe('ServerSettingsService', () => {
   beforeEach(() => {
@@ -73,7 +76,8 @@ describe('ServerSettingsService', () => {
           serviceLogsTruncated,
           tabs,
           dataAvailabilityStates,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings: userSettings.reducer
         }),
         EffectsModule.run(AuthEffects),
         ...TranslationModules

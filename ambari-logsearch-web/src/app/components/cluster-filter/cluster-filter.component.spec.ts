@@ -51,6 +51,7 @@ import {LogsFilteringUtilsService} from '@app/services/logs-filtering-utils.serv
 import {NotificationService} from '@modules/shared/services/notification.service';
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 import { DataAvailabilityStatesStore, dataAvailabilityStates } from '@app/modules/app-load/stores/data-availability-state.store';
+import { reducer as userSettings } from '@app/store/reducers/user-settings.reducers';
 
 import * as auth from '@app/store/reducers/auth.reducers';
 
@@ -87,7 +88,8 @@ describe('ClusterFilterComponent', () => {
           components,
           hosts,
           dataAvailabilityStates,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings
         })
       ],
       providers: [

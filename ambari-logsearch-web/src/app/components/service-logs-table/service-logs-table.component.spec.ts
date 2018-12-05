@@ -61,6 +61,7 @@ import * as auth from '@app/store/reducers/auth.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { reducer as userSettings } from '@app/store/reducers/user-settings.reducers';
 
 describe('ServiceLogsTableComponent', () => {
   let component: ServiceLogsTableComponent;
@@ -96,7 +97,8 @@ describe('ServiceLogsTableComponent', () => {
           clusters,
           components,
           hosts,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects),

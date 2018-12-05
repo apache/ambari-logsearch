@@ -60,6 +60,7 @@ import { AuthService } from '@app/services/auth.service';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { reducer as userSettings } from '@app/store/reducers/user-settings.reducers';
 
 describe('LogIndexFilterComponent', () => {
   let component: LogIndexFilterComponent;
@@ -86,7 +87,8 @@ describe('LogIndexFilterComponent', () => {
           serviceLogsTruncated,
           tabs,
           dataAvailabilityStates,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects)

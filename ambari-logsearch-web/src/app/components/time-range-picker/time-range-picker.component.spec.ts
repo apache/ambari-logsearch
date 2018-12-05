@@ -53,6 +53,7 @@ import { AuthService } from '@app/services/auth.service';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import * as userSettings from '@app/store/reducers/user-settings.reducers';
 
 describe('TimeRangePickerComponent', () => {
   let component: TimeRangePickerComponent;
@@ -77,7 +78,8 @@ describe('TimeRangePickerComponent', () => {
           serviceLogsHistogramData,
           serviceLogsTruncated,
           tabs,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings: userSettings.reducer
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects),
