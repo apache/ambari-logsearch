@@ -26,6 +26,7 @@ import org.apache.ambari.logfeeder.plugin.input.InputMarker;
 import org.apache.ambari.logfeeder.plugin.output.Output;
 import org.apache.ambari.logfeeder.util.DateUtil;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
+import org.apache.ambari.logsearch.config.api.ShipperConfigElementDescription;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -88,8 +89,6 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
 
   private static final Logger logger = LogManager.getLogger(OutputSolr.class);
 
-  private static final int SHARDS_WAIT_MS = 10000;
-
   private static final int DEFAULT_MAX_BUFFER_SIZE = 5000;
   private static final int DEFAULT_MAX_INTERVAL_MS = 3000;
   private static final int DEFAULT_NUMBER_OF_WORKERS = 1;
@@ -100,6 +99,12 @@ public class OutputSolr extends Output<LogFeederProps, InputMarker> {
   private static final String JAVA_SECURITY_AUTH_LOGIN_CONFIG = "java.security.auth.login.config";
   private static final String SOLR_HTTPCLIENT_BUILDER_FACTORY = "solr.httpclient.builder.factory";
 
+  @ShipperConfigElementDescription(
+    path = "/output/[]/type",
+    type = "string",
+    description = "Output type name, right now it can be service or audit",
+    examples = {"\"service\"", "\"audit\""}
+  )
   private String type;
   private String collection;
   private int splitInterval;

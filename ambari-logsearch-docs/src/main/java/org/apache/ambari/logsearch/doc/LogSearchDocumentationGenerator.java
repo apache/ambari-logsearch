@@ -20,6 +20,11 @@ package org.apache.ambari.logsearch.doc;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.models.Swagger;
+import io.swagger.models.auth.BasicAuthDefinition;
+import io.swagger.util.Yaml;
+import org.apache.ambari.logsearch.conf.ApiDocConfig;
 import org.apache.ambari.logsearch.config.api.LogSearchPropertyDescription;
 import org.apache.ambari.logsearch.config.api.ShipperConfigElementDescription;
 import org.apache.commons.cli.CommandLine;
@@ -42,7 +47,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +55,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class LogSearchMarkdownGenerator {
+/**
+ * Class to generate markdown files based on property annotations + rest API docs with swagger
+ */
+public class LogSearchDocumentationGenerator {
 
   private static final String SHIPPER_CONFIG_TEMPLATE_KEY = "shipperConfigs";
   private static final String LOGSEARCH_PROPERTIES_TEMPLATE_KEY = "logsearchProperties";
@@ -76,6 +83,8 @@ public class LogSearchMarkdownGenerator {
   private static final String SHIPPER_CONFIGURATIONS_MARKDOWN_TEMPLATE_FILE = "shipper_configurations.md.ftl";
   private static final String SHIPPER_CONFIGURATIONS_MARKDOWN_OUTPUT = "shipper_configurations.md";
 
+  private static final String SWAGGER_API_DOC_FOLDER = "api-docs";
+  private static final String SWAGGER_YAML_FILE_NAME = "logsearch-swagger.yaml";
 
   public static void main(String[] args) {
     try {
@@ -102,13 +111,14 @@ public class LogSearchMarkdownGenerator {
       System.out.println(String.format("Number of logsearch.properties configuration descriptors found: %d", propertyDescriptions.get(LOGSEARCH_PROPERTIES).size()));
       System.out.println(String.format("Number of logfeeder.properties configuration descriptors found: %d", propertyDescriptions.get(LOGFEEDER_PROPERTIES).size()));
 
-      final List<String> shipperConfigPackagesToScan = Collections.singletonList(CONFIG_API_PACKAGE);
+      final List<String> shipperConfigPackagesToScan = Arrays.asList(CONFIG_API_PACKAGE, LOGFEEDER_PACKAGE);
       ShipperConfigDescriptionDataHolder shipperConfigDescriptionDataHolder = createShipperConfigDescriptions(shipperConfigPackagesToScan);
 
       System.out.println(String.format("Number of top level section shipper descriptors found: %d", shipperConfigDescriptionDataHolder.getTopLevelConfigSections().size()));
       System.out.println(String.format("Number of input config section shipper descriptors found: %d", shipperConfigDescriptionDataHolder.getInputConfigSections().size()));
       System.out.println(String.format("Number of filter config section shipper descriptors found: %d", shipperConfigDescriptionDataHolder.getFilterConfigSections().size()));
       System.out.println(String.format("Number of mapper section shipper descriptors found: %d", shipperConfigDescriptionDataHolder.getPostMapValuesConfigSections().size()));
+      System.out.println(String.format("Number of output config section shipper descriptors found: %d", shipperConfigDescriptionDataHolder.getOutputConfigSections().size()));
 
       final Configuration freemarkerConfiguration = new Configuration();
       final ClassPathResource cpr = new ClassPathResource(TEMPLATES_FOLDER);
@@ -130,10 +140,23 @@ public class LogSearchMarkdownGenerator {
       File shipperConfigsOutputFile = Paths.get(outputDir, SHIPPER_CONFIGURATIONS_MARKDOWN_OUTPUT).toFile();
       writeMarkdown(freemarkerConfiguration, SHIPPER_CONFIGURATIONS_MARKDOWN_TEMPLATE_FILE, shipperConfigModels, shipperConfigsOutputFile);
 
+      String swaggerYaml = generateSwaggerYaml();
+      File swaggerYamlFile = Paths.get(outputDir, SWAGGER_API_DOC_FOLDER, SWAGGER_YAML_FILE_NAME).toFile();
+      FileUtils.writeStringToFile(swaggerYamlFile, swaggerYaml, Charset.defaultCharset());
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);
     }
+  }
+
+  private static String generateSwaggerYaml() throws Exception {
+    ApiDocConfig apiDocConfig = new ApiDocConfig();
+    BeanConfig beanConfig = apiDocConfig.swaggerConfig();
+    Swagger swagger = beanConfig.getSwagger();
+    swagger.addSecurityDefinition("basicAuth", new BasicAuthDefinition());
+    beanConfig.configure(swagger);
+    beanConfig.scanAndRead();
+    return Yaml.mapper().writeValueAsString(swagger);
   }
 
   private static void writeMarkdown(Configuration freemarkerConfiguration, String templateName,
@@ -187,7 +210,14 @@ public class LogSearchMarkdownGenerator {
       .distinct()
       .collect(Collectors.toList());
 
-    return new ShipperConfigDescriptionDataHolder(topLevelConfigSections, inputConfigSection, filterConfigSection, postMapValuesConfigSection);
+    final List<ShipperConfigDescriptionData> outputConfigSection = shipperConfigDescription.stream()
+      .filter(
+        s -> s.getPath().startsWith("/output/[]"))
+      .distinct()
+      .collect(Collectors.toList());
+
+    return new ShipperConfigDescriptionDataHolder(topLevelConfigSections, inputConfigSection, filterConfigSection,
+      postMapValuesConfigSection, outputConfigSection);
   }
 
   private static List<PropertyDescriptionData> getPropertyDescriptions(List<String> packagesToScan) {

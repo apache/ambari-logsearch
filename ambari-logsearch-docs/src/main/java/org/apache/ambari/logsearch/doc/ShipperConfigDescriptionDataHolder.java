@@ -25,15 +25,18 @@ public class ShipperConfigDescriptionDataHolder {
   private final List<ShipperConfigDescriptionData> inputConfigSections;
   private final List<ShipperConfigDescriptionData> filterConfigSections;
   private final List<ShipperConfigDescriptionData> postMapValuesConfigSections;
+  private final List<ShipperConfigDescriptionData> outputConfigSections;
 
   public ShipperConfigDescriptionDataHolder(List<ShipperConfigDescriptionData> topLevelConfigSections,
                                             List<ShipperConfigDescriptionData> inputConfigSections,
                                             List<ShipperConfigDescriptionData> filterConfigSections,
-                                            List<ShipperConfigDescriptionData> postMapValuesConfigSections) {
+                                            List<ShipperConfigDescriptionData> postMapValuesConfigSections,
+                                            List<ShipperConfigDescriptionData> outputConfigSections) {
     this.topLevelConfigSections = topLevelConfigSections;
     this.inputConfigSections = inputConfigSections;
     this.filterConfigSections = filterConfigSections;
     this.postMapValuesConfigSections = postMapValuesConfigSections;
+    this.outputConfigSections = outputConfigSections;
   }
 
   public List<ShipperConfigDescriptionData> getTopLevelConfigSections() {
@@ -50,5 +53,9 @@ public class ShipperConfigDescriptionDataHolder {
 
   public List<ShipperConfigDescriptionData> getPostMapValuesConfigSections() {
     return postMapValuesConfigSections;
+  }
+
+  public List<ShipperConfigDescriptionData> getOutputConfigSections() {
+    return outputConfigSections;
   }
 }
