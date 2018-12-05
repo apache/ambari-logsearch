@@ -826,23 +826,6 @@ paths:
               type: "string"
       security:
       - basicAuth: []
-  /info/features:
-    get:
-      tags:
-      - "info"
-      summary: "Get features list."
-      description: ""
-      operationId: "getFeatures"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            additionalProperties:
-              type: "object"
   /info:
     get:
       tags:
@@ -877,81 +860,23 @@ paths:
             type: "object"
             additionalProperties:
               type: "boolean"
-  /metadata:
+  /info/features:
     get:
       tags:
-      - "metadata"
-      summary: "Get metadata"
+      - "info"
+      summary: "Get features list."
       description: ""
-      operationId: "getMetadata"
+      operationId: "getFeatures"
       produces:
       - "application/json"
-      parameters:
-      - name: "name"
-        in: "query"
-        description: "Name identifier of the metadata"
-        required: false
-        type: "string"
-      - name: "type"
-        in: "query"
-        description: "Type of the metadata"
-        required: true
-        type: "string"
-      - name: "userName"
-        in: "query"
-        description: "User name of the metadata"
-        required: false
-        type: "string"
-      - name: "clusters"
-        in: "query"
-        description: "filter for clusters (comma separated list)"
-        required: false
-        type: "string"
+      parameters: []
       responses:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/LogsearchMetaData"
-      security:
-      - basicAuth: []
-    post:
-      tags:
-      - "metadata"
-      summary: "Save metadata"
-      description: ""
-      operationId: "saveMetadata"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/LogsearchMetaData"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "string"
-      security:
-      - basicAuth: []
-    delete:
-      tags:
-      - "metadata"
-      summary: "Delete metadata"
-      description: ""
-      operationId: "deleteMetadata"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/LogsearchMetaData"
-      responses:
-        default:
-          description: "successful operation"
-      security:
-      - basicAuth: []
+            type: "object"
+            additionalProperties:
+              type: "object"
   /metadata/list:
     get:
       tags:
@@ -1028,6 +953,81 @@ paths:
           type: "array"
           items:
             $ref: "#/definitions/LogsearchMetaData"
+      responses:
+        default:
+          description: "successful operation"
+      security:
+      - basicAuth: []
+  /metadata:
+    get:
+      tags:
+      - "metadata"
+      summary: "Get metadata"
+      description: ""
+      operationId: "getMetadata"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "query"
+        description: "Name identifier of the metadata"
+        required: false
+        type: "string"
+      - name: "type"
+        in: "query"
+        description: "Type of the metadata"
+        required: true
+        type: "string"
+      - name: "userName"
+        in: "query"
+        description: "User name of the metadata"
+        required: false
+        type: "string"
+      - name: "clusters"
+        in: "query"
+        description: "filter for clusters (comma separated list)"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/LogsearchMetaData"
+      security:
+      - basicAuth: []
+    post:
+      tags:
+      - "metadata"
+      summary: "Save metadata"
+      description: ""
+      operationId: "saveMetadata"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/LogsearchMetaData"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+      security:
+      - basicAuth: []
+    delete:
+      tags:
+      - "metadata"
+      summary: "Delete metadata"
+      description: ""
+      operationId: "deleteMetadata"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/LogsearchMetaData"
       responses:
         default:
           description: "successful operation"
@@ -3180,50 +3180,6 @@ paths:
               type: "string"
       security:
       - basicAuth: []
-  /shipper/filters/{clusterName}/level:
-    get:
-      tags:
-      - "shipper"
-      summary: "Get log level filter"
-      description: ""
-      operationId: "getLogLevelFilters"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "clusterName"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/LSServerLogLevelFilterMap"
-      security:
-      - basicAuth: []
-    put:
-      tags:
-      - "shipper"
-      summary: "Update log level filter"
-      description: ""
-      operationId: "setLogLevelFilter"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/LSServerLogLevelFilterMap"
-      - name: "clusterName"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        default:
-          description: "successful operation"
-      security:
-      - basicAuth: []
   /shipper/input/{clusterName}/services/{serviceName}:
     get:
       tags:
@@ -3328,6 +3284,50 @@ paths:
         description: "Input config json for logfeeder shipper"
         required: true
         type: "string"
+      - name: "clusterName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+      security:
+      - basicAuth: []
+  /shipper/filters/{clusterName}/level:
+    get:
+      tags:
+      - "shipper"
+      summary: "Get log level filter"
+      description: ""
+      operationId: "getLogLevelFilters"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "clusterName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/LSServerLogLevelFilterMap"
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - "shipper"
+      summary: "Update log level filter"
+      description: ""
+      operationId: "setLogLevelFilter"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/LSServerLogLevelFilterMap"
       - name: "clusterName"
         in: "path"
         required: true
@@ -3447,28 +3447,28 @@ definitions:
       result:
         type: "integer"
         format: "int32"
-      reqContext:
+      text:
         type: "string"
       policy:
         type: "string"
-      reason:
-        type: "string"
-      text:
+      reqContext:
         type: "string"
       access:
         type: "string"
+      reason:
+        type: "string"
       sess:
         type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
       proxyUsers:
         type: "array"
         items:
           type: "string"
       logType:
         type: "string"
-      tags:
-        type: "array"
-        items:
-          type: "string"
       action:
         type: "string"
       agent:
@@ -4684,39 +4684,6 @@ definitions:
         type: "string"
       clusters:
         type: "string"
-  LSServerLogLevelFilter:
-    type: "object"
-    required:
-    - "defaultLevels"
-    - "hosts"
-    - "label"
-    properties:
-      label:
-        type: "string"
-      hosts:
-        type: "array"
-        items:
-          type: "string"
-      defaultLevels:
-        type: "array"
-        items:
-          type: "string"
-      overrideLevels:
-        type: "array"
-        items:
-          type: "string"
-      expiryTime:
-        type: "string"
-        format: "date-time"
-  LSServerLogLevelFilterMap:
-    type: "object"
-    required:
-    - "filter"
-    properties:
-      filter:
-        type: "object"
-        additionalProperties:
-          $ref: "#/definitions/LSServerLogLevelFilter"
   LSServerConditions:
     type: "object"
     required:
@@ -4828,12 +4795,45 @@ definitions:
           $ref: "#/definitions/LSServerFilter"
   LSServerPostMapValuesList:
     type: "object"
+  LSServerLogLevelFilter:
+    type: "object"
+    required:
+    - "defaultLevels"
+    - "hosts"
+    - "label"
+    properties:
+      label:
+        type: "string"
+      hosts:
+        type: "array"
+        items:
+          type: "string"
+      defaultLevels:
+        type: "array"
+        items:
+          type: "string"
+      overrideLevels:
+        type: "array"
+        items:
+          type: "string"
+      expiryTime:
+        type: "string"
+        format: "date-time"
+  LSServerLogLevelFilterMap:
+    type: "object"
+    required:
+    - "filter"
+    properties:
+      filter:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/LSServerLogLevelFilter"
   SolrCollectionState:
     type: "object"
     properties:
       solrCollectionReady:
         type: "boolean"
-      configurationUploaded:
-        type: "boolean"
       znodeReady:
+        type: "boolean"
+      configurationUploaded:
         type: "boolean"

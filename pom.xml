@@ -378,6 +378,7 @@
             <exclude>**/dist/**</exclude>
             <exclude>.repository/**</exclude>
             <exclude>k8s/**</exclude>
+            <exclude>mkdocs-site/**</exclude>
           </excludes>
         </configuration>
         <executions>

@@ -156,14 +156,7 @@ public class LogSearchDocumentationGenerator {
     swagger.addSecurityDefinition("basicAuth", new BasicAuthDefinition());
     beanConfig.configure(swagger);
     beanConfig.scanAndRead();
-    String yaml = Yaml.mapper().writeValueAsString(swagger);
-    StringBuilder b = new StringBuilder();
-    String[] parts = yaml.split("\n");
-    for (String part : parts) {
-      b.append(part);
-      b.append("\n");
-    }
-    return b.toString();
+    return Yaml.mapper().writeValueAsString(swagger);
   }
 
   private static void writeMarkdown(Configuration freemarkerConfiguration, String templateName,

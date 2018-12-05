@@ -51,7 +51,7 @@ global.config.json example:
 ```
 | `Path` | `Description` | `Default` | `Examples` |
 |---|---|---|---|
-|`/filter`|A list of filter descriptions|`EMPTY`|<ul><li>`{"filter" : [ {"filter": "json", "conditions": {"fields": { "type": ["mytype1", "mytype2"]} } } ]}`</li></ul>|
+|`/filter`|A list of filter descriptions|`EMPTY`|<ul><li>`{"filter" : [ {"filter": "json", "conditions": {"fields": { "type": ["logsearch_app", "logsearch_perf"]} } } ]}`</li></ul>|
 |`/input`|A list of input descriptions|`EMPTY`|<ul><li>`{"input" : [ {"type": "myinput_service_type"}] }`</li></ul>|
 |`/output`|A list of output descriptors|`{}`|<ul><li>`{"output": [{"is_enabled" : "true", "destination": "solr", "myfield": "myvalue"}]`</li></ul>|
 |`/global`|A map that contains field/value pairs|`EMPTY`|<ul><li>`{"global": {"myfield": "myvalue"}}`</li></ul>|
@@ -153,9 +153,6 @@ Built-in input shipper configurations:
 |`/input/[]/properties`|Custom key value pairs|`EMPTY`|<ul><li>`{k1 : v1, k2: v2}`</li></ul>|
 |`/input/[]/protocol`|Protocol type for socket server (tcp / udp - udp is not supported right now)|tcp|<ul><li>`udp`</li><li>`tcp`</li></ul>|
 |`/input/[]/rowtype`|The type of the row.|`EMPTY`|<ul><li>`service`</li><li>`audit`</li></ul>|
-|`/input/[]/s3_access_key`|The access key used for AWS credentials. (Not supported yet through shipper configurations)|`EMPTY`||
-|`/input/[]/s3_endpoint`|Endpoint URL for S3. (Not supported yet through shipper configurations)|`EMPTY`||
-|`/input/[]/s3_secret_key`|The secret key used for AWS credentials. (Not supported yet through shipper configurations)|`EMPTY`||
 |`/input/[]/secure`|Use SSL|false|<ul><li>`true`</li></ul>|
 |`/input/[]/source`|The type of the input source.|`EMPTY`|<ul><li>`file`</li><li>`s3_file`</li></ul>|
 |`/input/[]/tail`|The input should check for only the latest file matching the pattern, not all of them.|true|<ul><li>`true`</li><li>`false`</li></ul>|

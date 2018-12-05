@@ -49,7 +49,7 @@ public class InputConfigImpl implements InputConfig {
     path = "/filter",
     type = "list of json objects",
     description = "A list of filter descriptions",
-    examples = {"{\"filter\" : [ {\"filter\": \"json\", \"conditions\": {\"fields\": { \"type\": [\"mytype1\", \"mytype2\"]} } } ]}"}
+    examples = {"{\"filter\" : [ {\"filter\": \"json\", \"conditions\": {\"fields\": { \"type\": [\"logsearch_app\", \"logsearch_perf\"]} } } ]}"}
   )
   @Expose
   private List<FilterDescriptorImpl> filter;
