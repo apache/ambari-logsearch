@@ -52,15 +52,6 @@ export class DatePickerComponent implements OnInit, OnChanges, OnDestroy {
 
   private timeZone: string;
 
-  /**
-   * Set value to time input field
-   * @param {Moment|Date|string} time
-   */
-  private setTime(time: moment.Moment | Date | string): void {
-    const timeMoment = moment.isMoment(time) ? time : moment(time);
-    this.datePickerElement.data('DateTimePicker').date(timeMoment);
-  }
-
   timeZone$: Observable<string> = this.store.select(selectTimeZone);
 
   destroyed$: Subject<boolean> = new Subject();
@@ -82,6 +73,15 @@ export class DatePickerComponent implements OnInit, OnChanges, OnDestroy {
     this.destroyDatePicker();
     this.destroyed$.next(true);
     this.destroyed$.complete();
+  }
+
+  /**
+   * Set value to time input field
+   * @param {Moment|Date|string} time
+   */
+  private setTime(time: moment.Moment | Date | string): void {
+    const timeMoment = moment.isMoment(time) ? time : moment(time);
+    this.datePickerElement.data('DateTimePicker').date(timeMoment);
   }
 
   onTimeZoneSettingsChange = (timeZone: string): void => {
