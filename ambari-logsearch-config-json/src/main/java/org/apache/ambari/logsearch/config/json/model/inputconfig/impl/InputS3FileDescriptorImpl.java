@@ -34,7 +34,7 @@ public class InputS3FileDescriptorImpl extends InputFileBaseDescriptorImpl imple
   @ShipperConfigElementDescription(
     path = "/input/[]/s3_access_key",
     type = "string",
-    description = "The access key used for AWS credentials."
+    description = "The access key used for AWS credentials. (Not supported yet through shipper configurations)"
   )
   @Expose
   @SerializedName("s3_access_key")
@@ -43,7 +43,7 @@ public class InputS3FileDescriptorImpl extends InputFileBaseDescriptorImpl imple
   @ShipperConfigElementDescription(
     path = "/input/[]/s3_secret_key",
     type = "string",
-    description = "The secret key used for AWS credentials."
+    description = "The secret key used for AWS credentials. (Not supported yet through shipper configurations)"
   )
   @Expose
   @SerializedName("s3_secret_key")
@@ -52,7 +52,7 @@ public class InputS3FileDescriptorImpl extends InputFileBaseDescriptorImpl imple
   @ShipperConfigElementDescription(
     path = "/input/[]/s3_endpoint",
     type = "string",
-    description = "Endpoint URL for S3."
+    description = "Endpoint URL for S3. (Not supported yet through shipper configurations)"
   )
   @Expose
   @SerializedName("s3_endpoint")

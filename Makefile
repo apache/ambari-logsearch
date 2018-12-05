@@ -46,6 +46,31 @@ rpm:
 deb:
 	$(MAVEN_BINARY) clean package -Dbuild-deb -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
+javadoc:
+	$(MAVEN_BINARY) javadoc:aggregate -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
+
+site-only:
+	mkdir -p target/docs && mkdir -p target/docs/javadoc && cp mkdocs.yml target/ && cp -r docs/* target/docs
+	cp ambari-logsearch-docs/src/main/resources/docs.md target/docs/
+	cp -r ambari-logsearch-docs/target/META-INF/resources/webjars/swagger-ui/*/ target/docs/api-docs/ && rm -rf target/docs/api-docs/*.gz
+	sed -i '' 's#https://petstore.swagger.io/v2/swagger.json#./logsearch-swagger.yaml#g' target/docs/api-docs/index.html
+	sed -i '' 's#Swagger UI#Log Search REST API#g' target/docs/api-docs/index.html
+	cp -r target/site/apidocs/* target/docs/javadoc/
+
+site: prop-docs javadoc site-only
+
+serve-site: site
+	cd target && mkdocs serve
+
+serve-site-only: site-only
+	cd target && mkdocs serve
+
+generate-site-html: site
+	cd target && mkdocs build
+
+generate-site-html-only: site-only
+	cd target && mkdocs build
+
 prop-docs: install
 	$(MAVEN_BINARY) -pl ambari-logsearch-docs exec:java -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 

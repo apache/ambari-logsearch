@@ -35,6 +35,7 @@
     <jersey.version>2.27</jersey.version>
     <jetty.version>9.4.12.v20180830</jetty.version>
     <swagger.version>1.5.16</swagger.version>
+    <swagger-ui.version>3.19.0</swagger-ui.version>
     <spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
     <spring-data-solr.version>3.0.10.RELEASE</spring-data-solr.version>
     <spring-data.version>2.0.10.RELEASE</spring-data.version>
@@ -572,7 +573,7 @@
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>swagger-ui</artifactId>
-      <version>3.19.0</version>
+      <version>${swagger-ui.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>

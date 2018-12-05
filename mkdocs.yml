@@ -12,3 +12,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
+site_name: Ambari Log Search
+site_dir: mkdocs-site
+nav:
+- Home: index.md
+- User Guide:
+  - Getting Started: getting_started.md
+  - Add New Service: add_new_input.md
+  - Schema Fields: schema_fields.md
+  - Cloud Mode: cloud_mode.md
+  - Configuration:
+    - Log Search properties: logsearch_properties.md
+    - Log Feeder properties: logfeeder_properties.md
+    - Shipper configurations: shipper_configurations.md
+- Docs: docs.md
+- About: about.md

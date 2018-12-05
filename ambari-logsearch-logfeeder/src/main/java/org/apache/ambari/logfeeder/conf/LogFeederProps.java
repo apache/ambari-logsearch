@@ -253,7 +253,7 @@ public class LogFeederProps implements LogFeederProperties {
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_DESTINATION,
     description = "Type of storage that is the destination for cloud output logs.",
-    examples = {"hdfs", "s3", "gcs", "adls", "wasb", "none"},
+    examples = {"hdfs", "s3"},
     defaultValue = "none",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )

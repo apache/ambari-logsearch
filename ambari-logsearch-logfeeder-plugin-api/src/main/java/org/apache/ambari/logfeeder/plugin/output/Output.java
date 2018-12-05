@@ -26,6 +26,7 @@ import org.apache.ambari.logfeeder.plugin.common.MetricData;
 import org.apache.ambari.logfeeder.plugin.input.InputMarker;
 import org.apache.ambari.logsearch.config.api.LogSearchConfigLogFeeder;
 import org.apache.ambari.logsearch.config.api.OutputConfigMonitor;
+import org.apache.ambari.logsearch.config.api.ShipperConfigElementDescription;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,10 +48,16 @@ public abstract class Output<PROP_TYPE extends LogFeederProperties, INPUT_MARKER
   private static Gson gson = new GsonBuilder().setDateFormat(GSON_DATE_FORMAT).create();
 
   private LogSearchConfigLogFeeder logSearchConfig;
+
+  @ShipperConfigElementDescription(
+    path = "/output/[]/destination",
+    type = "string",
+    description = "Alias of a supported output (e.g.: solr). The class-alias mapping should exist in the alias config.",
+    examples = {"\"solr\"", "\"hdfs\""}
+  )
   private String destination = null;
   private boolean isClosed;
   protected MetricData writeBytesMetric = new MetricData(getWriteBytesMetricName(), false);
-
   /**
    * Obtain the output type
    * @return Text which represents the output type in shipper configuration. (e.g.: "solr")
