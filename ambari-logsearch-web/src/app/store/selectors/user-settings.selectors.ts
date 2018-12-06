@@ -16,40 +16,21 @@
  * limitations under the License.
  */
 
-@import '../../modules/shared/variables';
+import { createSelector, Selector } from 'reselect';
+import { AppStore } from '@app/classes/models/store';
 
-:host {
-  .btn-link {
-    // TODO implement actual colors
-    color: @submit-color;
+import { UserSettingsState } from '@app/store/reducers/user-settings.reducers';
 
-    &:hover {
-      color: @submit-hover-color;
-    }
+export const selectUserSettingsState = (state: AppStore): UserSettingsState => state.userSettings;
+
+export const selectDisplayShortHostNames = createSelector(
+  selectUserSettingsState,
+  (userSettings: UserSettingsState): boolean => userSettings.displayShortHostNames
+);
+
+export const selectTimeZone = createSelector(
+  selectUserSettingsState,
+  (userSettings: UserSettingsState): string => {
+    return userSettings.timeZone
   }
-
-  /deep/ #timezone-map {
-    .Cbox {
-      position: sticky;
-      top: 0;
-      .quickLink {
-        padding-top: 4px;
-      }
-    }
-
-    .hoverZone {
-      display: inline-block;
-
-      &:after {
-        content: '\007C\00a0\00a0';
-        visibility: hidden;
-      }
-    }
-  }
-
-  /deep/ modal-dialog.time-zone-modal .modal-dialog {
-    width: 1024px;
-    max-width: 75vw;
-  }
-
-}
+);

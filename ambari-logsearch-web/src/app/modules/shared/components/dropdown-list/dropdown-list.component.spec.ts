@@ -53,6 +53,7 @@ import * as auth from '@app/store/reducers/auth.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import * as userSettings from '@app/store/reducers/user-settings.reducers';
 
 describe('DropdownListComponent', () => {
   let component: DropdownListComponent;
@@ -86,7 +87,8 @@ describe('DropdownListComponent', () => {
           components,
           serviceLogsTruncated,
           tabs,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings: userSettings.reducer
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects),

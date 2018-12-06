@@ -17,20 +17,35 @@
  */
 
 import {
-  AfterViewInit, OnChanges, SimpleChanges, ViewChild, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import * as d3 from 'd3';
 import * as d3sc from 'd3-scale-chromatic';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import {
-GraphPositionOptions, GraphMarginOptions, GraphTooltipInfo, LegendItem, GraphEventData, GraphEmittedEvent
+  GraphPositionOptions,
+  GraphMarginOptions,
+  GraphTooltipInfo,
+  LegendItem,
+  GraphEventData,
+  GraphEmittedEvent
 } from '@app/classes/graph';
-import {HomogeneousObject} from '@app/classes/object';
-import {ServiceInjector} from '@app/classes/service-injector';
-import {UtilsService} from '@app/services/utils.service';
-import {Subscription} from 'rxjs/Subscription';
+import { HomogeneousObject } from '@app/classes/object';
+import { ServiceInjector } from '@app/classes/service-injector';
+import { UtilsService } from '@app/services/utils.service';
+import { Subscription } from 'rxjs/Subscription';
 
 export const graphColors = [
   '#41bfae',
@@ -197,8 +212,6 @@ export class GraphComponent implements AfterViewInit, OnChanges, OnInit, OnDestr
    */
   private tooltipOnTheLeft = false;
 
-  protected subscriptions: Subscription[] = [];
-
   /**
    * This will return the information about the used levels and the connected colors and labels.
    * The goal is to provide an easy property to the template to display the legend of the levels.
@@ -206,19 +219,20 @@ export class GraphComponent implements AfterViewInit, OnChanges, OnInit, OnDestr
    */
   legendItems: LegendItem[];
 
+  destroyed$: Subject<boolean> = new Subject();
+
   constructor() {
     this.utils = ServiceInjector.injector.get(UtilsService);
   }
 
   ngOnInit() {
-    this.subscriptions.push(
-      Observable.fromEvent(window, 'resize').debounceTime(100).subscribe(this.onWindowResize)
-    );
+    Observable.fromEvent(window, 'resize').debounceTime(100).takeUntil(this.destroyed$).subscribe(this.onWindowResize);
     this.setLegendItems();
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 
   ngAfterViewInit() {

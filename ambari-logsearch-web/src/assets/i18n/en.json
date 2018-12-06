@@ -377,6 +377,22 @@
     "page": "Page",
     "query": "Query",
     "users": "Users"
+  },
+
+  "userSettings": {
+    "modalTitle": "User Settings",
+    "displayShortHostName": {
+      "description": "Choose the way Hostname will be displayed throughout Log Search",
+      "valueFalse": "Full hostname",
+      "valueTrue": "Short hostname"
+    },
+    "timeZone": {
+      "description": "Choose the time zone will be used throughout Log Search"
+    },
+    "saveAction": {
+      "success": "The user settings has been saved.",
+      "error": "Some error happened saving the user settings."
+    }
   }
 
 }

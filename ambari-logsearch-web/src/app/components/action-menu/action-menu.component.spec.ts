@@ -38,7 +38,7 @@ import {ServiceLogsTruncatedService, serviceLogsTruncated} from '@app/services/s
 import {TabsService, tabs} from '@app/services/storage/tabs.service';
 import {HistoryManagerService} from '@app/services/history-manager.service';
 import {LogsContainerService} from '@app/services/logs-container.service';
-import {UserSettingsService} from '@app/services/user-settings.service';
+import {ServerSettingsService} from '@app/services/server-settings.service';
 import {UtilsService} from '@app/services/utils.service';
 import {ModalDialogComponent} from '@app/modules/shared/components/modal-dialog/modal-dialog.component';
 import {TimerSecondsPipe} from '@app/pipes/timer-seconds.pipe';
@@ -61,6 +61,7 @@ import { AuthService } from '@app/services/auth.service';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { reducer as userSettings } from '@app/store/reducers/user-settings.reducers';
 
 describe('ActionMenuComponent', () => {
   let component: ActionMenuComponent;
@@ -88,7 +89,8 @@ describe('ActionMenuComponent', () => {
           serviceLogsTruncated,
           tabs,
           dataAvailabilityStates,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects)
@@ -104,7 +106,7 @@ describe('ActionMenuComponent', () => {
         ...MockHttpRequestModules,
         HistoryManagerService,
         LogsContainerService,
-        UserSettingsService,
+        ServerSettingsService,
         UtilsService,
         AuditLogsService,
         ServiceLogsService,

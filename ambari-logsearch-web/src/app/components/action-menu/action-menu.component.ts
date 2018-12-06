@@ -24,7 +24,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { LogsContainerService } from '@app/services/logs-container.service';
-import { UserSettingsService } from '@app/services/user-settings.service';
+import { ServerSettingsService } from '@app/services/server-settings.service';
 import { ListItem } from '@app/classes/list-item';
 import { ClustersService } from '@app/services/storage/clusters.service';
 import { UtilsService } from '@app/services/utils.service';
@@ -63,7 +63,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   constructor(
     private logsContainerService: LogsContainerService,
-    private settings: UserSettingsService,
+    private settings: ServerSettingsService,
     private route: ActivatedRoute,
     private router: Router,
     private clustersService: ClustersService,
@@ -109,7 +109,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   closeLogIndexFilter(): void {
-    this.route.queryParams.first().subscribe((queryParams) => {
+    this.route.queryParams.take(1).subscribe((queryParams) => {
       const {logIndexFilterSettings, ...params} = queryParams;
       this.router.navigate(['.'], {
         queryParams: params,

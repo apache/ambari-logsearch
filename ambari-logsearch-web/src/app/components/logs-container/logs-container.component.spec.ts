@@ -51,10 +51,13 @@ import {NotificationsService} from 'angular2-notifications/src/notifications.ser
 import {LogsStateService} from '@app/services/storage/logs-state.service';
 
 import * as auth from '@app/store/reducers/auth.reducers';
+import * as userSettings from '@app/store/reducers/user-settings.reducers';
 import { AuthService } from '@app/services/auth.service';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
+import { UserSettingsEffects } from '@app/store/effects/user-settings.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { UserSettingsService } from '@app/services/user-settings.service';
 
 describe('LogsContainerComponent', () => {
   let component: LogsContainerComponent;
@@ -82,9 +85,11 @@ describe('LogsContainerComponent', () => {
           tabs,
           hosts,
           serviceLogsTruncated,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings: userSettings.reducer
         }),
         EffectsModule.run(AuthEffects),
+        EffectsModule.run(UserSettingsEffects),
         EffectsModule.run(NotificationEffects),
         ...TranslationModules,
         TooltipModule.forRoot(),
@@ -112,7 +117,8 @@ describe('LogsContainerComponent', () => {
         NotificationsService,
         NotificationService,
         LogsStateService,
-        AuthService
+        AuthService,
+        UserSettingsService
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

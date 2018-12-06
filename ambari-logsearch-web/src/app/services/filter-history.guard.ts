@@ -51,7 +51,8 @@ export class FilterHistoryIndexGuard implements CanActivate {
   }
 
   addFilterHistoryIndexToUrl(url, index) {
-    return `${url};${this.filterHistoryIndexUrlParamName}=${index}`;
+    const [mainUrl, queryParams] = url.split('?');
+    return `${mainUrl};${this.filterHistoryIndexUrlParamName}=${index}${queryParams ? '?' : ''}${queryParams || ''}`;
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {

@@ -59,6 +59,7 @@
           <col *ngIf="isColumnDisplayed('logtime')" class="log-time">
           <col *ngIf="isColumnDisplayed('level')" class="log-level">
           <col *ngIf="isColumnDisplayed('type')" class="log-type">
+          <col *ngIf="isColumnDisplayed('host')" class="col-default-fixed log-host">
           <ng-container *ngFor="let column of displayedColumns">
             <col *ngIf="customStyledColumns.indexOf(column.value) === -1" [ngClass]="'col-default-fixed log-' + column.value">
           </ng-container>
@@ -71,6 +72,7 @@
             <th *ngIf="isColumnDisplayed('logtime')">{{getLabelForField('logtime') | translate}}</th>
             <th *ngIf="isColumnDisplayed('level')">{{getLabelForField('level') | translate}}</th>
             <th *ngIf="isColumnDisplayed('type')">{{getLabelForField('type') | translate}}</th>
+            <th *ngIf="isColumnDisplayed('host')">{{getLabelForField('host') | translate}}</th>
             <ng-container *ngFor="let column of displayedColumns">
               <th *ngIf="customStyledColumns.indexOf(column.value) === -1">{{getLabelForField(column.value) | translate}}</th>
             </ng-container>
@@ -88,7 +90,7 @@
             <tr class="log-item-row">
               <td class="log-action">
                 <dropdown-button iconClass="fa fa-ellipsis-v action" [hideCaret]="true" [options]="logActions"
-                                 [listItemArguments]="[log]" [showSelectedValue]="false"></dropdown-button>
+                  [listItemArguments]="[log]" [showSelectedValue]="false"></dropdown-button>
               </td>
               <td *ngIf="isColumnDisplayed('logtime')" class="log-time">
                 <time>
@@ -100,6 +102,9 @@
               </td>
               <td *ngIf="isColumnDisplayed('type')" [ngClass]="'log-type'">
                 {{log.type | componentLabel | async}}
+              </td>
+              <td *ngIf="isColumnDisplayed('host')" [ngClass]="'log-host'">
+                {{log.host | hostName | async}}
               </td>
               <ng-container *ngFor="let column of displayedColumns">
                 <td *ngIf="customStyledColumns.indexOf(column.value) === -1"
@@ -148,6 +153,10 @@
               <div *ngIf="isColumnDisplayed('path')" [ngClass]="'log-path'" [title]="log.path">
                 <label *ngIf="showLabels">{{getLabelForField('path') | translate}}</label>
                 {{log.path}}
+              </div>
+              <div *ngIf="isColumnDisplayed('host')" [ngClass]="'log-host'" [title]="log.host">
+                <label *ngIf="showLabels">{{getLabelForField('host') | translate}}</label>
+                {{log.host | hostName | async}}
               </div>
               <ng-container *ngFor="let column of displayedColumns">
                 <div *ngIf="customStyledColumns.indexOf(column.value) === -1" [ngClass]="'log-' + (column.value | lowercase)"

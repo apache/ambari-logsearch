@@ -16,40 +16,35 @@
  * limitations under the License.
  */
 
-@import '../../modules/shared/variables';
+import { UserSettingsActions, UserSettingsActionTypes } from '@app/store/actions/user-settings.actions';
+import * as moment from 'moment-timezone';
 
-:host {
-  .btn-link {
-    // TODO implement actual colors
-    color: @submit-color;
+export interface ServerMetaDatum {
+  type: string;
+  name: string;
+  value: string;
+};
+ export interface UserSettingsState {
+  timeZone: string;
+  displayShortHostNames: boolean;
+ };
 
-    &:hover {
-      color: @submit-hover-color;
+ export const initialState: UserSettingsState = {
+  timeZone: moment.tz.guess(),
+  displayShortHostNames: true
+ };
+
+ export function reducer(state = initialState, action: UserSettingsActions): UserSettingsState {
+  switch (action.type) {
+    case UserSettingsActionTypes.SET : {
+      return {
+        ...state,
+        ...action.payload
+      };
+    }
+    default: {
+      return state;
     }
   }
-
-  /deep/ #timezone-map {
-    .Cbox {
-      position: sticky;
-      top: 0;
-      .quickLink {
-        padding-top: 4px;
-      }
-    }
-
-    .hoverZone {
-      display: inline-block;
-
-      &:after {
-        content: '\007C\00a0\00a0';
-        visibility: hidden;
-      }
-    }
-  }
-
-  /deep/ modal-dialog.time-zone-modal .modal-dialog {
-    width: 1024px;
-    max-width: 75vw;
-  }
-
-}
+ }
+ 

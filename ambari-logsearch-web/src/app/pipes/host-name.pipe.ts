@@ -16,40 +16,25 @@
  * limitations under the License.
  */
 
-@import '../../modules/shared/variables';
+import { Pipe, PipeTransform } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { Observable } from 'rxjs/Observable';
 
-:host {
-  .btn-link {
-    // TODO implement actual colors
-    color: @submit-color;
+import { selectDisplayShortHostNames } from '@app/store/selectors/user-settings.selectors';
 
-    &:hover {
-      color: @submit-hover-color;
-    }
+@Pipe({
+  name: 'hostName'
+})
+export class HostNamePipe implements PipeTransform {
+
+  constructor(private store: Store<AppStore>) {
   }
 
-  /deep/ #timezone-map {
-    .Cbox {
-      position: sticky;
-      top: 0;
-      .quickLink {
-        padding-top: 4px;
-      }
-    }
-
-    .hoverZone {
-      display: inline-block;
-
-      &:after {
-        content: '\007C\00a0\00a0';
-        visibility: hidden;
-      }
-    }
-  }
-
-  /deep/ modal-dialog.time-zone-modal .modal-dialog {
-    width: 1024px;
-    max-width: 75vw;
+  transform(hostName: string): Observable<string> {
+    return this.store.select(selectDisplayShortHostNames).map((displayShortHostNames: boolean): string => (
+      displayShortHostNames ? hostName.split('.')[0] : hostName
+    ));
   }
 
 }

@@ -16,40 +16,20 @@
  * limitations under the License.
  */
 
-@import '../../modules/shared/variables';
+ @import '../../../shared/variables';
 
 :host {
-  .btn-link {
-    // TODO implement actual colors
-    color: @submit-color;
-
-    &:hover {
-      color: @submit-hover-color;
+  time-zone-map-input {
+    display: block;
+    margin-top: .5em;
+  }
+  /deep/ modal-dialog.user-settings-modal .modal-dialog {
+    max-width: 40vw;
+    .host-name-example {
+      color: @fluid-gray-2;
     }
   }
-
-  /deep/ #timezone-map {
-    .Cbox {
-      position: sticky;
-      top: 0;
-      .quickLink {
-        padding-top: 4px;
-      }
-    }
-
-    .hoverZone {
-      display: inline-block;
-
-      &:after {
-        content: '\007C\00a0\00a0';
-        visibility: hidden;
-      }
-    }
+  .description {
+    color: @fluid-gray-2;
   }
-
-  /deep/ modal-dialog.time-zone-modal .modal-dialog {
-    width: 1024px;
-    max-width: 75vw;
-  }
-
 }

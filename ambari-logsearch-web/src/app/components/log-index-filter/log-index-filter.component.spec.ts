@@ -38,7 +38,7 @@ import {ServiceLogsTruncatedService, serviceLogsTruncated} from '@app/services/s
 import {TabsService, tabs} from '@app/services/storage/tabs.service';
 import {ComponentGeneratorService} from '@app/services/component-generator.service';
 import {LogsContainerService} from '@app/services/logs-container.service';
-import {UserSettingsService} from '@app/services/user-settings.service';
+import {ServerSettingsService} from '@app/services/server-settings.service';
 import {UtilsService} from '@app/services/utils.service';
 import {DropdownButtonComponent} from '@modules/shared/components/dropdown-button/dropdown-button.component';
 import {DropdownListComponent} from '@modules/shared/components/dropdown-list/dropdown-list.component';
@@ -60,6 +60,7 @@ import { AuthService } from '@app/services/auth.service';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
+import { reducer as userSettings } from '@app/store/reducers/user-settings.reducers';
 
 describe('LogIndexFilterComponent', () => {
   let component: LogIndexFilterComponent;
@@ -86,7 +87,8 @@ describe('LogIndexFilterComponent', () => {
           serviceLogsTruncated,
           tabs,
           dataAvailabilityStates,
-          auth: auth.reducer
+          auth: auth.reducer,
+          userSettings
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects)
@@ -101,7 +103,7 @@ describe('LogIndexFilterComponent', () => {
         ...MockHttpRequestModules,
         ComponentGeneratorService,
         LogsContainerService,
-        UserSettingsService,
+        ServerSettingsService,
         UtilsService,
         AuditLogsService,
         ServiceLogsService,

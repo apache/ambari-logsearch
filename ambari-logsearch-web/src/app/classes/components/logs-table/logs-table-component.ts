@@ -22,6 +22,8 @@ import { ListItem } from '@app/classes/list-item';
 import { ServiceLog } from '@app/classes/models/service-log';
 import { AuditLog } from '@app/classes/models/audit-log';
 
+import * as moment from 'moment-timezone';
+
 export class LogsTableComponent implements OnInit {
   @Input()
   logs: ServiceLog[] | AuditLog[] = [];
@@ -34,6 +36,9 @@ export class LogsTableComponent implements OnInit {
 
   @Input()
   totalCount = 0;
+
+  @Input()
+  timeZone: string = moment.tz.guess();
 
   get displayedColumns(): ListItem[] {
     return this.columns ? this.columns.filter((column: ListItem): boolean => column.isChecked) : [];

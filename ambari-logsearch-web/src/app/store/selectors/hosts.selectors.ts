@@ -16,40 +16,15 @@
  * limitations under the License.
  */
 
-@import '../../modules/shared/variables';
+import { createSelector, Selector } from 'reselect';
 
-:host {
-  .btn-link {
-    // TODO implement actual colors
-    color: @submit-color;
+import { AppStore } from '@app/classes/models/store';
 
-    &:hover {
-      color: @submit-hover-color;
-    }
-  }
+import { NodeItem } from '@app/classes/models/node-item';
 
-  /deep/ #timezone-map {
-    .Cbox {
-      position: sticky;
-      top: 0;
-      .quickLink {
-        padding-top: 4px;
-      }
-    }
+export const selectHostsList = (state: AppStore): NodeItem[] => state.hosts;
 
-    .hoverZone {
-      display: inline-block;
-
-      &:after {
-        content: '\007C\00a0\00a0';
-        visibility: hidden;
-      }
-    }
-  }
-
-  /deep/ modal-dialog.time-zone-modal .modal-dialog {
-    width: 1024px;
-    max-width: 75vw;
-  }
-
-}
+export const selectHostNames = createSelector(
+  selectHostsList,
+  (hostNodeItems: NodeItem[]): string[] => hostNodeItems.map((hostNodeItem: NodeItem): string => hostNodeItem.name)
+);

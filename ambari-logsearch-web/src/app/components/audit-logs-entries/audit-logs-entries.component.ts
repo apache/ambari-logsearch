@@ -50,6 +50,9 @@ export class AuditLogsEntriesComponent {
   @Input()
   commonFieldNames: string[] = [];
 
+  @Input()
+  timeZone: string;
+
   tabs: LogTypeTab[] = [
     {
       id: 'summary',

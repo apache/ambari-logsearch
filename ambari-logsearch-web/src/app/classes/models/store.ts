@@ -37,6 +37,7 @@ import { DataAvaibilityStatesModel } from '@app/modules/app-load/models/data-ava
 import * as auth from '@app/store/reducers/auth.reducers';
 import * as filterHistory from '@app/store/reducers/filter-history.reducers';
 import * as auditLogRepos from '@app/store/reducers/audit-log-repos.reducers';
+import * as userSettings from '@app/store/reducers/user-settings.reducers';
 
 const storeActions = {
     'ARRAY.ADD': 'ADD',
@@ -64,6 +65,7 @@ export interface AppStore {
   graphs: Graph[];
   hosts: NodeItem[];
   userConfigs: UserConfig[];
+  userSettings: userSettings.UserSettingsState;
   clusters: string[];
   components: NodeItem[];
   serviceLogsFields: LogField[];
