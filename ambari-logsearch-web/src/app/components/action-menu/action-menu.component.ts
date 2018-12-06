@@ -30,6 +30,10 @@ import { ClustersService } from '@app/services/storage/clusters.service';
 import { UtilsService } from '@app/services/utils.service';
 import { Subject } from 'rxjs/Subject';
 
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { selectMetadataPatternsFeatureState, selectLogLevelFiltersFeatureState } from '@app/store/selectors/api-features.selectors';
+
 @Component({
   selector: 'action-menu',
   templateUrl: './action-menu.component.html',
@@ -59,6 +63,11 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   selectedClusterName$: BehaviorSubject<string> = new BehaviorSubject('');
 
+  logLevelFiltersFeatureState$: Observable<any> = this.store.select(selectLogLevelFiltersFeatureState);
+  logLevelFiltersFeatureTooltip$: Observable<string> = this.logLevelFiltersFeatureState$.map((state: boolean) => (
+    state ? '' : 'apiFeatures.disabled'
+  ));
+
   destroyed$ = new Subject();
 
   constructor(
@@ -67,7 +76,8 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private clustersService: ClustersService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private store: Store<AppStore>
   ) {
   }
 

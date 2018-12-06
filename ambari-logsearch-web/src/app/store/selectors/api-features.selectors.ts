@@ -16,15 +16,19 @@
  * limitations under the License.
  */
 
-export interface ListItem {
-  id?: string | number;
-  label?: string;
-  secondaryLabel?: string;
-  value: any;
-  iconClass?: string;
-  cssClass?: string;
-  isChecked?: boolean;
-  onSelect?: Function;
-  isDivider?: boolean;
-  disabled?: boolean;
-}
+import { createSelector, Selector } from 'reselect';
+
+import { AppStore } from '@app/classes/models/store';
+import { ApiFeatureSet } from '@app/store/reducers/api-features.reducers';
+
+export const selectApiFeaturesState = (state: AppStore): ApiFeatureSet => state.apiFeatures;
+
+export const selectMetadataPatternsFeatureState = createSelector(
+  selectApiFeaturesState,
+  (state: ApiFeatureSet) => state.metadata_patterns
+);
+
+export const selectLogLevelFiltersFeatureState = createSelector(
+  selectApiFeaturesState,
+  (state: ApiFeatureSet) => state.log_level_filters
+);

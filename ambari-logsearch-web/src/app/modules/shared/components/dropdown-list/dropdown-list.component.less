@@ -33,6 +33,10 @@
       opacity: 0;
       height: 0;
     }
+    &.disabled {
+      color: @fluid-gray-2;
+      cursor: default;
+    }
     .list-item-label {
       .dropdown-item-child-default;
 
@@ -48,6 +52,11 @@
       .label-container {
         width: 100%;
       }
+    }
+    .item-secondary-label-text {
+      color: @fluid-gray-2;
+      display: block;
+      font-size: .8em;
     }
     &.filter {
       padding: 0 .25em;

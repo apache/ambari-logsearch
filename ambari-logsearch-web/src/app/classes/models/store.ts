@@ -38,6 +38,7 @@ import * as auth from '@app/store/reducers/auth.reducers';
 import * as filterHistory from '@app/store/reducers/filter-history.reducers';
 import * as auditLogRepos from '@app/store/reducers/audit-log-repos.reducers';
 import * as userSettings from '@app/store/reducers/user-settings.reducers';
+import * as apiFeatures from '@app/store/reducers/api-features.reducers';
 
 const storeActions = {
     'ARRAY.ADD': 'ADD',
@@ -77,6 +78,7 @@ export interface AppStore {
   auth: auth.State;
   filterHistory: filterHistory.FilterHistoryState;
   auditLogRepos: auditLogRepos.AuditLogRepo[];
+  apiFeatures: apiFeatures.ApiFeatureSet;
 }
 
 export class ModelService {
