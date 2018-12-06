@@ -61,6 +61,16 @@ Configutation:
           size: 10 MB
       DefaultRollOverStrategy:
         max: 10
+    - name: InputFile_Appender
+      fileName: ${log-path}/logfeeder-file-monitor.log
+      filePattern: "logfeeder-file-monitor.log.%d{yyyy-MM-dd-hh-mm}.gz"
+      PatternLayout:
+        pattern: "%d [%t] %-5p %C{6} (%F:%L) - %m%n"
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 10 MB
+      DefaultRollOverStrategy:
+        max: 3
 
   Loggers:
 
@@ -83,6 +93,12 @@ Configutation:
       AppenderRef:
       - ref: Console_Appender
     - name: logfeeder.metrics
+      additivity: false
+      level: info
+      AppenderRef:
+      - ref: MetricsFile_Appender
+      - ref: Console_Appender
+    - name: logfeeder.file.monitor
       additivity: false
       level: info
       AppenderRef:
