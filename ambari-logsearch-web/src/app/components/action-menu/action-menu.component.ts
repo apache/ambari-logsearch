@@ -46,8 +46,6 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   settingsForm: FormGroup = this.settings.settingsFormGroup;
 
-  isModalSubmitDisabled = true;
-
   clustersListItems$: Observable<ListItem[]> = this.clustersService.getAll()
     .map((clusterNames: string[]): ListItem[] => clusterNames.map(this.utilsService.getListItemFromString))
     .map((clusters: ListItem[]) => {
@@ -58,6 +56,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
     });
 
   selectedClusterName$: BehaviorSubject<string> = new BehaviorSubject('');
+  isModalSubmitDisabled$: Observable<boolean> = this.selectedClusterName$.map(cluster => !cluster);
 
   destroyed$ = new Subject();
 
@@ -72,10 +71,7 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.selectedClusterName$.takeUntil(this.destroyed$).subscribe(
-      (clusterName: string) => this.setModalSubmitDisabled(!clusterName)
-    );
-    this.clustersListItems$.filter((items: ListItem[]) => items.some((item: ListItem) => item.isChecked)).first()
+    this.clustersListItems$.filter((items: ListItem[]) => items.some((item: ListItem) => item.isChecked)).take(1)
       .map((items: ListItem[]) => items.find((item: ListItem) => item.isChecked))
       .subscribe((item) => this.selectedClusterName$.next(item.value));
   }
@@ -86,10 +82,6 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
 
   get captureSeconds(): number {
     return this.logsContainerService.captureSeconds;
-  }
-
-  setModalSubmitDisabled(isDisabled: boolean): void {
-    this.isModalSubmitDisabled = isDisabled;
   }
 
   refresh(): void {
