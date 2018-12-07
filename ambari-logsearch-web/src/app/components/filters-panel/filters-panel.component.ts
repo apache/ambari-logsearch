@@ -119,23 +119,29 @@ export class FiltersPanelComponent implements OnDestroy, OnInit {
     const logsType = this.logsContainerService.logsTypeMap[currentLogsType];
     const fieldsModel: any = logsType && logsType.fieldsModel;
     let subType: string;
-    let fields: Observable<any>;
+    let fields$: Observable<any>;
     switch (currentLogsType) {
       case 'auditLogs':
-        fields = fieldsModel.getParameter(subType ? 'overrides' : 'defaults');
+        fields$ = fieldsModel.getParameter(subType ? 'overrides' : 'defaults');
         if (subType) {
-          fields = fields.map(items => items && items[subType]);
+          fields$ = fields$.map(items => items && items[subType]);
         }
         break;
       case 'serviceLogs':
-        fields = fieldsModel.getAll();
+        fields$ = fieldsModel.getAll();
         break;
       default:
-        fields = Observable.from([]);
+        fields$ = Observable.from([]);
         break;
     }
-    this.searchBoxItems$ = fields.defaultIfEmpty([]).map(items => items ? items.filter(field => field.filterable) : [])
-      .map(this.utils.logFieldToListItemMapper);
+    this.searchBoxItems$ = fields$.defaultIfEmpty([]).map(items => items ? items.filter(field => field.filterable) : [])
+      .map(this.utils.logFieldToListItemMapper)
+      .map((fields: ListItem[]): ListItem[] => fields.map(
+        (field: ListItem): ListItem => ({
+          ...field,
+          isChecked: false
+        })
+      ));
   }
 
   isFilterConditionDisplayed(key: string): boolean {
