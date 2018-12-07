@@ -311,12 +311,12 @@ public class LogFeederProps implements LogFeederProperties {
 
   @LogSearchPropertyDescription(
     name = LogFeederConstants.CLOUD_STORAGE_BASE_PATH,
-    description = "Base path prefix for storing logs (cloud storage / hdfs)",
-    examples = {"/user/logsearch/mypath"},
+    description = "Base path prefix for storing logs (cloud storage / hdfs), could be an absolute path or URI. (if URI used, that will override the default.FS with HDFS client)",
+    examples = {"/user/logsearch/mypath", "s3a:///user/logsearch"},
     defaultValue = "/apps/logsearch",
     sources = {LogFeederConstants.LOGFEEDER_PROPERTIES_FILE}
   )
-  @Value("${" + LogFeederConstants.CLOUD_STORAGE_BASE_PATH + ":}")
+  @Value("${" + LogFeederConstants.CLOUD_STORAGE_BASE_PATH + ":/apps/logsearch}")
   private String cloudBasePath;
 
   @LogSearchPropertyDescription(

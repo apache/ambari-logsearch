@@ -64,7 +64,12 @@ public class HDFSUploadClient implements UploadClient {
       configuration = new Configuration();
       logger.info("Initialize HDFS client (cloud mode), using core-site.xml from the classpath.");
     }
+    if (hasScheme(logFeederProps.getCloudBasePath())) {
+      logger.info("Use cloud base path ({}) as fs.defaultFS", logFeederProps.getCloudBasePath());
+      configuration.set(FS_DEFAULT_FS, logFeederProps.getCloudBasePath());
+    }
     if (StringUtils.isNotBlank(logFeederProps.getCustomFs())) {
+      logger.info("Override fs.defaultFS with {}", logFeederProps.getCustomFs());
       configuration.set(FS_DEFAULT_FS, logFeederProps.getCustomFs());
     }
     if (hdfsOutputConfig.isHdfsKerberos()) {
@@ -88,6 +93,10 @@ public class HDFSUploadClient implements UploadClient {
     logger.info("HDFS client - will use '{}' permission for uploaded files", hdfsOutputConfig.getHdfsFilePermissions());
     configurationRef.set(configuration);
     LogFeederHDFSUtil.overrideFileSystemConfigs(logFeederProps, configurationRef.get());
+  }
+
+  private boolean hasScheme(String path) {
+    return StringUtils.isNotBlank(path) && path.split(":/").length > 1;
   }
 
   @Override

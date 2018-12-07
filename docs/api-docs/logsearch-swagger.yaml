@@ -19,172 +19,6 @@ schemes:
 - "http"
 - "https"
 paths:
-  /audit/logs/serviceload:
-    get:
-      tags:
-      - "auditlogs"
-      summary: "The graph for showing the top users accessing the services"
-      description: ""
-      operationId: "getServiceLoadGet"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "startIndex"
-        in: "query"
-        description: "Start index of the queried result"
-        required: false
-        type: "string"
-      - name: "page"
-        in: "query"
-        description: "Number of pages for the results"
-        required: false
-        type: "string"
-        default: "0"
-      - name: "pageSize"
-        in: "query"
-        description: "Page size of the results"
-        required: false
-        type: "string"
-        default: "1000"
-      - name: "sortBy"
-        in: "query"
-        description: "Sorting the results based on this field"
-        required: false
-        type: "string"
-      - name: "sortType"
-        in: "query"
-        description: "Type of sorting (osc, desc)"
-        required: false
-        type: "string"
-      - name: "start_time"
-        in: "query"
-        description: "Date range param which is suportted from browser url"
-        required: false
-        type: "string"
-      - name: "end_time"
-        in: "query"
-        description: "Date range param which is supported from browser url"
-        required: false
-        type: "string"
-      - name: "clusters"
-        in: "query"
-        description: "filter for clusters (comma separated list)"
-        required: false
-        type: "string"
-      - name: "includeMessage"
-        in: "query"
-        description: "Include query which will query against message column"
-        required: false
-        type: "string"
-      - name: "excludeMessage"
-        in: "query"
-        description: "Exclude query which will query against message column"
-        required: false
-        type: "string"
-      - name: "mustBe"
-        in: "query"
-        description: "Include the components, comma separated values"
-        required: false
-        type: "string"
-      - name: "mustNot"
-        in: "query"
-        description: "Exclude the components, comma separated values"
-        required: false
-        type: "string"
-      - name: "includeQuery"
-        in: "query"
-        description: "Include the values in query result e.g.: [{message:*exception*}]"
-        required: false
-        type: "string"
-      - name: "excludeQuery"
-        in: "query"
-        description: "Exclude the values in query result e.g.: [{message:*timeout*}]"
-        required: false
-        type: "string"
-      - name: "from"
-        in: "query"
-        description: "Date range param, start date"
-        required: false
-        type: "string"
-      - name: "to"
-        in: "query"
-        description: "Date range param, end date"
-        required: false
-        type: "string"
-      - name: "userList"
-        in: "query"
-        description: "Filter for users (comma separated list)"
-        required: false
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/BarGraphDataListResponse"
-      security:
-      - basicAuth: []
-    post:
-      tags:
-      - "auditlogs"
-      summary: "The graph for showing the top users accessing the services"
-      description: ""
-      operationId: "getServiceLoadPost"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/AuditServiceLoadBodyRequest"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/BarGraphDataListResponse"
-      security:
-      - basicAuth: []
-  /audit/logs/clusters:
-    get:
-      tags:
-      - "auditlogs"
-      summary: "Get all of the clusters for audit logs"
-      description: ""
-      operationId: "getClustersForAuditLogGet"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              type: "string"
-      security:
-      - basicAuth: []
-    post:
-      tags:
-      - "auditlogs"
-      summary: "Get all of the clusters for audit logs"
-      description: ""
-      operationId: "getClustersForAuditLogPost"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              type: "string"
-      security:
-      - basicAuth: []
   /audit/logs/schema/fields:
     get:
       tags:
@@ -826,6 +660,172 @@ paths:
           description: "successful operation"
       security:
       - basicAuth: []
+  /audit/logs/serviceload:
+    get:
+      tags:
+      - "auditlogs"
+      summary: "The graph for showing the top users accessing the services"
+      description: ""
+      operationId: "getServiceLoadGet"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "startIndex"
+        in: "query"
+        description: "Start index of the queried result"
+        required: false
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "Number of pages for the results"
+        required: false
+        type: "string"
+        default: "0"
+      - name: "pageSize"
+        in: "query"
+        description: "Page size of the results"
+        required: false
+        type: "string"
+        default: "1000"
+      - name: "sortBy"
+        in: "query"
+        description: "Sorting the results based on this field"
+        required: false
+        type: "string"
+      - name: "sortType"
+        in: "query"
+        description: "Type of sorting (osc, desc)"
+        required: false
+        type: "string"
+      - name: "start_time"
+        in: "query"
+        description: "Date range param which is suportted from browser url"
+        required: false
+        type: "string"
+      - name: "end_time"
+        in: "query"
+        description: "Date range param which is supported from browser url"
+        required: false
+        type: "string"
+      - name: "clusters"
+        in: "query"
+        description: "filter for clusters (comma separated list)"
+        required: false
+        type: "string"
+      - name: "includeMessage"
+        in: "query"
+        description: "Include query which will query against message column"
+        required: false
+        type: "string"
+      - name: "excludeMessage"
+        in: "query"
+        description: "Exclude query which will query against message column"
+        required: false
+        type: "string"
+      - name: "mustBe"
+        in: "query"
+        description: "Include the components, comma separated values"
+        required: false
+        type: "string"
+      - name: "mustNot"
+        in: "query"
+        description: "Exclude the components, comma separated values"
+        required: false
+        type: "string"
+      - name: "includeQuery"
+        in: "query"
+        description: "Include the values in query result e.g.: [{message:*exception*}]"
+        required: false
+        type: "string"
+      - name: "excludeQuery"
+        in: "query"
+        description: "Exclude the values in query result e.g.: [{message:*timeout*}]"
+        required: false
+        type: "string"
+      - name: "from"
+        in: "query"
+        description: "Date range param, start date"
+        required: false
+        type: "string"
+      - name: "to"
+        in: "query"
+        description: "Date range param, end date"
+        required: false
+        type: "string"
+      - name: "userList"
+        in: "query"
+        description: "Filter for users (comma separated list)"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/BarGraphDataListResponse"
+      security:
+      - basicAuth: []
+    post:
+      tags:
+      - "auditlogs"
+      summary: "The graph for showing the top users accessing the services"
+      description: ""
+      operationId: "getServiceLoadPost"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/AuditServiceLoadBodyRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/BarGraphDataListResponse"
+      security:
+      - basicAuth: []
+  /audit/logs/clusters:
+    get:
+      tags:
+      - "auditlogs"
+      summary: "Get all of the clusters for audit logs"
+      description: ""
+      operationId: "getClustersForAuditLogGet"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      security:
+      - basicAuth: []
+    post:
+      tags:
+      - "auditlogs"
+      summary: "Get all of the clusters for audit logs"
+      description: ""
+      operationId: "getClustersForAuditLogPost"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      security:
+      - basicAuth: []
   /info/features:
     get:
       tags:
@@ -877,81 +877,6 @@ paths:
             type: "object"
             additionalProperties:
               type: "boolean"
-  /metadata:
-    get:
-      tags:
-      - "metadata"
-      summary: "Get metadata"
-      description: ""
-      operationId: "getMetadata"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "name"
-        in: "query"
-        description: "Name identifier of the metadata"
-        required: false
-        type: "string"
-      - name: "type"
-        in: "query"
-        description: "Type of the metadata"
-        required: true
-        type: "string"
-      - name: "userName"
-        in: "query"
-        description: "User name of the metadata"
-        required: false
-        type: "string"
-      - name: "clusters"
-        in: "query"
-        description: "filter for clusters (comma separated list)"
-        required: false
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/LogsearchMetaData"
-      security:
-      - basicAuth: []
-    post:
-      tags:
-      - "metadata"
-      summary: "Save metadata"
-      description: ""
-      operationId: "saveMetadata"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/LogsearchMetaData"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "string"
-      security:
-      - basicAuth: []
-    delete:
-      tags:
-      - "metadata"
-      summary: "Delete metadata"
-      description: ""
-      operationId: "deleteMetadata"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/LogsearchMetaData"
-      responses:
-        default:
-          description: "successful operation"
-      security:
-      - basicAuth: []
   /metadata/list:
     get:
       tags:
@@ -1028,6 +953,81 @@ paths:
           type: "array"
           items:
             $ref: "#/definitions/LogsearchMetaData"
+      responses:
+        default:
+          description: "successful operation"
+      security:
+      - basicAuth: []
+  /metadata:
+    get:
+      tags:
+      - "metadata"
+      summary: "Get metadata"
+      description: ""
+      operationId: "getMetadata"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "query"
+        description: "Name identifier of the metadata"
+        required: false
+        type: "string"
+      - name: "type"
+        in: "query"
+        description: "Type of the metadata"
+        required: true
+        type: "string"
+      - name: "userName"
+        in: "query"
+        description: "User name of the metadata"
+        required: false
+        type: "string"
+      - name: "clusters"
+        in: "query"
+        description: "filter for clusters (comma separated list)"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/LogsearchMetaData"
+      security:
+      - basicAuth: []
+    post:
+      tags:
+      - "metadata"
+      summary: "Save metadata"
+      description: ""
+      operationId: "saveMetadata"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/LogsearchMetaData"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+      security:
+      - basicAuth: []
+    delete:
+      tags:
+      - "metadata"
+      summary: "Delete metadata"
+      description: ""
+      operationId: "deleteMetadata"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/LogsearchMetaData"
       responses:
         default:
           description: "successful operation"
@@ -3157,6 +3157,73 @@ paths:
               type: "string"
       security:
       - basicAuth: []
+  /shipper/input/{clusterName}/services:
+    get:
+      tags:
+      - "shipper"
+      summary: "Get service names"
+      description: ""
+      operationId: "getServices"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "clusterName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+      security:
+      - basicAuth: []
+  /shipper/filters/{clusterName}/level:
+    get:
+      tags:
+      - "shipper"
+      summary: "Get log level filter"
+      description: ""
+      operationId: "getLogLevelFilters"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "clusterName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/LSServerLogLevelFilterMap"
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - "shipper"
+      summary: "Update log level filter"
+      description: ""
+      operationId: "setLogLevelFilter"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/LSServerLogLevelFilterMap"
+      - name: "clusterName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+      security:
+      - basicAuth: []
   /shipper/input/{clusterName}/services/{serviceName}:
     get:
       tags:
@@ -3228,73 +3295,6 @@ paths:
         required: true
         type: "string"
       - name: "serviceName"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        default:
-          description: "successful operation"
-      security:
-      - basicAuth: []
-  /shipper/input/{clusterName}/services:
-    get:
-      tags:
-      - "shipper"
-      summary: "Get service names"
-      description: ""
-      operationId: "getServices"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "clusterName"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              type: "string"
-      security:
-      - basicAuth: []
-  /shipper/filters/{clusterName}/level:
-    get:
-      tags:
-      - "shipper"
-      summary: "Get log level filter"
-      description: ""
-      operationId: "getLogLevelFilters"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "clusterName"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/LSServerLogLevelFilterMap"
-      security:
-      - basicAuth: []
-    put:
-      tags:
-      - "shipper"
-      summary: "Update log level filter"
-      description: ""
-      operationId: "setLogLevelFilter"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/LSServerLogLevelFilterMap"
-      - name: "clusterName"
         in: "path"
         required: true
         type: "string"
@@ -3415,66 +3415,6 @@ securityDefinitions:
   basicAuth:
     type: "basic"
 definitions:
-  BarGraphData:
-    type: "object"
-    properties:
-      dataCount:
-        type: "array"
-        items:
-          $ref: "#/definitions/NameValueData"
-      name:
-        type: "string"
-  BarGraphDataListResponse:
-    type: "object"
-    properties:
-      graphData:
-        type: "array"
-        items:
-          $ref: "#/definitions/BarGraphData"
-  NameValueData:
-    type: "object"
-    properties:
-      name:
-        type: "string"
-      value:
-        type: "string"
-  AuditServiceLoadBodyRequest:
-    type: "object"
-    properties:
-      startIndex:
-        type: "string"
-      page:
-        type: "string"
-      pageSize:
-        type: "string"
-      sortBy:
-        type: "string"
-      sortType:
-        type: "string"
-      start_time:
-        type: "string"
-      end_time:
-        type: "string"
-      clusters:
-        type: "string"
-      includeMessage:
-        type: "string"
-      excludeMessage:
-        type: "string"
-      mustBe:
-        type: "string"
-      mustNot:
-        type: "string"
-      includeQuery:
-        type: "string"
-      excludeQuery:
-        type: "string"
-      from:
-        type: "string"
-      to:
-        type: "string"
-      userList:
-        type: "string"
   AuditFieldMetadataResponse:
     type: "object"
     properties:
@@ -3509,27 +3449,23 @@ definitions:
         format: "int32"
       policy:
         type: "string"
-      reqContext:
-        type: "string"
-      action:
-        type: "string"
       reason:
         type: "string"
       text:
         type: "string"
+      sess:
+        type: "string"
       access:
         type: "string"
-      proxyUsers:
-        type: "array"
-        items:
-          type: "string"
-      logType:
+      reqContext:
         type: "string"
       tags:
         type: "array"
         items:
           type: "string"
-      sess:
+      logType:
+        type: "string"
+      action:
         type: "string"
       agent:
         type: "string"
@@ -3557,6 +3493,10 @@ definitions:
         type: "string"
       tags_str:
         type: "string"
+      proxyUsers:
+        type: "array"
+        items:
+          type: "string"
       id:
         type: "string"
       type:
@@ -3566,11 +3506,11 @@ definitions:
       _version_:
         type: "integer"
         format: "int64"
-      log_message:
-        type: "string"
       bundle_id:
         type: "string"
       case_id:
+        type: "string"
+      log_message:
         type: "string"
       logfile_line_number:
         type: "integer"
@@ -3681,6 +3621,29 @@ definitions:
     type: "object"
     properties:
       clusters:
+        type: "string"
+  BarGraphData:
+    type: "object"
+    properties:
+      dataCount:
+        type: "array"
+        items:
+          $ref: "#/definitions/NameValueData"
+      name:
+        type: "string"
+  BarGraphDataListResponse:
+    type: "object"
+    properties:
+      graphData:
+        type: "array"
+        items:
+          $ref: "#/definitions/BarGraphData"
+  NameValueData:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      value:
         type: "string"
   AuditBarGraphBodyRequest:
     type: "object"
@@ -3801,6 +3764,43 @@ definitions:
         type: "string"
       format:
         type: "string"
+  AuditServiceLoadBodyRequest:
+    type: "object"
+    properties:
+      startIndex:
+        type: "string"
+      page:
+        type: "string"
+      pageSize:
+        type: "string"
+      sortBy:
+        type: "string"
+      sortType:
+        type: "string"
+      start_time:
+        type: "string"
+      end_time:
+        type: "string"
+      clusters:
+        type: "string"
+      includeMessage:
+        type: "string"
+      excludeMessage:
+        type: "string"
+      mustBe:
+        type: "string"
+      mustNot:
+        type: "string"
+      includeQuery:
+        type: "string"
+      excludeQuery:
+        type: "string"
+      from:
+        type: "string"
+      to:
+        type: "string"
+      userList:
+        type: "string"
   LogsearchMetaData:
     type: "object"
     properties:
@@ -3854,11 +3854,11 @@ definitions:
         type: "string"
       group:
         type: "string"
+      ip:
+        type: "string"
       logtime:
         type: "string"
         format: "date-time"
-      ip:
-        type: "string"
       id:
         type: "string"
       file:
@@ -3866,11 +3866,11 @@ definitions:
       _version_:
         type: "integer"
         format: "int64"
-      log_message:
-        type: "string"
       bundle_id:
         type: "string"
       case_id:
+        type: "string"
+      log_message:
         type: "string"
       logfile_line_number:
         type: "integer"
@@ -4684,6 +4684,39 @@ definitions:
         type: "string"
       clusters:
         type: "string"
+  LSServerLogLevelFilter:
+    type: "object"
+    required:
+    - "defaultLevels"
+    - "hosts"
+    - "label"
+    properties:
+      label:
+        type: "string"
+      hosts:
+        type: "array"
+        items:
+          type: "string"
+      defaultLevels:
+        type: "array"
+        items:
+          type: "string"
+      overrideLevels:
+        type: "array"
+        items:
+          type: "string"
+      expiryTime:
+        type: "string"
+        format: "date-time"
+  LSServerLogLevelFilterMap:
+    type: "object"
+    required:
+    - "filter"
+    properties:
+      filter:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/LSServerLogLevelFilter"
   LSServerConditions:
     type: "object"
     required:
@@ -4795,45 +4828,12 @@ definitions:
           $ref: "#/definitions/LSServerFilter"
   LSServerPostMapValuesList:
     type: "object"
-  LSServerLogLevelFilter:
-    type: "object"
-    required:
-    - "defaultLevels"
-    - "hosts"
-    - "label"
-    properties:
-      label:
-        type: "string"
-      hosts:
-        type: "array"
-        items:
-          type: "string"
-      defaultLevels:
-        type: "array"
-        items:
-          type: "string"
-      overrideLevels:
-        type: "array"
-        items:
-          type: "string"
-      expiryTime:
-        type: "string"
-        format: "date-time"
-  LSServerLogLevelFilterMap:
-    type: "object"
-    required:
-    - "filter"
-    properties:
-      filter:
-        type: "object"
-        additionalProperties:
-          $ref: "#/definitions/LSServerLogLevelFilter"
   SolrCollectionState:
     type: "object"
     properties:
-      znodeReady:
-        type: "boolean"
       solrCollectionReady:
+        type: "boolean"
+      znodeReady:
         type: "boolean"
       configurationUploaded:
         type: "boolean"

@@ -17,7 +17,7 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>s3a://logfeeder</value>
+    <value>s3a://logfeeder/apps</value>
   </property>
   <property>
     <name>fs.s3a.endpoint</name>

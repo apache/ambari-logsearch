@@ -18,10 +18,12 @@
  */
 package org.apache.ambari.logfeeder.output.cloud;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.ambari.logfeeder.conf.LogFeederProps;
 import org.apache.ambari.logfeeder.output.cloud.upload.UploadClient;
 import org.apache.ambari.logfeeder.util.LogFeederUtil;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,9 +92,7 @@ public class CloudStorageUploader extends Thread {
           logger.debug("Not found any files to upload.");
         } else {
           for (File file : filesToUpload) {
-            String basePath = logFeederProps.getCloudBasePath();
-            String outputPath = String.format("%s/%s/%s/%s/%s", basePath, clusterName, hostName, file.getParentFile().getName(), file.getName())
-              .replaceAll("//", "/");
+            final String outputPath = generateOutputPath(logFeederProps.getCloudBasePath(), clusterName, hostName, file);
             logger.info("Upload will start: input: {}, output: {}", file.getAbsolutePath(), outputPath);
             Future<?> future = executorService.submit(() -> {
               try {
@@ -112,6 +112,22 @@ public class CloudStorageUploader extends Thread {
     } catch (Exception e) {
       logger.error("Exception during cloud upload", e);
     }
+  }
+
+  @VisibleForTesting
+  String generateOutputPath(String basePath, String clusterName, String hostName, File localFile) {
+    final String outputWithoutBasePath = Paths.get(clusterName, hostName, localFile.getParentFile().getName(), localFile.getName()).toString();
+    final String outputPath;
+    if (StringUtils.isNotEmpty(basePath)) {
+      if (!basePath.endsWith("/")){
+        outputPath = basePath + "/" + outputWithoutBasePath;
+      } else {
+        outputPath = basePath + outputWithoutBasePath;
+      }
+    } else {
+      outputPath = outputWithoutBasePath;
+    }
+    return outputPath;
   }
 
 }

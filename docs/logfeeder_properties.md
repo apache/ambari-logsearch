@@ -36,7 +36,7 @@ limitations under the License.
 |`logfeeder.cloud.rollover.threshold.size`|Rollover cloud log files after the log file size reach this limit|80|<ul><li>`1024`</li></ul>|
 |`logfeeder.cloud.rollover.threshold.size.unit`|Rollover cloud log file size unit (e.g: KB, MB etc.)|MB|<ul><li>`KB`</li></ul>|
 |`logfeeder.cloud.rollover.use.gzip`|Use GZip on archived logs.|true|<ul><li>`false`</li></ul>|
-|`logfeeder.cloud.storage.base.path`|Base path prefix for storing logs (cloud storage / hdfs)|/apps/logsearch|<ul><li>`/user/logsearch/mypath`</li></ul>|
+|`logfeeder.cloud.storage.base.path`|Base path prefix for storing logs (cloud storage / hdfs), could be an absolute path or URI. (if URI used, that will override the default.FS with HDFS client)|/apps/logsearch|<ul><li>`/user/logsearch/mypath`</li><li>`s3a:///user/logsearch`</li></ul>|
 |`logfeeder.cloud.storage.bucket`|Amazon S3 bucket.|logfeeder|<ul><li>`logs`</li></ul>|
 |`logfeeder.cloud.storage.bucket.bootstrap`|Create bucket on startup.|true|<ul><li>`false`</li></ul>|
 |`logfeeder.cloud.storage.custom.fs`|If it is not empty, override fs.defaultFS for HDFS client. Can be useful to write data to a different bucket (from other services) if the bucket address is read from core-site.xml|`EMPTY`|<ul><li>`s3a://anotherbucket`</li></ul>|

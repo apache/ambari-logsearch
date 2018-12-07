@@ -19,6 +19,7 @@
 package org.apache.ambari.logfeeder.util;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
@@ -39,9 +40,10 @@ public class LogFeederHDFSUtil {
   
   public static void copyFromLocal(String sourceFilepath, String destFilePath, FileSystem fileSystem, boolean overwrite,
                                       boolean delSrc, FsPermission fsPermission) throws Exception {
+    String fsUri = fileSystem.getUri().toString();
     Path src = new Path(sourceFilepath);
     Path dst = new Path(destFilePath);
-    logger.info("copying localfile := " + sourceFilepath + " to hdfsPath := " + destFilePath);
+    logger.info("Copying localfile '{}' to hdfsPath (FS base URI: {}) '{}'", sourceFilepath, fsUri, destFilePath);
     fileSystem.copyFromLocalFile(delSrc, overwrite, src, dst);
     if (fsPermission != null) {
       fileSystem.setPermission(dst, fsPermission);
