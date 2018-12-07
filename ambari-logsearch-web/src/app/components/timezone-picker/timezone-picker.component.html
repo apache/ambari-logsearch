@@ -18,7 +18,6 @@
 <modal-dialog [visible]="visible$ | async"
   [showCloseBtn]="true"
   (onCloseRequest)="onCloseRequest($event)"
-  (onAfterViewInit)="initMap()"
   class="time-zone-modal">
   <time-zone-map-input [value]="timeZone$ | async" (onChange)="onTimeZoneSelect($event)" [mapElementId]="mapElementId"></time-zone-map-input>
   <footer>
