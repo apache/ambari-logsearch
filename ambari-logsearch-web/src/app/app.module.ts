@@ -116,6 +116,7 @@ import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.se
 import { LogsStateService } from '@app/services/storage/logs-state.service';
 import { LoginScreenGuardService } from '@app/services/login-screen-guard.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { MetaDataApiFeatureGuard } from '@app/services/meta-data-api-feature.guard';
 
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
@@ -241,7 +242,8 @@ import { HostNamePipe } from '@app/pipes/host-name.pipe';
     LogsFilteringUtilsService,
     LogsStateService,
     LoginScreenGuardService,
-    UserSettingsService
+    UserSettingsService,
+    MetaDataApiFeatureGuard
   ],
   bootstrap: [AppComponent],
   entryComponents: [
