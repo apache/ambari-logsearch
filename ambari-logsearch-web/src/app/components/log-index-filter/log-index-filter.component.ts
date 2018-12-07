@@ -143,7 +143,7 @@ export class LogIndexFilterComponent implements OnInit, OnDestroy, OnChanges, Co
   processAllComponentsForLevel(levelName: LogLevel, isChecked: boolean): void {
     this.activeClusterConfigs.forEach((component: LogIndexFilterComponentConfig): void => {
       component[levelName].defaults = isChecked;
-      component[levelName].overrides = isChecked;
+      component[levelName].overrides = component.hasOverrides && isChecked;
     });
     this.updateValue();
   }
