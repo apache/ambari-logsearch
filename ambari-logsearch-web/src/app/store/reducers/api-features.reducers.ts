@@ -16,15 +16,24 @@
  * limitations under the License.
  */
 
-export interface ListItem {
-  id?: string | number;
-  label?: string;
-  secondaryLabel?: string;
-  value: any;
-  iconClass?: string;
-  cssClass?: string;
-  isChecked?: boolean;
-  onSelect?: Function;
-  isDivider?: boolean;
-  disabled?: boolean;
+import { ApiFeaturesActions, ApiFeaturesActionTypes } from '../actions/api-features.actions';
+
+export interface ApiFeatureSet {
+  [key: string]: boolean | {[key: string]: boolean};
+};
+
+export const initialState = {
+  'metadata_patterns': true,
+  'log_level_filters': true
+};
+
+export function reducer(state = initialState, action: ApiFeaturesActions) {
+  switch (action.type) {
+    case ApiFeaturesActionTypes.SET: {
+      return action.payload;
+    }
+    default: {
+      return state;
+    }
+  }
 }

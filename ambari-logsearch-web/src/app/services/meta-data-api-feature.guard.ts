@@ -16,15 +16,16 @@
  * limitations under the License.
  */
 
-export interface ListItem {
-  id?: string | number;
-  label?: string;
-  secondaryLabel?: string;
-  value: any;
-  iconClass?: string;
-  cssClass?: string;
-  isChecked?: boolean;
-  onSelect?: Function;
-  isDivider?: boolean;
-  disabled?: boolean;
+import { Injectable } from '@angular/core';
+import { CanActivate } from '@angular/router';
+
+import { ApiFeatureGuard } from '@app/services/api-feature.guard';
+
+import { selectMetadataPatternsFeatureState } from '@app/store/selectors/api-features.selectors';
+
+@Injectable()
+export class MetaDataApiFeatureGuard extends ApiFeatureGuard {
+  
+  protected selector = selectMetadataPatternsFeatureState;
+
 }

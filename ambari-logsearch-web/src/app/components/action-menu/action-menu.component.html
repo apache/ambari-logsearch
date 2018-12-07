@@ -16,13 +16,15 @@
 -->
 <filter-history-manager></filter-history-manager>
 <menu-button label="{{'topMenu.filter' | translate}}" iconClass="fa fa-filter"
-             (buttonClick)="openLogIndexFilter()"></menu-button>
+  (buttonClick)="openLogIndexFilter()" 
+  [disabled]="!(logLevelFiltersFeatureState$ | async)" [class.disabled]="!(logLevelFiltersFeatureState$ | async)"
+  [tooltip]="(logLevelFiltersFeatureTooltip$ | async) | translate"></menu-button>
 <menu-button *ngIf="!captureSeconds" label="{{'filter.capture' | translate}}" iconClass="fa fa-caret-right"
-             (buttonClick)="startCapture()"></menu-button>
+  (buttonClick)="startCapture()"></menu-button>
 <menu-button *ngIf="captureSeconds" label="{{captureSeconds | timerSeconds}}" iconClass="fa fa-stop stop-icon"
-             (buttonClick)="stopCapture()"></menu-button>
+  (buttonClick)="stopCapture()"></menu-button>
 <menu-button label="{{'topMenu.refresh' | translate}}" iconClass="fa fa-refresh"
-             (buttonClick)="refresh()"></menu-button>
+  (buttonClick)="refresh()"></menu-button>
 <modal-dialog *ngIf="isLogIndexFilterDisplayed$ | async"
   class="log-index-filter"
   [visible]="isLogIndexFilterDisplayed$ | async"

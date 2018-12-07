@@ -44,7 +44,7 @@
       [iconClass]="filters.hosts.iconClass"
       [isRightAlign]="true"
       [class.disabled]="isServiceLogsFileView$ | async"
-      [isDisabled]="isServiceLogsFileView$ | async"
+      [disabled]="isServiceLogsFileView$ | async"
       additionalLabelComponentSetter="getDataForHostsNodeBar"></filter-button>
 
     <filter-button *ngIf="isFilterConditionDisplayed('users')"
@@ -65,7 +65,7 @@
       [iconClass]="filters.components.iconClass"
       [isRightAlign]="true"
       [class.disabled]="isServiceLogsFileView$ | async"
-      [isDisabled]="isServiceLogsFileView$ | async"
+      [disabled]="isServiceLogsFileView$ | async"
       additionalLabelComponentSetter="getDataForComponentsNodeBar"></filter-button>
 
     <filter-button *ngIf="isFilterConditionDisplayed('repos')"
@@ -77,7 +77,7 @@
       [iconClass]="filters.repos.iconClass"
       [isRightAlign]="true"
       [class.disabled]="isServiceLogsFileView$ | async"
-      [isDisabled]="isServiceLogsFileView$ | async"></filter-button>
+      [disabled]="isServiceLogsFileView$ | async"></filter-button>
 
     <filter-button *ngIf="isFilterConditionDisplayed('levels')"
       formControlName="levels"

@@ -87,7 +87,7 @@ export class MenuButtonComponent {
   maxLongClickDelay = 0;
 
   @Input()
-  isDisabled = false;
+  disabled = false;
 
   @Input()
   listClass = '';
@@ -155,7 +155,7 @@ export class MenuButtonComponent {
    * @param {MouseEvent} event
    */
   onMouseClick(event: MouseEvent): void {
-    if (!this.isDisabled) {
+    if (!this.disabled) {
       const el = <HTMLElement>event.target;
       const now = Date.now();
       const mdt = this.mouseDownTimestamp; // mousedown time

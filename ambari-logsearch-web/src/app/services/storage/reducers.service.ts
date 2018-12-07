@@ -40,6 +40,7 @@ import * as auth from '@app/store/reducers/auth.reducers';
 import * as filterHistory from '@app/store/reducers/filter-history.reducers';
 import * as auditLogRepos from '@app/store/reducers/audit-log-repos.reducers';
 import * as userSettings from '@app/store/reducers/user-settings.reducers';
+import * as apiFeatures from '@app/store/reducers/api-features.reducers';
 
 export const reducers = {
   appSettings,
@@ -63,7 +64,8 @@ export const reducers = {
   auth: auth.reducer,
   filterHistory: filterHistory.reducer,
   auditLogRepos: auditLogRepos.reducer,
-  userSettings: userSettings.reducer
+  userSettings: userSettings.reducer,
+  apiFeatures: apiFeatures.reducer
 };
 
 export function reducer(state: any, action: any) {

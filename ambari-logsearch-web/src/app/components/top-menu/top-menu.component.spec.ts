@@ -51,6 +51,7 @@ import {NotificationService} from '@modules/shared/services/notification.service
 import {NotificationsService} from 'angular2-notifications/src/notifications.service';
 
 import * as auth from '@app/store/reducers/auth.reducers';
+import * as apiFeatures from '@app/store/reducers/api-features.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
@@ -80,7 +81,8 @@ describe('TopMenuComponent', () => {
           components,
           hosts,
           auth: auth.reducer,
-          userSettings: userSettings.reducer
+          userSettings: userSettings.reducer,
+          apiFeatures: apiFeatures.reducer
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects),

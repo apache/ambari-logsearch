@@ -36,6 +36,7 @@ import { Store } from '@ngrx/store';
 import { AppStore } from '@app/classes/models/store';
 import { HttpAuthorizationErrorResponseAction } from '@app/store/actions/auth.actions';
 import { isAuthorizedSelector } from '@app/store/selectors/auth.selectors';
+import { selectLogLevelFiltersFeatureState } from '@app/store/selectors/api-features.selectors';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -110,6 +111,9 @@ export class HttpClientService extends Http {
     userSettings: {
       url: 'metadata/list',
       params: () => ({type: 'user_settings'})
+    },
+    apiFeatures: {
+      url: 'info/features'
     }
   };
 

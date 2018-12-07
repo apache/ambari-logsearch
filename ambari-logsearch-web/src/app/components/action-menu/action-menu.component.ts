@@ -22,6 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/operator/do';
 
 import { LogsContainerService } from '@app/services/logs-container.service';
 import { ServerSettingsService } from '@app/services/server-settings.service';
@@ -30,6 +31,13 @@ import { ClustersService } from '@app/services/storage/clusters.service';
 import { UtilsService } from '@app/services/utils.service';
 import { Subject } from 'rxjs/Subject';
 
+import { Store } from '@ngrx/store';
+import { AppStore } from '@app/classes/models/store';
+import { selectLogLevelFiltersFeatureState } from '@app/store/selectors/api-features.selectors';
+
+import { AddNotificationAction, NotificationActions } from '@app/store/actions/notification.actions';
+import { NotificationType } from '@modules/shared/services/notification.service';
+
 @Component({
   selector: 'action-menu',
   templateUrl: './action-menu.component.html',
@@ -37,12 +45,26 @@ import { Subject } from 'rxjs/Subject';
 })
 export class ActionMenuComponent  implements OnInit, OnDestroy {
 
-  isLogIndexFilterDisplayed$: Observable<boolean> = this.route.queryParams
-    .map((params) => {
-      return params;
-    })
-    .map((params): boolean => /^(show|yes|true|1)$/.test(params.logIndexFilterSettings))
-    .distinctUntilChanged();
+  logLevelFiltersFeatureState$: Observable<any> = this.store.select(selectLogLevelFiltersFeatureState);
+  logLevelFiltersFeatureTooltip$: Observable<string> = this.logLevelFiltersFeatureState$.map((state: boolean) => (
+    state ? '' : 'apiFeatures.disabled'
+  ));
+
+  isLogIndexFilterDisplayed$: Observable<boolean> = Observable.combineLatest(
+    this.route.queryParams
+      .map((params) => {
+        return params;
+      })
+      .map((params): boolean => /^(show|yes|true|1)$/.test(params.logIndexFilterSettings)),
+    this.logLevelFiltersFeatureState$
+  ).do(([show, enabled]) => {
+    if (show && !enabled) {
+      this.store.dispatch(new AddNotificationAction({
+        type: NotificationType.ERROR,
+        message: 'apiFeatures.disabled'
+      }))
+    }
+  }).map(([show, enabled]) => show && enabled).distinctUntilChanged();
 
   settingsForm: FormGroup = this.settings.settingsFormGroup;
 
@@ -66,7 +88,8 @@ export class ActionMenuComponent  implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private clustersService: ClustersService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private store: Store<AppStore>
   ) {
   }
 

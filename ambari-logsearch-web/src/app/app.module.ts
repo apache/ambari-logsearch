@@ -116,12 +116,14 @@ import { LogsFilteringUtilsService } from '@app/services/logs-filtering-utils.se
 import { LogsStateService } from '@app/services/storage/logs-state.service';
 import { LoginScreenGuardService } from '@app/services/login-screen-guard.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { MetaDataApiFeatureGuard } from '@app/services/meta-data-api-feature.guard';
 
 import { AuthEffects } from '@app/store/effects/auth.effects';
 import { NotificationEffects } from '@app/store/effects/notification.effects';
 import { UserSettingsEffects } from '@app/store/effects/user-settings.effects';
 import { FilterHistoryManagerComponent } from './components/filter-history-manager/filter-history-manager.component';
 import { AuditLogReposEffects } from './store/effects/audit-log-repos.effects';
+import { ApiFeaturesEffects } from './store/effects/api-features.effects';
 
 import { HostNamePipe } from '@app/pipes/host-name.pipe';
 
@@ -205,7 +207,8 @@ import { HostNamePipe } from '@app/pipes/host-name.pipe';
     EffectsModule.run(AuthEffects),
     EffectsModule.run(AuditLogReposEffects),
     EffectsModule.run(UserSettingsEffects),
-    EffectsModule.run(NotificationEffects)
+    EffectsModule.run(NotificationEffects),
+    EffectsModule.run(ApiFeaturesEffects)
 
   ],
   providers: [
@@ -239,7 +242,8 @@ import { HostNamePipe } from '@app/pipes/host-name.pipe';
     LogsFilteringUtilsService,
     LogsStateService,
     LoginScreenGuardService,
-    UserSettingsService
+    UserSettingsService,
+    MetaDataApiFeatureGuard
   ],
   bootstrap: [AppComponent],
   entryComponents: [

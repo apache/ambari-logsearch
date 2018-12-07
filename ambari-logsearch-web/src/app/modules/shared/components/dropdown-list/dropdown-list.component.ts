@@ -222,7 +222,7 @@ export class DropdownListComponent implements OnInit, OnChanges, AfterViewChecke
 
   changeSelectedItem(item: ListItem | ListItem[], event?: MouseEvent): void {
     (Array.isArray(item) ? item : [item]).forEach((currentItem: ListItem) => {
-      if (currentItem.onSelect) {
+      if (currentItem.onSelect && !currentItem.disabled) {
         currentItem.onSelect(...this.actionArguments)
       }
     });

@@ -57,6 +57,7 @@ import {NotificationService} from '@modules/shared/services/notification.service
 import { DataAvailabilityStatesStore, dataAvailabilityStates } from '@app/modules/app-load/stores/data-availability-state.store';
 
 import * as auth from '@app/store/reducers/auth.reducers';
+import * as apiFeatures from '@app/store/reducers/api-features.reducers';
 import { AuthService } from '@app/services/auth.service';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from '@app/store/effects/auth.effects';
@@ -90,7 +91,8 @@ describe('ActionMenuComponent', () => {
           tabs,
           dataAvailabilityStates,
           auth: auth.reducer,
-          userSettings
+          userSettings,
+          apiFeatures: apiFeatures.reducer
         }),
         EffectsModule.run(AuthEffects),
         EffectsModule.run(NotificationEffects)
