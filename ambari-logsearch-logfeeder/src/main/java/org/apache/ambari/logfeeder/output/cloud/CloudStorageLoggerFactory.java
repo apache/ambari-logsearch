@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.appender.rolling.CompositeTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.DefaultRolloverStrategy;
 import org.apache.logging.log4j.core.appender.rolling.OnStartupTriggeringPolicy;
 import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -79,22 +80,28 @@ public class CloudStorageLoggerFactory {
 
     String rolloverSize = logFeederProps.getRolloverConfig().getRolloverSize().toString() + logFeederProps.getRolloverConfig().getRolloverSizeFormat();
     SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy = SizeBasedTriggeringPolicy.createPolicy(rolloverSize);
-    CustomTimeBasedTriggeringPolicy customTimeBasedTriggeringPolicy = CustomTimeBasedTriggeringPolicy
-      .createPolicy(String.valueOf(logFeederProps.getRolloverConfig().getRolloverThresholdTimeMins()));
+
+    final Integer thresholdMin = logFeederProps.getRolloverConfig().getRolloverThresholdTimeMins();
+    final Integer thresholdInterval = thresholdMin * 60000; // 1 min = 60000 milliseconds
+
+    TimeBasedTriggeringPolicy timeBasedTriggeringPolicy = TimeBasedTriggeringPolicy.newBuilder()
+      .withInterval(thresholdInterval)
+      .build();
 
     final CompositeTriggeringPolicy compositeTriggeringPolicy;
 
     if (logFeederProps.getRolloverConfig().isRolloverOnStartup()) {
       OnStartupTriggeringPolicy onStartupTriggeringPolicy = OnStartupTriggeringPolicy.createPolicy(1);
       compositeTriggeringPolicy = CompositeTriggeringPolicy
-        .createPolicy(sizeBasedTriggeringPolicy, customTimeBasedTriggeringPolicy, onStartupTriggeringPolicy);
+        .createPolicy(sizeBasedTriggeringPolicy, timeBasedTriggeringPolicy, onStartupTriggeringPolicy);
     } else {
       compositeTriggeringPolicy = CompositeTriggeringPolicy
-        .createPolicy(sizeBasedTriggeringPolicy, customTimeBasedTriggeringPolicy);
+        .createPolicy(sizeBasedTriggeringPolicy, timeBasedTriggeringPolicy);
     }
 
-    DefaultRolloverStrategy defaultRolloverStrategy = DefaultRolloverStrategy.newBuilder().withMax(String.valueOf(
-      logFeederProps.getRolloverConfig().getRolloverMaxBackupFiles())).build();
+    DefaultRolloverStrategy defaultRolloverStrategy = DefaultRolloverStrategy.newBuilder()
+      .withMax(String.valueOf(logFeederProps.getRolloverConfig().getRolloverMaxBackupFiles()))
+      .build();
 
     boolean immediateFlush = logFeederProps.getRolloverConfig().isImmediateFlush();
     RollingFileAppender appender = RollingFileAppender.newBuilder()
