@@ -57,7 +57,7 @@
           [class.loading]="logsContainerService.isGraphRequestInProgress$ | async"></time-line-graph>
       </collapsible-panel>
       <audit-logs-entries [totalCount]="totalCount" [logs]="auditLogs | async" [columns]="auditLogsColumns | async" [commonFieldNames]="auditLogsCommonFieldNames"
-          [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async"></audit-logs-entries>
+          [filtersForm]="filtersForm" [class.loading]="logsContainerService.isLogsRequestInProgress$ | async" [timeZone]="timeZone$ | async"></audit-logs-entries>
     </ng-container>
   </ng-container>
   <log-context *ngIf="isServiceLogContextView" [id]="activeLog.id" [hostName]="activeLog.host_name"
