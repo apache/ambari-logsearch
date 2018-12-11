@@ -23,6 +23,7 @@
   <packaging>pom</packaging>
   <name>Ambari Logsearch Parent</name>
   <url>http://maven.apache.org</url>
+  <description>Ambari Logsearch Parent</description>
   <profiles>
     <profile>
       <id>all</id>
@@ -361,6 +362,8 @@
         <configuration>
           <excludes>
             <exclude>LICENSE</exclude>
+            <exclude>**/*.jpg</exclude>
+            <exclude>**/*.png</exclude>
             <exclude>**/*.md</exclude>
             <exclude>**/*.json</exclude>
             <exclude>**/*.log</exclude>

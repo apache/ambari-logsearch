@@ -18,4 +18,31 @@ limitations under the License.
 
 Log aggregation, analysis, and visualization for Ambari managed (or any other) services.
 
+## Features
+
+- Parse / aggregate and ship logs
+- Send and index logs in Solr
+- Store logs (structured or un-sructured format) in Cloud Storage (S3 / GCS / ADLS / WASB)
+- Fultext Search in logs (if the logs are shipped to Solr)
+- JWT/SSO support
+- Support testing the log parsing on the UI
+
 ## Architecture
+
+- Log Feeder: agent component on all hosts to monitor and shipping logs.
+- Log Search Portal: REST API + UI for rendering logs
+- Solr (Optional - default): storage for logs, used by both Log Search Portal and Log Feeder
+- ZooKeeper (Optional - default): configuration service for Solr, Log Search and Log Feeder
+- HDFS / S3 / GCS / ADLS: storage for logs (write only), used by Log Feeder [cloud mode](cloud_mode.md)
+
+![Log Search Architecture Overview](images/architecture_overview.jpg)
+
+## Contents
+
+- [1, Installation](installation.md)
+- [2. Collections](collections.md)
+- [3. Adding new logs to monitor](add_new_input.md) 
+- [4. Development guide](development.md)
+- [5. Using Log Feeder in Cloud mode](cloud_mode.md)
+- [6. Contribution Guide and License](about.md)
+

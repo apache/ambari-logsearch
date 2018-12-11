@@ -15,15 +15,16 @@
 site_name: Ambari Log Search
 site_dir: mkdocs-site
 nav:
-- Home: index.md
+- Overview: index.md
 - User Guide:
-  - Getting Started: getting_started.md
-  - Add New Service: add_new_input.md
-  - Schema Fields: schema_fields.md
+  - Installation: installation.md
+  - Collections: collections.md
+  - Add New Logs: add_new_input.md
   - Cloud Mode: cloud_mode.md
+  - Development: development.md
   - Configuration:
     - Log Search properties: logsearch_properties.md
     - Log Feeder properties: logfeeder_properties.md
     - Shipper configurations: shipper_configurations.md
-- Docs: docs.md
+- API Docs: docs.md
 - About: about.md

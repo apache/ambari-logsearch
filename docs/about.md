@@ -14,3 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+
+## Contribution Guide
+
+https://cwiki.apache.org/confluence/display/AMBARI/How+to+Contribute
+
+(That is the ambari contribution guide, everything is the same here except use ambari-logsearch repository instead of ambari)
+
+## License
+
+[Apache 2.0 LICENSE](https://www.apache.org/licenses/LICENSE-2.0)

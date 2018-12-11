@@ -28,6 +28,7 @@
   <packaging>jar</packaging>
   <url>http://maven.apache.org</url>
   <name>Ambari Logsearch Docs</name>
+  <description>Ambari Logsearch Docs</description>
   <build>
     <resources>
       <resource>
