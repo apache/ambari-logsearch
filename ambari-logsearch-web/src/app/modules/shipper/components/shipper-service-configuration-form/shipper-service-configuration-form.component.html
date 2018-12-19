@@ -86,7 +86,8 @@
                      [typeahead]="configurationComponents$ | async"
                      [typeaheadItemTemplate]="typeAheadTpl"
                      [typeaheadMinLength]="0"
-                     [disableControl]="configurationForm.invalid">
+                     [disableControl]="configurationForm.invalid"
+                     autocomplete="off">
             </div>
             <div class="form-group" [class.has-warning]="sampleDataField.invalid">
               <label>
