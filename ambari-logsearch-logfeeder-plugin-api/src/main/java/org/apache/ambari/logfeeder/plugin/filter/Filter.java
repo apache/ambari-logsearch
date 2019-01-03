@@ -34,8 +34,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the filter in Log Feeder shipper input configurations.
@@ -120,6 +122,7 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
         }
       }
     }
+    fallbackFieldNames(jsonObj);
     if (nextFilter != null) {
       nextFilter.apply(jsonObj, inputMarker);
     } else {
@@ -199,5 +202,65 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
 
   public Object clone() throws CloneNotSupportedException {
     return super.clone();
+  }
+
+  /**
+   * Fallback field names to use _ instead of spaces and use lowercase names with ws suffixes, built-in max: 100 characters - if the name is too big, probably it won't be valid anyway
+   * @param jsonObj field / value pairs to process
+   */
+  protected void fallbackFieldNames(Map<String, Object> jsonObj) {
+    final Set<String> fieldsToRemove = new HashSet<>();
+    final Map<String, Object> fieldValuePairsToAdd = new HashMap<>();
+    for (Map.Entry<String, Object> entry : jsonObj.entrySet()) {
+      String name = entry.getKey();
+      if (containsWhitespace(name) && name.length() < 100) {
+        fieldsToRemove.add(name);
+        name = "ws_" + replaceAll(name.toLowerCase(), " ", "_");
+        if (!jsonObj.containsKey(name)) {
+          fieldValuePairsToAdd.put(name, entry.getValue());
+        }
+      }
+    }
+    for (String fieldToRemove : fieldsToRemove) {
+      jsonObj.remove(fieldToRemove);
+    }
+    for (Map.Entry<String, Object> entry : fieldValuePairsToAdd.entrySet()) {
+      jsonObj.put(entry.getKey(), entry.getValue());
+    }
+  }
+
+  /**
+   * Check that string contains whitespaces or not - similar as StringUtils function in order to not include it as a dependency
+   * @param seq character sequence
+   * @return character sequence contains whitespace or not
+   */
+  private boolean containsWhitespace(CharSequence seq) {
+    if (seq == null || seq.length() == 0) {
+      return false;
+    } else {
+      int strLen = seq.length();
+
+      for(int i = 0; i < strLen; ++i) {
+        if (Character.isWhitespace(seq.charAt(i))) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }
+
+  /**
+   * Replace substring in a string based on regex - similar as StringUtils function in order to not include it as a dependency
+   * @param text string that will be checked
+   * @param regex old value that will be replaced
+   * @param replacement new value
+   * @return character sequence contains whitespace or not
+   */
+  private String replaceAll(final String text, final String regex, final String replacement) {
+    if (text == null || regex == null|| replacement == null ) {
+      return text;
+    }
+    return text.replaceAll(regex, replacement);
   }
 }
