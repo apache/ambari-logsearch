@@ -215,7 +215,7 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
       String name = entry.getKey();
       if (containsWhitespace(name) && name.length() < 100) {
         fieldsToRemove.add(name);
-        name = "ws_" + replaceAll(name.toLowerCase(), " ", "_");
+        name = "ws_" + name.toLowerCase().replaceAll(" ", "_");
         if (!jsonObj.containsKey(name)) {
           fieldValuePairsToAdd.put(name, entry.getValue());
         }
@@ -245,22 +245,7 @@ public abstract class Filter<PROP_TYPE extends LogFeederProperties> extends Conf
           return true;
         }
       }
-
       return false;
     }
-  }
-
-  /**
-   * Replace substring in a string based on regex - similar as StringUtils function in order to not include it as a dependency
-   * @param text string that will be checked
-   * @param regex old value that will be replaced
-   * @param replacement new value
-   * @return character sequence contains whitespace or not
-   */
-  private String replaceAll(final String text, final String regex, final String replacement) {
-    if (text == null || regex == null|| replacement == null ) {
-      return text;
-    }
-    return text.replaceAll(regex, replacement);
   }
 }
