@@ -17,7 +17,7 @@ limitations under the License.
 
 ### Log Feeder: Cloud Mode
 
-Log Feeder is responsible to ship logs to cloud storage. In Log Search case, it is a search engine (Solr), and that can be used by Log Search server to visualize logs.
+Log Feeder is responsible to ship logs to any data storage. In Log Search case, it is a search engine (Solr), and that can be used by Log Search server to visualize logs.
 Although there is a way to send logs to cloud storage / HDFS as well, of course in that case Solr is not used, so you won't be able to visualize the data. Log Feeder has 3 main modes:
 
 - `DEFAULT`: logs are shipped to Solr (or whatever is configured as output)
