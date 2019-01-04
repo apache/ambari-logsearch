@@ -12,14 +12,14 @@ Log aggregation, analysis, and visualization for Ambari managed (or any other) s
 
 - Parse / aggregate and ship logs
 - Send and index logs in Solr
-- Store logs (structured or un-sructured format) in Cloud Storage (S3 / GCS / ADLS / WASB)
-- Fultext Search in logs (if the logs are shipped to Solr)
+- Store logs (structured or unstructured format) in Cloud Storage (S3 / GCS / ADLS / WASB)
+- Full-text Search in logs (if the logs are shipped to Solr)
 - JWT/SSO support
 - Support testing the log parsing on the UI
 
 ## Architecture
 
-- Log Feeder: agent component on all hosts to monitor and shipping logs.
+- Log Feeder: agent component on all hosts to monitor and ship logs.
 - Log Search Portal: REST API + UI for rendering logs
 - Solr (Optional - default): storage for logs, used by both Log Search Portal and Log Feeder
 - ZooKeeper (Optional - default): configuration service for Solr, Log Search and Log Feeder
@@ -29,7 +29,7 @@ Log aggregation, analysis, and visualization for Ambari managed (or any other) s
 
 ## Contents
 
-- [1, Installation](docs/installation.md)
+- [1. Installation](docs/installation.md)
 - [2. Collections](docs/collections.md)
 - [3. Adding new logs to monitor](docs/add_new_input.md) 
 - [4. Development guide](docs/development.md)
