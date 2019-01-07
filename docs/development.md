@@ -134,6 +134,18 @@ Also you can run from the IDE, but make sure all of the ambari logsearch modules
 make update-version new-version="2.8.0.0-11"
 ```
 
+### Update REST API docs
+
+```bash
+make update-rest-api-docs
+```
+
+### Update markdown docs
+
+```bash
+make prop-docs
+```
+
 ### UI development
 
 TODO
