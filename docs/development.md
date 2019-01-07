@@ -146,6 +146,6 @@ make update-rest-api-docs
 make prop-docs
 ```
 
-### UI development
+## UI development
 
 TODO
