@@ -1033,52 +1033,6 @@ paths:
           description: "successful operation"
       security:
       - basicAuth: []
-  /service/logs/components:
-    get:
-      tags:
-      - "servicelogs"
-      summary: "Get the list of service components currently active or having data\
-        \ in Solr"
-      description: ""
-      operationId: "getComponents"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "clusters"
-        in: "query"
-        required: false
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ServiceComponentMetadataWrapper"
-      security:
-      - basicAuth: []
-    post:
-      tags:
-      - "servicelogs"
-      summary: "Get the list of service components currently active or having data\
-        \ in Solr"
-      description: ""
-      operationId: "getComponents"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/ClusterBodyRequest"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ServiceComponentMetadataWrapper"
-      security:
-      - basicAuth: []
   /service/logs:
     get:
       tags:
@@ -1319,6 +1273,52 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/GroupListResponse"
+      security:
+      - basicAuth: []
+  /service/logs/components:
+    get:
+      tags:
+      - "servicelogs"
+      summary: "Get the list of service components currently active or having data\
+        \ in Solr"
+      description: ""
+      operationId: "getComponentsByGet"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "clusters"
+        in: "query"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ServiceComponentMetadataWrapper"
+      security:
+      - basicAuth: []
+    post:
+      tags:
+      - "servicelogs"
+      summary: "Get the list of service components currently active or having data\
+        \ in Solr"
+      description: ""
+      operationId: "getComponentsByPost"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/ClusterBodyRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ServiceComponentMetadataWrapper"
       security:
       - basicAuth: []
   /service/logs/aggregated:
@@ -2841,7 +2841,7 @@ paths:
       - "servicelogs"
       summary: "Preview feature data"
       description: ""
-      operationId: "getAfterBeforeLogs"
+      operationId: "getAfterBeforeLogsByGet"
       produces:
       - "application/json"
       parameters:
@@ -3010,7 +3010,7 @@ paths:
       - "servicelogs"
       summary: "Preview feature data"
       description: ""
-      operationId: "getAfterBeforeLogs"
+      operationId: "getAfterBeforeLogsByPost"
       consumes:
       - "application/json"
       produces:
@@ -3069,7 +3069,7 @@ paths:
       - "servicelogs"
       summary: "Get the log files of the components of a host"
       description: ""
-      operationId: "getHostLogFiles"
+      operationId: "getHostLogFilesByGet"
       produces:
       - "application/json"
       parameters:
@@ -3100,7 +3100,7 @@ paths:
       - "servicelogs"
       summary: "Get the log files of the components of a host"
       description: ""
-      operationId: "getHostLogFiles"
+      operationId: "getHostLogFilesByPost"
       consumes:
       - "application/json"
       produces:
@@ -3180,50 +3180,6 @@ paths:
               type: "string"
       security:
       - basicAuth: []
-  /shipper/filters/{clusterName}/level:
-    get:
-      tags:
-      - "shipper"
-      summary: "Get log level filter"
-      description: ""
-      operationId: "getLogLevelFilters"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "clusterName"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/LSServerLogLevelFilterMap"
-      security:
-      - basicAuth: []
-    put:
-      tags:
-      - "shipper"
-      summary: "Update log level filter"
-      description: ""
-      operationId: "setLogLevelFilter"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/LSServerLogLevelFilterMap"
-      - name: "clusterName"
-        in: "path"
-        required: true
-        type: "string"
-      responses:
-        default:
-          description: "successful operation"
-      security:
-      - basicAuth: []
   /shipper/input/{clusterName}/services/{serviceName}:
     get:
       tags:
@@ -3295,6 +3251,50 @@ paths:
         required: true
         type: "string"
       - name: "serviceName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+      security:
+      - basicAuth: []
+  /shipper/filters/{clusterName}/level:
+    get:
+      tags:
+      - "shipper"
+      summary: "Get log level filter"
+      description: ""
+      operationId: "getLogLevelFilters"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "clusterName"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/LSServerLogLevelFilterMap"
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - "shipper"
+      summary: "Update log level filter"
+      description: ""
+      operationId: "setLogLevelFilter"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/LSServerLogLevelFilterMap"
+      - name: "clusterName"
         in: "path"
         required: true
         type: "string"
@@ -3447,24 +3447,28 @@ definitions:
       result:
         type: "integer"
         format: "int32"
-      policy:
-        type: "string"
-      reason:
-        type: "string"
       text:
         type: "string"
-      sess:
+      policy:
+        type: "string"
+      reqContext:
         type: "string"
       access:
         type: "string"
-      reqContext:
+      sess:
         type: "string"
       tags:
         type: "array"
         items:
           type: "string"
+      reason:
+        type: "string"
       logType:
         type: "string"
+      proxyUsers:
+        type: "array"
+        items:
+          type: "string"
       action:
         type: "string"
       agent:
@@ -3493,10 +3497,6 @@ definitions:
         type: "string"
       tags_str:
         type: "string"
-      proxyUsers:
-        type: "array"
-        items:
-          type: "string"
       id:
         type: "string"
       type:
@@ -3506,11 +3506,11 @@ definitions:
       _version_:
         type: "integer"
         format: "int64"
+      log_message:
+        type: "string"
       bundle_id:
         type: "string"
       case_id:
-        type: "string"
-      log_message:
         type: "string"
       logfile_line_number:
         type: "integer"
@@ -3814,26 +3814,6 @@ definitions:
         type: "string"
       type:
         type: "string"
-  ComponentMetadata:
-    type: "object"
-    properties:
-      name:
-        type: "string"
-      label:
-        type: "string"
-      group:
-        type: "string"
-  ServiceComponentMetadataWrapper:
-    type: "object"
-    properties:
-      groups:
-        type: "object"
-        additionalProperties:
-          type: "string"
-      metadata:
-        type: "array"
-        items:
-          $ref: "#/definitions/ComponentMetadata"
   ServiceLogData:
     type: "object"
     properties:
@@ -3854,11 +3834,11 @@ definitions:
         type: "string"
       group:
         type: "string"
-      ip:
-        type: "string"
       logtime:
         type: "string"
         format: "date-time"
+      ip:
+        type: "string"
       id:
         type: "string"
       file:
@@ -3866,11 +3846,11 @@ definitions:
       _version_:
         type: "integer"
         format: "int64"
+      log_message:
+        type: "string"
       bundle_id:
         type: "string"
       case_id:
-        type: "string"
-      log_message:
         type: "string"
       logfile_line_number:
         type: "integer"
@@ -4015,6 +3995,26 @@ definitions:
         format: "int32"
   LogData:
     type: "object"
+  ComponentMetadata:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      label:
+        type: "string"
+      group:
+        type: "string"
+  ServiceComponentMetadataWrapper:
+    type: "object"
+    properties:
+      groups:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      metadata:
+        type: "array"
+        items:
+          $ref: "#/definitions/ComponentMetadata"
   GraphData:
     type: "object"
     properties:
@@ -4684,39 +4684,6 @@ definitions:
         type: "string"
       clusters:
         type: "string"
-  LSServerLogLevelFilter:
-    type: "object"
-    required:
-    - "defaultLevels"
-    - "hosts"
-    - "label"
-    properties:
-      label:
-        type: "string"
-      hosts:
-        type: "array"
-        items:
-          type: "string"
-      defaultLevels:
-        type: "array"
-        items:
-          type: "string"
-      overrideLevels:
-        type: "array"
-        items:
-          type: "string"
-      expiryTime:
-        type: "string"
-        format: "date-time"
-  LSServerLogLevelFilterMap:
-    type: "object"
-    required:
-    - "filter"
-    properties:
-      filter:
-        type: "object"
-        additionalProperties:
-          $ref: "#/definitions/LSServerLogLevelFilter"
   LSServerConditions:
     type: "object"
     required:
@@ -4828,6 +4795,39 @@ definitions:
           $ref: "#/definitions/LSServerFilter"
   LSServerPostMapValuesList:
     type: "object"
+  LSServerLogLevelFilter:
+    type: "object"
+    required:
+    - "defaultLevels"
+    - "hosts"
+    - "label"
+    properties:
+      label:
+        type: "string"
+      hosts:
+        type: "array"
+        items:
+          type: "string"
+      defaultLevels:
+        type: "array"
+        items:
+          type: "string"
+      overrideLevels:
+        type: "array"
+        items:
+          type: "string"
+      expiryTime:
+        type: "string"
+        format: "date-time"
+  LSServerLogLevelFilterMap:
+    type: "object"
+    required:
+    - "filter"
+    properties:
+      filter:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/LSServerLogLevelFilter"
   SolrCollectionState:
     type: "object"
     properties:

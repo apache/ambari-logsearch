@@ -65,6 +65,7 @@ public class LogSearchDocumentationGenerator {
   private static final String LOGFEEDER_PROPERTIES_TEMPLATE_KEY = "logfeederProperties";
 
   private static final String OUTPUT_DIR_OPTION = "output-dir";
+  private static final String GENERATE_REST_API_DOC = "generate-rest-api-doc";
 
   private static final String LOGSEARCH_PACKAGE = "org.apache.ambari.logsearch";
   private static final String LOGFEEDER_PACKAGE = "org.apache.ambari.logfeeder";
@@ -94,6 +95,12 @@ public class LogSearchDocumentationGenerator {
         .longOpt(OUTPUT_DIR_OPTION)
         .hasArg()
         .required()
+        .type(String.class)
+        .build());
+      options.addOption(Option.builder()
+        .desc("Boolean flag to generate REST API doc")
+        .longOpt(GENERATE_REST_API_DOC)
+        .hasArg()
         .type(String.class)
         .build());
       CommandLineParser parser = new DefaultParser();
@@ -139,10 +146,14 @@ public class LogSearchDocumentationGenerator {
 
       File shipperConfigsOutputFile = Paths.get(outputDir, SHIPPER_CONFIGURATIONS_MARKDOWN_OUTPUT).toFile();
       writeMarkdown(freemarkerConfiguration, SHIPPER_CONFIGURATIONS_MARKDOWN_TEMPLATE_FILE, shipperConfigModels, shipperConfigsOutputFile);
-
-      String swaggerYaml = generateSwaggerYaml();
-      File swaggerYamlFile = Paths.get(outputDir, SWAGGER_API_DOC_FOLDER, SWAGGER_YAML_FILE_NAME).toFile();
-      FileUtils.writeStringToFile(swaggerYamlFile, swaggerYaml, Charset.defaultCharset());
+      if (options.hasLongOption(GENERATE_REST_API_DOC) && "true".equals(cmdLine.getOptionValue(GENERATE_REST_API_DOC))) {
+        System.out.println("REST API DOC re-generation is enabled");
+        String swaggerYaml = generateSwaggerYaml();
+        File swaggerYamlFile = Paths.get(outputDir, SWAGGER_API_DOC_FOLDER, SWAGGER_YAML_FILE_NAME).toFile();
+        FileUtils.writeStringToFile(swaggerYamlFile, swaggerYaml, Charset.defaultCharset());
+      } else {
+        System.out.println("REST API DOC re-generation is disabled");
+      }
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);
