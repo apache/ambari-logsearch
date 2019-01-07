@@ -29,6 +29,9 @@
   <url>http://maven.apache.org</url>
   <name>Ambari Logsearch Docs</name>
   <description>Ambari Logsearch Docs</description>
+  <properties>
+    <generate.swagger.yaml>false</generate.swagger.yaml>
+  </properties>
   <build>
     <resources>
       <resource>
@@ -86,6 +89,8 @@
           <arguments>
             <argument>--output-dir</argument>
             <argument>${project.basedir}/../docs</argument>
+            <argument>--generate-rest-api-doc</argument>
+            <argument>${generate.swagger.yaml}</argument>
           </arguments>
         </configuration>
       </plugin>

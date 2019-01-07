@@ -151,7 +151,7 @@ public class ServiceLogsResource {
   @Path("/components")
   @Produces({MediaType.APPLICATION_JSON})
   @ApiOperation(GET_COMPONENTS_OD)
-  public ServiceComponentMetadataWrapper getComponents(@QueryParam(LogSearchConstants.REQUEST_PARAM_CLUSTER_NAMES) @Nullable String clusters) {
+  public ServiceComponentMetadataWrapper getComponentsByGet(@QueryParam(LogSearchConstants.REQUEST_PARAM_CLUSTER_NAMES) @Nullable String clusters) {
     return serviceLogsManager.getComponentMetadata(clusters);
   }
 
@@ -160,7 +160,7 @@ public class ServiceLogsResource {
   @Consumes({MediaType.APPLICATION_JSON})
   @Produces({MediaType.APPLICATION_JSON})
   @ApiOperation(GET_COMPONENTS_OD)
-  public ServiceComponentMetadataWrapper getComponents(@Nullable ClusterBodyRequest clusterBodyRequest) {
+  public ServiceComponentMetadataWrapper getComponentsByPost(@Nullable ClusterBodyRequest clusterBodyRequest) {
     return serviceLogsManager.getComponentMetadata(clusterBodyRequest != null ? clusterBodyRequest.getClusters() : null);
   }
 
@@ -356,7 +356,7 @@ public class ServiceLogsResource {
   @Path("/truncated")
   @Produces({MediaType.APPLICATION_JSON})
   @ApiOperation(GET_AFTER_BEFORE_LOGS_OD)
-  public ServiceLogResponse getAfterBeforeLogs(@BeanParam ServiceLogTruncatedQueryRequest request) {
+  public ServiceLogResponse getAfterBeforeLogsByGet(@BeanParam ServiceLogTruncatedQueryRequest request) {
     return serviceLogsManager.getAfterBeforeLogs(request);
   }
 
@@ -365,7 +365,7 @@ public class ServiceLogsResource {
   @Consumes({MediaType.APPLICATION_JSON})
   @Produces({MediaType.APPLICATION_JSON})
   @ApiOperation(GET_AFTER_BEFORE_LOGS_OD)
-  public ServiceLogResponse getAfterBeforeLogs(ServiceLogTruncatedBodyRequest request) {
+  public ServiceLogResponse getAfterBeforeLogsByPost(ServiceLogTruncatedBodyRequest request) {
     return serviceLogsManager.getAfterBeforeLogs(request);
   }
 
@@ -393,7 +393,7 @@ public class ServiceLogsResource {
   @Produces({MediaType.APPLICATION_JSON})
   @ApiOperation(GET_HOST_LOGFILES_OD)
   @ValidateOnExecution
-  public HostLogFilesResponse getHostLogFiles(@Valid @BeanParam HostLogFilesQueryRequest request) {
+  public HostLogFilesResponse getHostLogFilesByGet(@Valid @BeanParam HostLogFilesQueryRequest request) {
     return serviceLogsManager.getHostLogFileData(request);
   }
 
@@ -403,7 +403,7 @@ public class ServiceLogsResource {
   @Produces({MediaType.APPLICATION_JSON})
   @ApiOperation(GET_HOST_LOGFILES_OD)
   @ValidateOnExecution
-  public HostLogFilesResponse getHostLogFiles(@Valid @BeanParam HostLogFilesBodyRequest request) {
+  public HostLogFilesResponse getHostLogFilesByPost(@Valid @BeanParam HostLogFilesBodyRequest request) {
     return serviceLogsManager.getHostLogFileData(request);
   }
 

@@ -77,6 +77,12 @@ prop-docs: install
 prop-docs-only:
 	$(MAVEN_BINARY) -pl ambari-logsearch-docs clean package exec:java -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION)
 
+update-rest-api-docs: install
+	$(MAVEN_BINARY) -pl ambari-logsearch-docs clean package exec:java -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION) -Dgenerate.swagger.yaml=true
+
+update-rest-api-docs-only:
+	$(MAVEN_BINARY) -pl ambari-logsearch-docs clean package exec:java -DskipTests -Djdk.version=$(LOGSEARCH_JAVA_VERSION) -Dgenerate.swagger.yaml=true
+
 update-version:
 	$(MAVEN_BINARY) versions:set-property -Dproperty=revision -DnewVersion=$(new-version) -DgenerateBackupPoms=false
 
