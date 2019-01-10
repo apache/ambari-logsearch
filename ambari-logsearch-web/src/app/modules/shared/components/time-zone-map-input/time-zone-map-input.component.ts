@@ -19,16 +19,21 @@ import {
   Component,
   Input,
   Output,
-  AfterViewInit,
   EventEmitter,
   forwardRef,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import * as moment from 'moment-timezone';
-import * as $ from 'jquery';
+import Timezone from '@modules/shared/interfaces/timezone';
+
+import timezoneList from './time-zone-map-input.data';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ListItem } from '@app/classes/list-item';
+import { DropdownButtonComponent } from '../dropdown-button/dropdown-button.component';
 
 @Component({
   selector: 'time-zone-map-input',
@@ -42,91 +47,141 @@ import * as $ from 'jquery';
     }
   ]
 })
-export class TimeZoneMapInputComponent implements AfterViewInit, ControlValueAccessor, OnChanges {
+export class TimeZoneMapInputComponent implements ControlValueAccessor, OnChanges {
 
   @Input()
   value = moment.tz.guess();
   
   @Input()
   mapElementId = 'timeZoneMap';
+
+  @Input()
+  timezonesData: Timezone[] = timezoneList;
   
   @Input()
-  mapOptions = {
-    quickLink: [
-      {
-        PST: 'PST',
-        MST: 'MST',
-        CST: 'CST',
-        EST: 'EST',
-        GMT: 'GMT',
-        LONDON: 'Europe/London',
-        IST: 'IST'
-      }
-    ]
-  };
+  quickLinks = [{
+    zonename: 'PST'
+  }, {
+    zonename: 'MST'
+  }, {
+    zonename: 'CST'
+  }, {
+    zonename: 'EST'
+  }, {
+    zonename: 'GMT'
+  }, {
+    label: 'London',
+    timezone: 'Europe/London'
+  }, {
+    zonename: 'IST'
+  }];
 
   @Output()
   onChange = new EventEmitter();
 
-  controlValueAccessorOnchange;
+  selectedTimezone: BehaviorSubject<Timezone> = new BehaviorSubject(this.getTimezonesDataByTimezone(this.value));
+
+  private _controlValueAccessorOnchange;
+
+  @ViewChild(DropdownButtonComponent)
+  private _dropdownRef: DropdownButtonComponent;
+
+  dropdownItems$: BehaviorSubject<ListItem[]> = new BehaviorSubject(this.gestListItemsFromTimezonesData(this.timezonesData));
+
+  _hoverTimezoneAbbr$: BehaviorSubject<string> = new BehaviorSubject((
+    this.getTimezonesDataByTimezone(this.value) || {zonename: ''}
+  ).zonename);
   
   constructor() { }
-
-  ngAfterViewInit() {
-    this.initMap();
-  }
-
+  
   ngOnChanges(change: SimpleChanges) {
     if (change.value) {
-      this.setTimeZoneSelection(this.value);
+      this.selectedTimezone.next(this.getTimezonesDataByTimezone(this.value));
+    }
+    if (change.timezonesData) {
+      this.dropdownItems$.next(this.gestListItemsFromTimezonesData(this.timezonesData));
     }
   }
 
-  getMapElement() {
-    return $(`#${this.mapElementId}`);
+  private _onChange(value: string) {
+    this.selectedTimezone.next(this.getTimezonesDataByTimezone(value));
+    this.onChange.emit(value);
+    if (this._controlValueAccessorOnchange) {
+      this._controlValueAccessorOnchange(value);
+    }
+    this._dropdownRef.selection = [{label: value, value}];
   }
 
-  getSelectElement() {
-    return this.getMapElement().find('select');
-  }
-
-  initMap() {
-    const mapElement: any = this.getMapElement();
-    let timeZoneSelect;
-    let lastValue;
-    mapElement.WorldMapGenerator(this.mapOptions);
-    mapElement.on('click', (event) => {
-      const currentValue = timeZoneSelect && timeZoneSelect.val();
-      if (currentValue !== lastValue) {
-        this.onChange.emit(currentValue);
-        if (this.controlValueAccessorOnchange) {
-          this.controlValueAccessorOnchange(currentValue);
-        }
-      }
-    });
-    timeZoneSelect = this.getSelectElement();
-    timeZoneSelect.removeClass('btn btn-default')
-      .addClass('form-control')
-      .val(this.value || moment.tz.guess());
-  }
-
-  setTimeZoneSelection(timeZone) {
-    this.getSelectElement().val(timeZone);
-    this.getMapElement().find('[data-selected=true]').attr('data-selected', 'false');
-    this.getMapElement().find(`[data-timezone="${timeZone}"]`).attr('data-selected', 'true');
+  handleClickOnCountry(timezoneData, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    this.value = timezoneData.timezone;
+    this._onChange(this.value);
   }
 
   writeValue(value: any): void {
     this.value = value;
-    this.setTimeZoneSelection(this.value);
   }
 
   registerOnChange(fn: any): void {
-    this.controlValueAccessorOnchange = fn;
+    this._controlValueAccessorOnchange = fn;
   }
 
   registerOnTouched(fn: any): void {
 
+  }
+
+  getTimezonesDataByTimezone(timezone: string): Timezone {
+    return this.timezonesData.find((currentTimezone: Timezone) => currentTimezone.timezone === timezone);
+  }
+
+  gestListItemsFromTimezonesData(data: Timezone[]): ListItem[] {
+    const d = data.map((timezoneData: Timezone) => ({
+      value: timezoneData.timezone,
+      label: timezoneData.timezone,
+      isChecked: timezoneData.timezone === this.value
+    }));
+    return d;
+  }
+
+  handleDropDownSelection(selection) {
+    if (selection && this.value !== selection) {
+      this.value = selection;
+      this._onChange(this.value);
+    }
+  }
+
+  handleQuickLinkClick(value, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    const selectedTimeZone = this.timezonesData.find(
+      (timezoneData: Timezone) => (value.timezone && timezoneData.timezone === value.timezone) || timezoneData.zonename === value.zonename
+    );
+    const newValue = selectedTimeZone && selectedTimeZone.timezone;
+    if (newValue && this.value !== newValue) {
+      this.value = newValue;
+      this._onChange(this.value);
+    }
+  }
+
+  handleMouseEnterOnCountry(value, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    this._hoverTimezoneAbbr$.next(value.zonename);
+  }
+  
+  handleMouseLeaveOnCountry(value, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    this._hoverTimezoneAbbr$.next('');
   }
 
 }

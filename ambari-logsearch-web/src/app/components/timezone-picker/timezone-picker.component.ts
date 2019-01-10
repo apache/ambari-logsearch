@@ -19,7 +19,6 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import * as $ from 'jquery';
 import * as moment from 'moment-timezone';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -30,7 +29,6 @@ import { selectTimeZone } from '@app/store/selectors/user-settings.selectors';
 import { SetUserSettingsAction } from '@app/store/actions/user-settings.actions';
 
 import '@vendor/js/WorldMapGenerator.min';
-import {ServerSettingsService} from '@app/services/server-settings.service';
 
 @Component({
   selector: 'timezone-picker',
@@ -53,29 +51,8 @@ export class TimeZonePickerComponent implements OnDestroy {
 
   destroyed$: Subject<boolean> = new Subject();
 
-  readonly mapElementId = 'timezone-map';
-
-  private readonly mapOptions = {
-    quickLink: [
-      {
-        PST: 'PST',
-        MST: 'MST',
-        CST: 'CST',
-        EST: 'EST',
-        GMT: 'GMT',
-        LONDON: 'Europe/London',
-        IST: 'IST'
-      }
-    ]
-  };
-
-  private mapElement: any;
-
-  private timeZoneSelect: JQuery;
-
   constructor(
     private store: Store<AppStore>,
-    private settingsService: ServerSettingsService,
     private route: ActivatedRoute,
     private router: Router
   ) {
