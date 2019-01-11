@@ -28,8 +28,6 @@ import { AppStore } from '@app/classes/models/store';
 import { selectTimeZone } from '@app/store/selectors/user-settings.selectors';
 import { SetUserSettingsAction } from '@app/store/actions/user-settings.actions';
 
-import '@vendor/js/WorldMapGenerator.min';
-
 @Component({
   selector: 'timezone-picker',
   templateUrl: './timezone-picker.component.html',
