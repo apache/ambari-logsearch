@@ -15,13 +15,9 @@
   limitations under the License.
 -->
 <div class="alternative-selectors">
-  <dropdown-button
-    #dropdown
-    [options]="dropdownItems$ | async"
-    [useDropDownLocalFilter]="true"
-    [label]="'timezoneMapInput.dropdown.label' | translate"
-    (selectItem)="handleDropDownSelection($event)"
-  ></dropdown-button>
+  <select [value]="value" (change)="handleDropDownSelection($event)">
+    <option *ngFor="let timezone of timezonesData" value="{{timezone.timezone}}">{{timezone.timezone}}</option> 
+  </select>
   <button 
     *ngFor="let quickLink of quickLinks" 
     (click)="handleQuickLinkClick(quickLink, $event)"

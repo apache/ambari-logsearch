@@ -146,11 +146,9 @@ export class TimeZoneMapInputComponent implements ControlValueAccessor, OnChange
     return d;
   }
 
-  handleDropDownSelection(selection) {
-    if (selection && this.value !== selection) {
-      this.value = selection;
-      this._onChange(this.value);
-    }
+  handleDropDownSelection(event: any) {
+    this.value = event.target.value;
+    this._onChange(this.value);
   }
 
   handleQuickLinkClick(value, event) {
