@@ -19,6 +19,7 @@
   [showCloseBtn]="true"
   (onCloseRequest)="onCloseRequest($event)"
   class="time-zone-modal">
+  <header>{{'timezoneMapInput.modal.title' | translate}}</header>
   <time-zone-map-input [value]="timeZone$ | async" (onChange)="onTimeZoneSelect($event)" [mapElementId]="mapElementId" [mapOptions]="mapOptions"></time-zone-map-input>
   <footer>
     <button class="btn btn-secondary" (click)="onCloseRequest($event)">{{'modal.cancel' | translate}}</button>

@@ -401,10 +401,10 @@
 
   "timezoneMapInput" : {
     "modal": {
-      "title": "Select your timezone"
+      "title": "Set Timezone"
     },
     "dropdown": {
-      "label": "Select a timezone form the list"
+      "label": "Select your timezone"
     }
   }
 
