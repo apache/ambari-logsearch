@@ -16,21 +16,59 @@
  * limitations under the License.
  */
 
- :host {
-   /deep/ .hoverZone {
-     display: block;
-     min-height: 2em;
-   }
-   /deep/ .Cbox {
-     display: flex;
-     > select,
-     > div {
-       float: none;
-     }
-     > div {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-     }
-   }
- }
+@import '../../variables';
+@selected-color: #496A84;
+:host {
+
+  svg {
+    polygon {
+      fill: @fluid-gray-1;
+      stroke-width: 0;
+      stroke: transparent;
+      &.selected {
+        fill: @selected-color;
+        stroke: @selected-color;
+      }
+      &.selected-abbr:not(.selected) {
+        fill: @fluid-gray-3;
+        stroke: @fluid-gray-3;
+      }
+      &:hover, &.selected-abbr:hover {
+        fill: @fluid-gray-4;
+        stroke: @fluid-gray-4;
+        cursor: pointer;
+      }
+      &.hover-abbr {
+        fill: @fluid-gray-2;
+        stroke: @fluid-gray-2;
+      }
+    }
+  }
+
+  .alternative-selectors {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    select {
+      justify-self: flex-start;
+      margin-right: auto;
+    }
+    button {
+      margin: 0 .2rem;
+      &:focus {
+        outline: none;
+      }
+      &.btn-default {
+        &.selected {
+          background-color: @selected-color;
+          color: @fluid-gray-1;
+        }
+        &.selected-abbr {
+          background-color: @fluid-gray-2;
+          color: @fluid-gray-1;
+        }
+      }
+    }
+  }
+  
+}

@@ -397,6 +397,15 @@
   "apiFeatures": {
     "loadFailed": "We were not able to explore the available features from the server. Some of the features maybe not disabled in the client but disabled on the server.",
     "disabled": "This feature is disabled on the server."
+  },
+
+  "timezoneMapInput" : {
+    "modal": {
+      "title": "Set Timezone"
+    },
+    "dropdown": {
+      "label": "Select your timezone"
+    }
   }
 
 }

@@ -14,4 +14,33 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div attr.id="{{mapElementId}}" class="time-zone-input"></div>
+<div class="alternative-selectors">
+  <select [value]="value" (change)="handleDropDownSelection($event)">
+    <option *ngFor="let timezone of timezonesData" value="{{timezone.timezone}}">{{timezone.timezone}}</option> 
+  </select>
+  <button 
+    *ngFor="let quickLink of quickLinks" 
+    (click)="handleQuickLinkClick(quickLink, $event)"
+    [class.selected]="quickLink.timezone === value"
+    [class.selected-abbr]="quickLink.zonename === (selectedTimezone | async).zonename"
+    class="btn-default btn-xs"
+  >
+    {{quickLink.label || quickLink.timezone || quickLink.zonename}}
+  </button>
+</div>
+<svg viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+  <polygon *ngFor="let timezone of timezonesData"
+    attr.points="{{timezone.points}}"
+    attr.data-timezone="{{timezone.timezone}}"
+    attr.data-country="{{timezone.country}}"
+    attr.data-pin="{{timezone.pin}}"
+    attr.data-offset="{{timezone.offset}}"
+    attr.data-zonename="{{timezone.zonename}}"
+    (click)="handleClickOnCountry(timezone, $event)"
+    (mouseenter)="handleMouseEnterOnCountry(timezone, $event)"
+    (mouseleave)="handleMouseLeaveOnCountry(timezone, $event)"
+    [class.selected]="timezone.timezone === value"
+    [class.selected-abbr]="timezone.zonename === (selectedTimezone | async).zonename"
+    [class.hover-abbr]="(_hoverTimezoneAbbr$ | async) === timezone.zonename"
+  ></polygon>
+</svg>
