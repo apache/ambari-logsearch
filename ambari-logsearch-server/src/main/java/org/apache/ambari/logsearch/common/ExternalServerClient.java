@@ -59,6 +59,9 @@ public class ExternalServerClient {
    */
   public Object sendGETRequest(String loginUrl, Class<?> classObject, String username, String password) throws Exception {
     if (localJerseyClient == null) {
+      if (sslConfigurer.isKeyStoreSpecified()) {
+        sslConfigurer.ensureStorePasswords();
+      }
       localJerseyClient = ThreadLocal.withInitial(() -> sslConfigurer.isKeyStoreSpecified() ?
         new JerseyClientBuilder().sslContext(sslConfigurer.getSSLContext()).build() :
         JerseyClientBuilder.createClient());
