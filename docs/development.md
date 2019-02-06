@@ -148,11 +148,9 @@ make prop-docs
 
 ## UI development
 
-## Development
-
 After running `yarn install` or `npm install` you can run `npm start` or `yarn start` to start the dev server. So you can navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Webpack Development Config
+### Webpack Development Config
 In order to use the UI you'll need a running service instance too.
 You can setup a [local development env](https://github.com/apache/ambari-logsearch/blob/master/docs/development.md) or if you have running instance elsewhere you can set the proxy to that URL.
 In order to keep the main webpack config file intact we use the `webpack.config.dev.js` file so you can set a service URL proxy here.
