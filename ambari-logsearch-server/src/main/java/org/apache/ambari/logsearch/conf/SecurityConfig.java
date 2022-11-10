@@ -133,6 +133,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private LogSearchConfigApiConfig logSearchConfigApiConfig;
 
   @Inject
+  private LogsearchAuthenticationProvider logsearchAuthenticationProvider;
+
+  @Inject
   private RoleDao roleDao;
 
   @Override
@@ -154,7 +157,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/**")
           .hasRole("USER")
       .and()
-      .authenticationProvider(logsearchAuthenticationProvider())
+      .authenticationProvider(logsearchAuthenticationProvider)
       .httpBasic()
         .authenticationEntryPoint(logsearchAuthenticationEntryPoint())
       .and()
@@ -255,11 +258,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public LogsearchKRBAuthenticationFilter logsearchKRBAuthenticationFilter() {
     return new LogsearchKRBAuthenticationFilter(requestMatcher());
-  }
-
-  @Bean
-  public LogsearchAuthenticationProvider logsearchAuthenticationProvider() {
-    return new LogsearchAuthenticationProvider();
   }
 
   @Bean
