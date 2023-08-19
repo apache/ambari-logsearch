@@ -58,6 +58,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -199,6 +200,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       ldapContextSource.afterPropertiesSet();
       return ldapContextSource;
     }
+    return null;
+  }
+
+  @Bean
+  public LdapTemplate ldapTemplate() {
+    if (authPropsConfig.isAuthLdapEnabled()) {
+      return new LdapTemplate(ldapContextSource());
+    }
+
     return null;
   }
 
