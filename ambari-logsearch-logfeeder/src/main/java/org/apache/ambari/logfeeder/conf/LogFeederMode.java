@@ -40,12 +40,16 @@ public enum LogFeederMode {
   }
 
   public static LogFeederMode fromString(String text) {
-    for (LogFeederMode mode : LogFeederMode.values()) {
-      if (mode.text.equalsIgnoreCase(text)) {
-        return mode;
+    try {
+      for (LogFeederMode mode : LogFeederMode.values()) {
+        if (mode.text.equalsIgnoreCase(text)) {
+          return mode;
+        }
       }
+    } catch (IllegalArgumentException e) {
+      return LogFeederMode.DEFAULT;
     }
-    throw new IllegalArgumentException(String.format("String '%s' cannot be converted to LogFeederMode enum", text));
+    return LogFeederMode.DEFAULT;
   }
 
   public static boolean isCloudStorage(LogFeederMode mode) {
