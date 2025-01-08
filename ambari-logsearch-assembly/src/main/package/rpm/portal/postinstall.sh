@@ -16,6 +16,8 @@
 
 LOGSEARCH_SCRIPT_LINK_NAME="/usr/bin/logsearch"
 LOGSEARCH_SCRIPT_SOURCE="/usr/lib/ambari-logsearch-portal/bin/logsearch.sh"
+LOGSEARCH_SOLR_CLIENT_SCRIPT_LINK_NAME="/usr/lib/ambari-logsearch-solr-client/bin/solrCloudCli.sh"
+LOGSEARCH_SOLR_CLIENT_SCRIPT_SOURCE="/usr/lib/ambari-logsearch-portal/bin/solrCloudCli.sh"
 
 LOGSEARCH_ETC_FOLDER="/etc/ambari-logsearch-portal"
 LOGSEARCH_CONF_LINK="$LOGSEARCH_ETC_FOLDER/conf"
@@ -24,6 +26,7 @@ LOGSEARCH_CONF_SOURCE="/usr/lib/ambari-logsearch-portal/conf"
 mkdir -p $LOGSEARCH_ETC_FOLDER
 
 ln -s $LOGSEARCH_SCRIPT_SOURCE $LOGSEARCH_SCRIPT_LINK_NAME
+ln -s LOGSEARCH_SOLR_CLIENT_SCRIPT_SOURCE $LOGSEARCH_SOLR_CLIENT_SCRIPT_LINK_NAME
 #ln -s $LOGSEARCH_CONF_SOURCE $LOGSEARCH_CONF_LINK
 
 # handle old keys folder
