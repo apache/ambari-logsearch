@@ -56,8 +56,12 @@
     <copy todir="target/package/bin" includeEmptyDirs="no">
       <fileset file="src/main/scripts/logsearch.sh"/>
     </copy>
+    <copy todir="target/package/bin" includeEmptyDirs="no">
+      <fileset file="src/main/scripts/solrCloudCli.sh"/>
+    </copy>
     <chmod file="target/package/bin/logsearch.sh" perm="755"/>
     <chmod file="target/package/conf/logsearch-env.sh" perm="755"/>
+    <chmod file="target/package/bin/solrCloudCli.sh" perm="755"/>
     <tar compression="gzip" destfile="target/ambari-logsearch-portal.tar.gz">
       <tarfileset mode="755" dir="target/package">
         <include name="**/*.sh"/>
